@@ -181,7 +181,7 @@ static void playSong(uint8_t *song) {
     }
 }
 
-static uint8_t * song = (uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,";//"C2.C2,D4,C4,F4,E8,";
+static uint8_t * song = (uint8_t*)"C2.C2,D4,C4,F4,E8,";
         //(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,";
         //"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,";
 
@@ -329,7 +329,7 @@ int main (void) {
     moveBar(1, dir);
     oled_clearScreen(OLED_COLOR_BLACK);
 
-    // 7seg
+    // 7 Segment
     led7seg_init();
     led7seg_setChar('4', 0);
 
@@ -362,20 +362,19 @@ int main (void) {
         state = joystick_read();
         if (state != 0)
             drawOled(state);
-
-        /* ####### Joystick and 7seg  ###### */
         if (state >> 0 & 0x01) //JOYSTICK_CENTER
-			led7seg_setChar('C', 0);
+				led7seg_setChar('C', 0);
         if (state >> 1 & 0x01) //JOYSTICK_UP
-			led7seg_setChar('U', 0);
+				led7seg_setChar('U', 0);
         if (state >> 2 & 0x01) //JOYSTICK_DOWN
         	led7seg_setChar('D', 0);
         if (state >> 3 & 0x01) //JOYSTICK_LEFT
-			led7seg_setChar('L', 0);
+				led7seg_setChar('L', 0);
         if (state >> 4 & 0x01) //JOYSTICK_RIGHT
         	led7seg_setChar('R', 0);
 
         /* ############################################# */
+
 
 
         /* ############ Trimpot and RGB LED  ########### */

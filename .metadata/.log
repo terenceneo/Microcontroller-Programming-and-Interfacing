@@ -860,3 +860,20 @@ java.io.IOException: Document is closed
 
 !ENTRY com.crt.log 1 0 2018-10-12 15:49:18.728
 !MESSAGE Drivers loaded in 3010 milliseconds
+
+!ENTRY com.crt.dsfdebug 4 0 2018-10-12 16:13:53.502
+!MESSAGE 16: Target error from status-poll
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-10-12 16:13:53.502
+!MESSAGE 16: Target error from status-poll
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-10-12 16:13:53.502
+!MESSAGE IO Error - cable disconnected?
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-10-12 16:13:53.502
+!MESSAGE Not connected to emulator.
+
+!ENTRY com.crt.dsfdebug 4 0 2018-10-12 16:13:57.436
+!MESSAGE (crt_emu_cm3_nxp) terminating due to loss of debug control
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-10-12 16:13:57.436
+!MESSAGE (crt_emu_cm3_nxp) terminating due to loss of debug control
+
+!ENTRY com.crt.log 1 0 2018-10-12 16:23:16.456
+!MESSAGE Drivers loaded in 2059 milliseconds
