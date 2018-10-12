@@ -274,6 +274,8 @@ static void init_GPIO(void)
 
 
 int main (void) {
+
+
     int32_t xoff = 0;
     int32_t yoff = 0;
     int32_t zoff = 0;
@@ -289,6 +291,7 @@ int main (void) {
 
     uint8_t btn1 = 1;
 
+
     init_i2c();
     init_ssp();
     init_GPIO();
@@ -297,6 +300,8 @@ int main (void) {
     joystick_init();
     acc_init();
     oled_init();
+
+
 
     /*
      * Assume base board in zero-g position when reading first value.
@@ -369,7 +374,7 @@ int main (void) {
         /* ############ Trimpot and RGB LED  ########### */
         /* # */
 
-        btn1 = (GPIO_ReadValue(0) >> 4) & 0x01;
+
         if (btn1 == 0)
         {
             playSong(song);
