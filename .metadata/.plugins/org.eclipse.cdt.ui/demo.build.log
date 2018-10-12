@@ -1,25 +1,21 @@
-13:17:13 **** Incremental Build of configuration Debug for project demo ****
+13:38:04 **** Incremental Build of configuration Debug for project demo ****
 make all 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
 arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
 Finished building: ../src/main.c
  
-Building file: ../src/main_lab.c
-Invoking: MCU C Compiler
-arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main_lab.d" -MT"src/main_lab.d" -o "src/main_lab.o" "../src/main_lab.c"
-../src/main_lab.c: In function 'main':
-../src/main_lab.c:56:11: warning: unused variable 'sw3' [-Wunused-variable]
-Finished building: ../src/main_lab.c
- 
 Building target: demo.axf
 Invoking: MCU Linker
-arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=demo.map -mcpu=cortex-m3 -mthumb -T "demo_Debug.ld" -o "demo.axf"  ./src/cr_startup_lpc17.o ./src/main.o ./src/main_lab.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
-./src/main_lab.o: In function `main':
-D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\demo\Debug/../src/main_lab.c:47: multiple definition of `main'
-./src/main.o:D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\demo\Debug/../src/main.c:276: first defined here
-collect2: ld returned 1 exit status
-make: *** [demo.axf] Error 1
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=demo.map -mcpu=cortex-m3 -mthumb -T "demo_Debug.ld" -o "demo.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: demo.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size demo.axf; # arm-none-eabi-objdump -h -S demo.axf >demo.lss
+   text	   data	    bss	    dec	    hex	filename
+  16576	     72	    844	  17492	   4454	demo.axf
+ 
 
-13:17:16 Build Finished (took 2s.490ms)
+13:38:07 Build Finished (took 2s.629ms)
 
