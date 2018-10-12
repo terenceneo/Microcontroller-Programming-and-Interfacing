@@ -5,18 +5,19 @@
  *   All rights reserved.
  *
  ******************************************************************************/
-
+#include "stdio.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_gpio.h"
 #include "lpc17xx_i2c.h"
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_timer.h"
+#include "lpc17xx_timer.h" // for delay
 
 #include "joystick.h"
 #include "pca9532.h"
 #include "acc.h"
 #include "oled.h"
 #include "rgb.h"
+#include "led7seg.h"
 
 static uint8_t barPos = 2;
 
@@ -245,14 +246,46 @@ static void init_GPIO(void){
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
 
-	PinCfg.Portnum = 0; //port 0
-	PinCfg.Pinnum = 4; // pin 4
+	PinCfg.Portnum = 1; //port 0
+	PinCfg.Pinnum = 31; // pin 4
 
 	PINSEL_ConfigPin(&PinCfg);
 
-	GPIO_SetDir(0, (1<<4), 0); //portNum 0, pin 4, 0 for input
+//	GPIO_SetDir(0, (1<<4), 0); //portNum 0, pin 4 (sw3 BL_EN mapped to P0.4), 0 for input
+	GPIO_SetDir(1, (1<<31), 0); //portNum 1, pin 31 (sw4 PiO2_9 mapped to P1.31), 0 for input
 }
 
+static void speakerInit(){
+	PINSEL_CFG_Type PinCfg;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+
+	PinCfg.Portnum = 0;
+	PinCfg.Pinnum = 26;
+	PINSEL_ConfigPin(&PinCfg);
+
+	PinCfg.Portnum = 0;
+	PinCfg.Pinnum = 27;
+	PINSEL_ConfigPin(&PinCfg);
+
+	PinCfg.Portnum = 0;
+	PinCfg.Pinnum = 28;
+	PINSEL_ConfigPin(&PinCfg);
+
+	PinCfg.Portnum = 2;
+	PinCfg.Pinnum = 13;
+	PINSEL_ConfigPin(&PinCfg);
+
+    GPIO_SetDir(0, 1<<27, 1);
+    GPIO_SetDir(0, 1<<28, 1);
+    GPIO_SetDir(2, 1<<13, 1);
+    GPIO_SetDir(0, 1<<26, 1);
+
+    //Clear P0.27, P0.28, P2.13, as we are not doing Volume Control or shutdown
+    GPIO_ClearValue(0, 1<<27); //LM4811-clk
+    GPIO_ClearValue(0, 1<<28); //LM4811-up/dn
+    GPIO_ClearValue(2, 1<<13); //LM4811-shutdn
+}
 
 int main (void) {
     int32_t xoff = 0;
@@ -288,23 +321,17 @@ int main (void) {
     zoff = 64-z;
 
     /* ---- Speaker ------> */
-
     GPIO_SetDir(2, 1<<0, 1);
     GPIO_SetDir(2, 1<<1, 1);
+    speakerInit();
 
-    GPIO_SetDir(0, 1<<27, 1);
-    GPIO_SetDir(0, 1<<28, 1);
-    GPIO_SetDir(2, 1<<13, 1);
-    GPIO_SetDir(0, 1<<26, 1);
-
-    GPIO_ClearValue(0, 1<<27); //LM4811-clk
-    GPIO_ClearValue(0, 1<<28); //LM4811-up/dn
-    GPIO_ClearValue(2, 1<<13); //LM4811-shutdn
-
-    /* <---- Speaker ------ */
-
+    /* <---- OLED ------ */
     moveBar(1, dir);
     oled_clearScreen(OLED_COLOR_BLACK);
+
+    // 7 Segment
+    led7seg_init();
+    led7seg_setChar('4', 0);
 
     while (1){
         /* ####### Accelerometer and LEDs  ###### */
@@ -322,25 +349,30 @@ int main (void) {
         else {
             dir = -1;
         }
-
         if (y > 1 && wait++ > (40 / (1 + (y/10)))) {
             moveBar(1, dir);
             wait = 0;
         }
-
 
         /* # */
         /* ############################################# */
 
 
         /* ####### Joystick and OLED  ###### */
-        /* # */
-
         state = joystick_read();
         if (state != 0)
             drawOled(state);
+        if (state >> 0 & 0x01) //JOYSTICK_CENTER
+				led7seg_setChar('C', 0);
+        if (state >> 1 & 0x01) //JOYSTICK_UP
+				led7seg_setChar('U', 0);
+        if (state >> 2 & 0x01) //JOYSTICK_DOWN
+        	led7seg_setChar('D', 0);
+        if (state >> 3 & 0x01) //JOYSTICK_LEFT
+				led7seg_setChar('L', 0);
+        if (state >> 4 & 0x01) //JOYSTICK_RIGHT
+        	led7seg_setChar('R', 0);
 
-        /* # */
         /* ############################################# */
 
 
@@ -348,7 +380,7 @@ int main (void) {
         /* ############ Trimpot and RGB LED  ########### */
         /* # */
 
-        btn1 = (GPIO_ReadValue(0) >> 4) & 0x01;
+        btn1 = (GPIO_ReadValue(1) >> 31) & 0x01;
         if (btn1 == 0){
             playSong(song);
         }

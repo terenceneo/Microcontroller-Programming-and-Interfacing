@@ -12,7 +12,8 @@ src/main.d: ../src/main.c \
  D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/pca9532.h \
  D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/acc.h \
  D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/oled.h \
- D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/rgb.h
+ D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/rgb.h \
+ D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/led7seg.h
 
 D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_MCU\inc/lpc17xx_pinsel.h:
 
@@ -41,3 +42,5 @@ D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBa
 D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/oled.h:
 
 D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/rgb.h:
+
+D:\Dropbox\Dropbox\NUS\ Modules\EE2028_EE2024\Assignments\Assignment\ 2\Lib_EaBaseBoard\inc/led7seg.h:
