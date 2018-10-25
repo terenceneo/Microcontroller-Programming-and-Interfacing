@@ -1,0 +1,38 @@
+18:04:03 **** Incremental Build of configuration Debug for project demo ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'do_toclimb':
+../src/main.c:374:2: warning: implicit declaration of function 'countdown' [-Wimplicit-function-declaration]
+../src/main.c: In function 'do_Climb':
+../src/main.c:385:2: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat]
+../src/main.c:385:2: warning: format '%d' expects argument of type 'int', but argument 4 has type 'long unsigned int' [-Wformat]
+../src/main.c:386:2: warning: pointer targets in passing argument 3 of 'oled_putString' differ in signedness [-Wpointer-sign]
+C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_EaBaseBoard\inc/oled.h:29:6: note: expected 'uint8_t *' but argument is of type 'char *'
+../src/main.c: At top level:
+../src/main.c:468:6: warning: conflicting types for 'countdown' [enabled by default]
+../src/main.c:374:2: note: previous implicit declaration of 'countdown' was here
+../src/main.c: In function 'main':
+../src/main.c:562:13: warning: unused variable 'btn1' [-Wunused-variable]
+../src/main.c:560:13: warning: unused variable 'joyState' [-Wunused-variable]
+../src/main.c:558:13: warning: unused variable 'wait' [-Wunused-variable]
+../src/main.c:552:13: warning: variable 'zoff' set but not used [-Wunused-but-set-variable]
+../src/main.c:551:13: warning: variable 'yoff' set but not used [-Wunused-but-set-variable]
+../src/main.c:550:13: warning: variable 'xoff' set but not used [-Wunused-but-set-variable]
+Finished building: ../src/main.c
+ 
+Building target: demo.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Documents\Year 2 Sem 1\EE2028\assignment2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=demo.map -mcpu=cortex-m3 -mthumb -T "demo_Debug.ld" -o "demo.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: demo.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size demo.axf; # arm-none-eabi-objdump -h -S demo.axf >demo.lss
+   text	   data	    bss	    dec	    hex	filename
+  44104	   2356	   1016	  47476	   b974	demo.axf
+ 
+
+18:04:05 Build Finished (took 1s.485ms)
+
