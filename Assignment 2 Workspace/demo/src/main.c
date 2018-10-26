@@ -245,6 +245,7 @@ static void init_i2c(void){
 	PinCfg.Pinnum = 11;
 	PINSEL_ConfigPin(&PinCfg);
 
+	//similar to GPIO set direction
 	// Initialize I2C peripheral
 	I2C_Init(LPC_I2C2, 100000);
 
@@ -317,153 +318,31 @@ static void init_everything(){
     led7seg_init();
     speaker_init();
     rgb_init();
+
     LPC_GPIOINT ->IO0IntEnR |= 1<<4;
     NVIC_EnableIRQ(EINT3_IRQn);
-
-
 }
 
 uint32_t Get_Time(void){
 	return msTicks;
 }
 
-//Interrupt Handler
-void EINT3_IRQHandler(void){ //for interrupts
-	// SW3
-	printf("SW3 is pressed\n");
-	LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
-	//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms), blue LED to behave as in BLINK_BLUE
-	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
-	//>RGB LED should blink as described in BLINK_BLUE
-	//After, enter CLIMB mode
-	if (state == Initialization){
-		state = ItoC;
-		oled_clearScreen(OLED_COLOR_BLACK);
-	}
-
-}
-
 //RGB LEDs
 void ALTERNATE_LED(){
 	//The blue and red LEDs alternate every 500 milliseconds. The Green LED should be off throughout.
 }
-//void BLINK_BLUE(){
-//	//Blue Light for RGB LED, alternating between ON and OFF every 1 second
-//}
 
 void BLINK_BLUE (void){
+	//Blue Light for RGB LED, alternating between ON and OFF every 1 second
 	if(RGB_FLAG == 0){
-	rgb_setLeds (RGB_BLUE);
-	RGB_FLAG =1 ;
+		rgb_setLeds (RGB_BLUE);
+		RGB_FLAG = 1;
 	}else{
-	rgb_setLeds(0x04);
-	RGB_FLAG = 0;
+//		rgb_setLeds(0x04);
+		GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
+		RGB_FLAG = 0;
 	}
 }
-
-//Modes
-void do_Initialization(){
-	printf("Entered Initialization Mode");
-	//display "Initialization mode. Press TOGGLE to climb"
-
-	//initialise the interrupt for MODE_TOGGLE with SW3
-
-
-}
-void do_toclimb(){
-	countdown();
-	state = Climb;
-}
-char temp_string[32];
-
-void do_Climb(){
-	rgb_setLeds(0x04);
-	printf("Entered Climb Mode");
-	//OLED display "CLIMB"
-	tempvalue = temp_read();
-	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	sprintf(temp_string,"Temp: %d.%d deg",tempvalue/10,tempvalue%10);
-	oled_putString(0, 8, temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-//	printf('%')
-	//output the net acceleration on the OLED screen. The accelerometer readings should be initialized to be close to zero when the device enters CLIMB Mode.
-	//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
-	//if net acceleration> ACC_THRESHOLD{ state = Emergency;}
-	//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
-	//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD. If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again, unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-	//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
-	//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit). A message should also be displayed on the OLED screen saying "DIM"
-	//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
-	//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
-//	tempvalue = temp_read() /10.0; //T(C)
-//	printf(0, 8, (uint32_t *) "Temp: &.1f deg", tempvalue);
-//	oled_putString(0, 8, tempvalue, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-}
-void do_Emergency(){
-	printf("Entered Emergency Mode");
-	//OLED screen should display "EMERGENCY Mode!" as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
-	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	//RGB LED should behave as described in ALTERNATE_LED
-	ALTERNATE_LED();
-	//send a message to FiTrackX that reads “EMERGENCY!"
-	//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
-	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed >  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
-	//5-second duration should elapse before the device enters CLIMB Mode automatically. During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second
-	//and RGB_LED should behave as described in BLINK_BLUE. (V cannot be displayed on the 7-segment, so it is replaced with U').
-	BLINK_BLUE();
-}
-
-//Functions for testing devices
-/* ####### Joystick and 7seg  ###### */
-void Joystick_7seg(uint8_t joyState){
-	if (joyState >> 0 & 0x01) //JOYSTICK_CENTER
-		led7seg_setChar('C', 0);
-	if (joyState >> 1 & 0x01) //JOYSTICK_UP
-		led7seg_setChar('U', 0);
-	if (joyState >> 2 & 0x01) //JOYSTICK_DOWN
-		led7seg_setChar('D', 0);
-	if (joyState >> 3 & 0x01) //JOYSTICK_LEFT
-		led7seg_setChar('L', 0);
-	if (joyState >> 4 & 0x01) //JOYSTICK_RIGHT
-		led7seg_setChar('R', 0);
-}
-
-/* ####### Joystick and OLED  ###### */
-void Joystick_OLED(uint8_t joyState){
-	joyState = joystick_read();
-	if (joyState != 0)
-		drawOled(joyState);
-}
-
-/* ####### Accelerometer and LEDs  ###### */
-void Accelerometer_LED(int8_t x, int8_t y, int8_t z, int8_t xoff, int8_t yoff, int8_t zoff, uint8_t dir, uint8_t wait){
-	acc_read(&x, &y, &z);
-	x = x+xoff;
-	y = y+yoff;
-	z = z+zoff;
-
-	if (y < 0) {
-		dir = 1;
-		y = -y;
-	}
-	else {
-		dir = -1;
-	}
-	if (y > 1 && wait++ > (40 / (1 + (y/10)))) {
-		moveBar(1, dir);
-		wait = 0;
-	}
-}
-/* ####### SW3 and Speaker  ###### */
-void SW_Speaker(uint8_t btn1){
-	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
-	if (btn1 == 0){
-		playSong(song);
-	}
-}
-
-/* ############ Trimpot and RGB LED  ########### */
-void Trimpot_RGB(){}
 
 void countdown(void){
 	while(1){
@@ -538,6 +417,140 @@ void countdown(void){
 	}
 }
 
+//Modes
+void do_Initialization(){
+	printf("Entered Initialization Mode\n");
+	//display "Initialization mode. Press TOGGLE to climb"
+	oled_clearScreen(OLED_COLOR_BLACK);
+	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	oled_putString(0, 8, (uint8_t *) "mode. Press", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	oled_putString(0, 16, (uint8_t *) "TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//initialise the interrupt for MODE_TOGGLE with SW3
+
+}
+void do_toclimb(){
+	countdown();
+	state = Climb;
+}
+
+char temp_string[32];
+void do_Climb(){
+	rgb_setLeds(0x04);
+	printf("Entered Climb Mode\n");
+	//OLED display "CLIMB"
+	oled_clearScreen(OLED_COLOR_BLACK);
+	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	sprintf(temp_string,"Temp: %d.%d deg",tempvalue/10,tempvalue%10);
+	oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//	printf('%')
+	//output the net acceleration on the OLED screen. The accelerometer readings should be initialized to be close to zero when the device enters CLIMB Mode.
+
+	//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
+	//if net acceleration> ACC_THRESHOLD{ state = Emergency;}
+	//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
+	//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD. If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again, unless the temperature goes below TEMP_THRESHOLD and crosses it again.
+	tempvalue = temp_read();
+	//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
+	light_enable();
+	uint32_t luminI = light_read();
+	sprintf(temp_string,"Light: %d lux",luminI);
+	//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit). A message should also be displayed on the OLED screen saying "DIM"
+	//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
+	//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
+//	tempvalue = temp_read() /10.0; //T(C)
+//	printf(0, 8, (uint32_t *) "Temp: &.1f deg", tempvalue);
+//	oled_putString(0, 8, tempvalue, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
+}
+void do_Emergency(){
+	printf("Entered Emergency Mode\n");
+	//OLED screen should display "EMERGENCY Mode!" as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
+	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//RGB LED should behave as described in ALTERNATE_LED
+	ALTERNATE_LED();
+	//send a message to FiTrackX that reads “EMERGENCY!"
+	//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
+	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed >  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
+	//5-second duration should elapse before the device enters CLIMB Mode automatically. During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second
+	//and RGB_LED should behave as described in BLINK_BLUE. (V cannot be displayed on the 7-segment, so it is replaced with U').
+	BLINK_BLUE();
+}
+
+//Functions for testing devices
+/* ####### Joystick and 7seg  ###### */
+void Joystick_7seg(uint8_t joyState){
+	if (joyState >> 0 & 0x01) //JOYSTICK_CENTER
+		led7seg_setChar('C', 0);
+	if (joyState >> 1 & 0x01) //JOYSTICK_UP
+		led7seg_setChar('U', 0);
+	if (joyState >> 2 & 0x01) //JOYSTICK_DOWN
+		led7seg_setChar('D', 0);
+	if (joyState >> 3 & 0x01) //JOYSTICK_LEFT
+		led7seg_setChar('L', 0);
+	if (joyState >> 4 & 0x01) //JOYSTICK_RIGHT
+		led7seg_setChar('R', 0);
+}
+
+/* ####### Joystick and OLED  ###### */
+void Joystick_OLED(uint8_t joyState){
+	joyState = joystick_read();
+	if (joyState != 0)
+		drawOled(joyState);
+}
+
+/* ####### Accelerometer and LEDs  ###### */
+void Accelerometer_LED(int8_t x, int8_t y, int8_t z, int8_t xoff, int8_t yoff, int8_t zoff, uint8_t dir, uint8_t wait){
+	acc_read(&x, &y, &z);
+	x = x+xoff;
+	y = y+yoff;
+	z = z+zoff;
+
+	if (y < 0) {
+		dir = 1;
+		y = -y;
+	}
+	else {
+		dir = -1;
+	}
+	if (y > 1 && wait++ > (40 / (1 + (y/10)))) {
+		moveBar(1, dir);
+		wait = 0;
+	}
+}
+/* ####### SW3 and Speaker  ###### */
+void SW_Speaker(uint8_t btn1){
+	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
+	if (btn1 == 0){
+		playSong(song);
+	}
+}
+
+/* ############ Trimpot and RGB LED  ########### */
+void Trimpot_RGB(){}
+
+//Interrupt Handler
+void EINT3_IRQHandler(void){ //for interrupts
+	// SW3
+	printf("SW3 is pressed\n");
+
+	//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms), blue LED to behave as in BLINK_BLUE
+//	countdown();
+	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
+	oled_clearScreen(OLED_COLOR_BLACK);
+	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	oled_putString(0, 16, (uint8_t *) "ENTERING CLIMB MODE", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//>RGB LED should blink as described in BLINK_BLUE
+	//After, enter CLIMB mode
+	state = Climb;
+//	if (state == Initialization){
+//		state = ItoC;
+//		oled_clearScreen(OLED_COLOR_BLACK);
+//		printf("mode changed to ItoC\n");
+//	}
+//	do_toclimb();
+	LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
+}
 
 int main (void) {
 
@@ -577,14 +590,13 @@ int main (void) {
     moveBar(1, dir);
     oled_clearScreen(OLED_COLOR_BLACK);
 
-    oled_putString(0, 0, (uint8_t *) "Initialization mode. Press TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
     while (1){
     	if (state == Initialization){
     		do_Initialization();
     	}
-    	if (state == ItoC){
-    		do_toclimb();
-    	}
+//    	if (state == ItoC){
+//    		do_toclimb();
+//    	}
     	if (state == Climb){
     		do_Climb();
 		}
