@@ -19,16 +19,28 @@
 #include "oled.h"
 #include "rgb.h"
 #include "led7seg.h"
+#include "temp.h"
+
+uint32_t Get_Time(void);
+//Variables
+volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
+volatile uint32_t getTicks = 0;
+uint8_t msFlag = 0;
+uint8_t SevenSegFlag = 9;
+uint8_t RGB_FLAG = 0;
+volatile uint32_t tempvalue = 0;
+uint8_t countdown_flag = 0;
+
 
 typedef enum {
-	Initialization, Climb, Emergency
+	Initialization, Climb, Emergency, ItoC
 }MachineState; //MachineState is a type
 
 MachineState state = Initialization;
 
 //Setting Specifications
 static const int LIGHT_THRESHOLD = 300; 	//in lux
-static const int TEMP_THRESHOLD = 28;	//in degree C
+static const int TEMP_THRESHOLD = 28;		//in degree C
 static const double ACC_THRESHOLD = 0.1;	//in g
 
 static uint8_t barPos = 2;
@@ -297,13 +309,22 @@ static void init_everything(){
 	init_i2c();
 	init_ssp();
 	init_GPIO();
-
+	temp_init(&Get_Time);
     pca9532_init();
     joystick_init();
     acc_init();
     oled_init();
     led7seg_init();
     speaker_init();
+    rgb_init();
+    LPC_GPIOINT ->IO0IntEnR |= 1<<4;
+    NVIC_EnableIRQ(EINT3_IRQn);
+
+
+}
+
+uint32_t Get_Time(void){
+	return msTicks;
 }
 
 //Interrupt Handler
@@ -315,30 +336,55 @@ void EINT3_IRQHandler(void){ //for interrupts
 	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
 	//>RGB LED should blink as described in BLINK_BLUE
 	//After, enter CLIMB mode
-	state = Climb;
+	if (state == Initialization){
+		state = ItoC;
+		oled_clearScreen(OLED_COLOR_BLACK);
+	}
+
 }
 
 //RGB LEDs
 void ALTERNATE_LED(){
 	//The blue and red LEDs alternate every 500 milliseconds. The Green LED should be off throughout.
 }
-void BLINK_BLUE(){
-	//Blue Light for RGB LED, alternating between ON and OFF every 1 second
+//void BLINK_BLUE(){
+//	//Blue Light for RGB LED, alternating between ON and OFF every 1 second
+//}
+
+void BLINK_BLUE (void){
+	if(RGB_FLAG == 0){
+	rgb_setLeds (RGB_BLUE);
+	RGB_FLAG =1 ;
+	}else{
+	rgb_setLeds(0x04);
+	RGB_FLAG = 0;
+	}
 }
 
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode");
 	//display "Initialization mode. Press TOGGLE to climb"
-	oled_putString(0, 0, (uint8_t *) "Initialization mode. Press TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
 	//initialise the interrupt for MODE_TOGGLE with SW3
-	LPC_GPIOINT ->IO0IntEnR |= 1<<4;
-	NVIC_EnableIRQ(EINT3_IRQn);
+
+
 }
+void do_toclimb(){
+	countdown();
+	state = Climb;
+}
+char temp_string[32];
+
 void do_Climb(){
+	rgb_setLeds(0x04);
 	printf("Entered Climb Mode");
 	//OLED display "CLIMB"
+	tempvalue = temp_read();
 	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	sprintf(temp_string,"Temp: %d.%d deg",tempvalue/10,tempvalue%10);
+	oled_putString(0, 8, temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+//	printf('%')
 	//output the net acceleration on the OLED screen. The accelerometer readings should be initialized to be close to zero when the device enters CLIMB Mode.
 	//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
 	//if net acceleration> ACC_THRESHOLD{ state = Emergency;}
@@ -348,6 +394,10 @@ void do_Climb(){
 	//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit). A message should also be displayed on the OLED screen saying "DIM"
 	//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
 	//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
+//	tempvalue = temp_read() /10.0; //T(C)
+//	printf(0, 8, (uint32_t *) "Temp: &.1f deg", tempvalue);
+//	oled_putString(0, 8, tempvalue, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
 }
 void do_Emergency(){
 	printf("Entered Emergency Mode");
@@ -415,7 +465,86 @@ void SW_Speaker(uint8_t btn1){
 /* ############ Trimpot and RGB LED  ########### */
 void Trimpot_RGB(){}
 
+void countdown(void){
+	while(1){
+	if (msFlag == 0){
+	    if (msTicks%500 == 0){
+	    	BLINK_BLUE();
+	    	switch (SevenSegFlag){
+	    		case 9:
+	    		        led7seg_setChar(0x38, TRUE);
+	    				SevenSegFlag = 8;
+	    				break;
+
+	    			case 8:
+	    			    led7seg_setChar(0x20, TRUE);
+	    			    SevenSegFlag = 7;
+	    			    break;
+
+	    			case 7:
+	    			    led7seg_setChar(0x7C, TRUE);
+	    			    SevenSegFlag = 6;
+	    			    break;
+
+	    			case 6:
+	    			    led7seg_setChar(0x23, TRUE);
+	    			    SevenSegFlag = 5;
+	    			    break;
+
+	    			case 5:
+	    			    led7seg_setChar(0x32, TRUE);
+	    			    SevenSegFlag = 4;
+	    			    break;
+
+	    			case 4:
+	    			    led7seg_setChar(0x39, TRUE);
+	    			    SevenSegFlag = 3;
+	    			    break;
+
+	    			case 3:
+	    			    led7seg_setChar(0x70, TRUE);
+	    			    SevenSegFlag = 2;
+	    			    break;
+
+	    			case 2:
+	    			    led7seg_setChar(0xE0, TRUE);
+	    			    SevenSegFlag = 1;
+	    			    break;
+
+	    			case 1:
+	    			    led7seg_setChar(0x7D, TRUE);
+	    			    SevenSegFlag = 0;
+	    			    break;
+
+	    			case 0:
+	    			    led7seg_setChar(0x24, TRUE);
+	    			    SevenSegFlag = 10;
+	    			    break;
+
+	    			default:
+	    				led7seg_setChar(0xFF, TRUE);
+	    				return;
+	    				break;
+
+	    			}
+	    			msFlag = 1;
+	    		}
+	    	}
+	    	else{
+	    		if(msTicks%500 != 0){
+	    			msFlag= 0;
+	    		}
+	    	}
+	}
+}
+
+
 int main (void) {
+
+	if (SysTick_Config(SystemCoreClock/1000)){
+		while (1);
+	}
+
 	init_everything();
 
     int32_t xoff = 0;
@@ -448,9 +577,13 @@ int main (void) {
     moveBar(1, dir);
     oled_clearScreen(OLED_COLOR_BLACK);
 
+    oled_putString(0, 0, (uint8_t *) "Initialization mode. Press TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
     while (1){
     	if (state == Initialization){
     		do_Initialization();
+    	}
+    	if (state == ItoC){
+    		do_toclimb();
     	}
     	if (state == Climb){
     		do_Climb();
@@ -461,17 +594,23 @@ int main (void) {
 
         /* #Testing functions */
         /* ############################################# */
-        Joystick_7seg(joyState);
-        Joystick_OLED(joyState);
-        Accelerometer_LED(x, y, z, xoff, yoff, zoff, dir, wait);
-        SW_Speaker(btn1);
-        Trimpot_RGB();
+//        Joystick_7seg(joyState);
+//        Joystick_OLED(joyState);
+//        Accelerometer_LED(x, y, z, xoff, yoff, zoff, dir, wait);
+//        SW_Speaker(btn1);
+//        Trimpot_RGB();
         /* ############################################# */
 
         /* # */
-        Timer0_Wait(1);
+//        Timer0_Wait(1);
     }
 }
+
+void SysTick_Handler (void){
+	msTicks++;
+}
+
+
 
 void check_failed(uint8_t *file, uint32_t line)
 {
