@@ -1,5 +1,5 @@
 ItoC
-1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
+(fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
 9. Array for countdown, add top line for '6' so it doesnt look like b
 
 Climb
@@ -12,7 +12,7 @@ Others
 
 Emergency
 6. emergency mode duration does not update consistently per time interval
-1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
+(fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
 
 Emergency over
 7. change saued to array of inverted letters (in sauved function)

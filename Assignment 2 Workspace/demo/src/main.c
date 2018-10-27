@@ -373,16 +373,31 @@ static void init_everything(){
 }
 
 //RGB LEDs
+//Function to deconflict PIO1_10, Port 2 Pin one used by RGB_GREEN and OLED
+void setRGBLeds (uint8_t ledMask)
+{
+    if ((ledMask & RGB_RED) != 0) {
+        GPIO_SetValue( 2, (1<<0) );
+    } else {
+        GPIO_ClearValue( 2, (1<<0) );
+    }
+
+    if ((ledMask & RGB_BLUE) != 0) {
+        GPIO_SetValue( 0, (1<<26) );
+    } else {
+        GPIO_ClearValue( 0, (1<<26) );
+    }
+}
 uint32_t prev_alternateled_ticks;
 void ALTERNATE_LED(){
 	//The blue and red LEDs alternate every 500 milliseconds. The Green LED should be off throughout.
 	if(Get_Time() - prev_alternateled_ticks >= 500){
 		if(RGB_FLAG == 0){
-			rgb_setLeds (RGB_BLUE);
+			setRGBLeds (RGB_BLUE);
 			RGB_FLAG = 1;
 			prev_alternateled_ticks = Get_Time();
 		}else{
-			rgb_setLeds (RGB_RED); // Clear value for RGB_BLUE
+			setRGBLeds (RGB_RED); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_alternateled_ticks = Get_Time();
 		}
@@ -395,11 +410,11 @@ void BLINK_BLUE (void){
 	if(Get_Time() - prev_blink_blue_ticks >= 1000){
 //		printf("blinked blue\n");
 		if(RGB_FLAG == 0){
-			rgb_setLeds (RGB_BLUE);
+			setRGBLeds (RGB_BLUE);
 			RGB_FLAG = 1;
 			prev_blink_blue_ticks = Get_Time();
 		}else{
-	//		rgb_setLeds(0x04);
+	//		setRGBLeds(0x04);
 			GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_blink_blue_ticks = Get_Time();
@@ -545,10 +560,11 @@ uint8_t restnow_printed = 0;
 uint8_t restnow_OLED_line = 32;
 uint8_t dim_OLED_line = 40;
 void do_Climb(){
-	rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
+	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
 
 	printf("Entered Climb Mode\n");
 	led7seg_setChar(0xFF, TRUE);
+	GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
 	//OLED display "CLIMB"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -650,7 +666,7 @@ void do_Emergency(){
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
 		//RGB LED should behave as described in ALTERNATE_LED
-//		ALTERNATE_LED();
+		ALTERNATE_LED();
 		//send a message to FiTrackX that reads “EMERGENCY!"
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
 	}

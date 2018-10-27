@@ -2712,3 +2712,12 @@ java.io.FileNotFoundException: D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assi
 	at com.crt.ctrlcenter.launch.BuildLaunchUtils.buildProject(Unknown Source)
 	at com.crt.quickstart.views.links.QSBuildProject$1.run(Unknown Source)
 	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+!SESSION 2018-10-27 19:35:13.521 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY com.crt.log 1 0 2018-10-27 19:36:11.190
+!MESSAGE Drivers loaded in 2998 milliseconds
