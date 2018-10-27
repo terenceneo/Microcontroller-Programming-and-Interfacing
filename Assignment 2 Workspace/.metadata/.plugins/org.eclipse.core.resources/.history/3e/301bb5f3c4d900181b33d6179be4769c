@@ -267,13 +267,13 @@ static void init_GPIO(void){
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
 
-	//SW4
+	//SW3
 	PinCfg.Portnum = 1; //port 1
 	PinCfg.Pinnum = 31; // pin 31
 	PINSEL_ConfigPin(&PinCfg);
 	GPIO_SetDir(1, (1<<31), 0); //portNum 1, pin 31 (sw4 PiO2_9 mapped to P1.31), 0 for input
 
-	//SW3
+	//SW4
 	PinCfg.Portnum = 0; //port 0
 	PinCfg.Pinnum = 4; // pin 4
 	PINSEL_ConfigPin(&PinCfg);
@@ -347,8 +347,7 @@ static void init_everything(){
     lightSenIntInit();
 
     LPC_GPIOINT ->IO0IntEnR |= 1<<4; //sw3
-    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
-    LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
+    LPC_GPIOINT ->IO0IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
@@ -663,18 +662,10 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}
 	//	do_toclimb();
 	}
-	if ((LPC_GPIOINT ->IO1IntStatR>>31) & 0x1){ //sw4
-		LPC_GPIOINT ->IO1IntClr = 1<<31; //clear the interrupt
-		printf("SW4 is pressed\n");
-		state = Emergency;
-		printf("State changed to Emergency\n");
-	}
-	if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
-		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
-		printf("Light interrupt triggered\n");
+	if ((LPC_GPIOINT ->IO0IntStatR>>5) & 0x1){ //light sensor
+		LPC_GPIOINT ->IO0IntClr = 1<<5; //clear the interrupt
 		light_clearIrqStatus();
 	}
-
 }
 
 //Handler occurs every 1ms

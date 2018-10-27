@@ -23,7 +23,7 @@
 #include "light.h"
 
 typedef enum {
-	Initialization, Climb, Emergency, ItoC, Emergency_over
+	Initialization, Climb, Emergency, ItoC
 }MachineState; //MachineState is a type
 
 MachineState state = Initialization;
@@ -33,7 +33,7 @@ MachineState state = Initialization;
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
 volatile uint32_t getTicks = 0;
 uint8_t msFlag = 0;
-uint8_t SevenSegFlag = 9;
+uint8_t SevenSegFlag = 10;
 uint8_t RGB_FLAG = 0;
 volatile uint32_t tempvalue = 0;
 uint8_t countdown_flag = 0;
@@ -267,13 +267,13 @@ static void init_GPIO(void){
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
 
-	//SW4
+	//SW3
 	PinCfg.Portnum = 1; //port 1
 	PinCfg.Pinnum = 31; // pin 31
 	PINSEL_ConfigPin(&PinCfg);
 	GPIO_SetDir(1, (1<<31), 0); //portNum 1, pin 31 (sw4 PiO2_9 mapped to P1.31), 0 for input
 
-	//SW3
+	//SW4
 	PinCfg.Portnum = 0; //port 0
 	PinCfg.Pinnum = 4; // pin 4
 	PINSEL_ConfigPin(&PinCfg);
@@ -347,25 +347,13 @@ static void init_everything(){
     lightSenIntInit();
 
     LPC_GPIOINT ->IO0IntEnR |= 1<<4; //sw3
-    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
-    LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
+    LPC_GPIOINT ->IO0IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
 //RGB LEDs
 void ALTERNATE_LED(){
 	//The blue and red LEDs alternate every 500 milliseconds. The Green LED should be off throughout.
-	if(Get_Time() - prev_alternateled_ticks >= 500){
-		if(RGB_FLAG == 0){
-			rgb_setLeds (RGB_BLUE);
-			RGB_FLAG = 1;
-			prev_alternateled_ticks = Get_Time();
-		}else{
-			rgb_setLeds (RGB_RED); // Clear value for RGB_BLUE
-			RGB_FLAG = 0;
-			prev_alternateled_ticks = Get_Time();
-		}
-	}
 }
 
 uint32_t prev_blink_blue_ticks;
@@ -457,11 +445,10 @@ void countdown_new(void){
 		led7seg_setChar(numbers_inverted[SevenSegFlag], TRUE);
 		prev_countdown_ticks = Get_Time();
 		if (SevenSegFlag == 0){
-			SevenSegFlag = 9;
+			SevenSegFlag = 10;
 //				led7seg_setChar(numbers_inverted[SevenSegFlag], TRUE);
 			state = Climb;
 			printf("State changed from ItoC to Climb\n");
-			return;
 		}
 		SevenSegFlag -- ;
 	}
@@ -558,37 +545,14 @@ void do_Climb(){
 	//	oled_putString(0, 8, tempvalue, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	}
 }
-
-uint32_t prev_alternateled_ticks;
-uint32_t emer_start_ticks;
 void do_Emergency(){
 	printf("Entered Emergency Mode\n");
-	//OLED screen should display "EMERGENCY Mode!"
-	oled_putString(0, 0, (uint8_t *) "EMERGENCY Mode!", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-	prev_blink_blue_ticks = Get_Time();
-	prev_alternateled_ticks = Get_Time();
-	emer_start_ticks = Get_Time();
-
-	while(state == Emergency){
-		//as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
-		oled_putString(0, 8, (uint8_t *) "EMERGENCY Mode!", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		tempvalue = temp_read(); //gives 10* temperature in degree C
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		sprintf(temp_string,"Dur: %lu s", (Get_Time() - emer_start_ticks)/1000;
-		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		//RGB LED should behave as described in ALTERNATE_LED
-		ALTERNATE_LED();
-		//send a message to FiTrackX that reads “EMERGENCY!"
-		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
-	}
-}
-
-void do_Emergency_over(){
+	//OLED screen should display "EMERGENCY Mode!" as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
+	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//RGB LED should behave as described in ALTERNATE_LED
+	ALTERNATE_LED();
+	//send a message to FiTrackX that reads “EMERGENCY!"
+	//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
 	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed >  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//5-second duration should elapse before the device enters CLIMB Mode automatically. During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second
 	//and RGB_LED should behave as described in BLINK_BLUE. (V cannot be displayed on the 7-segment, so it is replaced with U').
@@ -663,18 +627,10 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}
 	//	do_toclimb();
 	}
-	if ((LPC_GPIOINT ->IO1IntStatR>>31) & 0x1){ //sw4
-		LPC_GPIOINT ->IO1IntClr = 1<<31; //clear the interrupt
-		printf("SW4 is pressed\n");
-		state = Emergency;
-		printf("State changed to Emergency\n");
-	}
-	if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
-		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
-		printf("Light interrupt triggered\n");
+	if ((LPC_GPIOINT ->IO0IntStatR>>5) & 0x1){ //light sensor
+		LPC_GPIOINT ->IO0IntClr = 1<<5; //clear the interrupt
 		light_clearIrqStatus();
 	}
-
 }
 
 //Handler occurs every 1ms
@@ -737,9 +693,6 @@ int main (void) {
 			do_Emergency();
 //			printf("Main E\n");
 		}
-    	if (state == Emergency_over){
-    		do_Emergency_over();
-    	}
 
         /* #Testing functions */
         /* ############################################# */

@@ -668,6 +668,8 @@ void EINT3_IRQHandler(void){ //for interrupts
 		printf("SW4 is pressed\n");
 		state = Emergency;
 		printf("State changed to Emergency\n");
+		}
+	//	do_toclimb();
 	}
 	if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
 		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
