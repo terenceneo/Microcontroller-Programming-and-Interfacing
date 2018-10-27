@@ -1,0 +1,19 @@
+ItoC
+1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
+9. Array for countdown, add top line for '6' so it doesnt look like b
+
+Climb
+2. think about LIGHT_THRESHOLD pca9532_setLeds function logic
+3. check/ask calculation of net_acc, so much larger than acc treshold (update emergency as well)
+4. maybe change temperature display to float round of? (update everywhere)
+
+Others
+5. interrupt for light sensor???
+
+Emergency
+6. emergency mode duration does not update consistently per time interval
+1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
+
+Emergency over
+7. change saued to array of inverted letters (in sauved function)
+8. Configure Emergency over trigger buttons
