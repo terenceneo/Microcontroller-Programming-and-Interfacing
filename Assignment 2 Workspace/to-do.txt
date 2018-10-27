@@ -17,3 +17,7 @@ Emergency
 Emergency over
 7. change saued to array of inverted letters (in sauved function)
 8. Configure Emergency over trigger buttons
+
+UART Stuffzzzzz
+
+ENHANCEMENT
