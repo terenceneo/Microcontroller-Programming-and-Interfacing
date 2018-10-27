@@ -20,6 +20,7 @@
 #include "rgb.h"
 #include "led7seg.h"
 #include "temp.h"
+#include "light.h"
 
 uint32_t Get_Time(void);
 //Variables
@@ -306,6 +307,23 @@ static void speaker_init(){
     GPIO_ClearValue(2, 1<<13); //LM4811-shutdn
 }
 
+void lightSenIntInit(){
+	PINSEL_CFG_Type PinCfg;
+
+	PinCfg.Funcnum = 0;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Portnum = 2;
+	PinCfg.Pinnum = 5;
+
+	PINSEL_ConfigPin(&PinCfg);
+
+	GPIO_SetDir(2, (1<<5), 0);
+
+	light_clearIrqStatus(); //Good to clear when initializing
+	light_setLoThreshold(LIGHT_THRESHOLD); //lower threshold for
+}
+
 static void init_everything(){
 	init_i2c();
 	init_ssp();
@@ -318,8 +336,10 @@ static void init_everything(){
     led7seg_init();
     speaker_init();
     rgb_init();
+    lightSenIntInit();
 
-    LPC_GPIOINT ->IO0IntEnR |= 1<<4;
+    LPC_GPIOINT ->IO0IntEnR |= 1<<4; //sw3
+    LPC_GPIOINT ->IO0IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
@@ -351,69 +371,84 @@ void countdown(void){
 	    	BLINK_BLUE();
 	    	switch (SevenSegFlag){
 	    		case 9:
-	    		        led7seg_setChar(0x38, TRUE);
-	    				SevenSegFlag = 8;
-	    				break;
+					led7seg_setChar(0x38, TRUE);
+					SevenSegFlag = 8;
+					break;
+				case 8:
+					led7seg_setChar(0x20, TRUE);
+					SevenSegFlag = 7;
+					break;
+				case 7:
+					led7seg_setChar(0x7C, TRUE);
+					SevenSegFlag = 6;
+					break;
+				case 6:
+					led7seg_setChar(0x23, TRUE);
+					SevenSegFlag = 5;
+					break;
+				case 5:
+					led7seg_setChar(0x32, TRUE);
+					SevenSegFlag = 4;
+					break;
+				case 4:
+					led7seg_setChar(0x39, TRUE);
+					SevenSegFlag = 3;
+					break;
+				case 3:
+					led7seg_setChar(0x70, TRUE);
+					SevenSegFlag = 2;
+					break;
+				case 2:
+					led7seg_setChar(0xE0, TRUE);
+					SevenSegFlag = 1;
+					break;
+				case 1:
+					led7seg_setChar(0x7D, TRUE);
+					SevenSegFlag = 0;
+					break;
+				case 0:
+					led7seg_setChar(0x24, TRUE);
+					SevenSegFlag = 10;
+					break;
+				default:
+					led7seg_setChar(0xFF, TRUE);
+					return;
+					break;
+			}
+			msFlag = 1;
+		}
+	}
+		else{
+			if(msTicks%500 != 0){
+				msFlag= 0;
+			}
+		}
+	}
+}
 
-	    			case 8:
-	    			    led7seg_setChar(0x20, TRUE);
-	    			    SevenSegFlag = 7;
-	    			    break;
-
-	    			case 7:
-	    			    led7seg_setChar(0x7C, TRUE);
-	    			    SevenSegFlag = 6;
-	    			    break;
-
-	    			case 6:
-	    			    led7seg_setChar(0x23, TRUE);
-	    			    SevenSegFlag = 5;
-	    			    break;
-
-	    			case 5:
-	    			    led7seg_setChar(0x32, TRUE);
-	    			    SevenSegFlag = 4;
-	    			    break;
-
-	    			case 4:
-	    			    led7seg_setChar(0x39, TRUE);
-	    			    SevenSegFlag = 3;
-	    			    break;
-
-	    			case 3:
-	    			    led7seg_setChar(0x70, TRUE);
-	    			    SevenSegFlag = 2;
-	    			    break;
-
-	    			case 2:
-	    			    led7seg_setChar(0xE0, TRUE);
-	    			    SevenSegFlag = 1;
-	    			    break;
-
-	    			case 1:
-	    			    led7seg_setChar(0x7D, TRUE);
-	    			    SevenSegFlag = 0;
-	    			    break;
-
-	    			case 0:
-	    			    led7seg_setChar(0x24, TRUE);
-	    			    SevenSegFlag = 10;
-	    			    break;
-
-	    			default:
-	    				led7seg_setChar(0xFF, TRUE);
-	    				return;
-	    				break;
-
-	    			}
-	    			msFlag = 1;
-	    		}
-	    	}
-	    	else{
-	    		if(msTicks%500 != 0){
-	    			msFlag= 0;
-	    		}
-	    	}
+void countdown_new(void){
+	while(1){
+	if (msFlag == 0){
+	    if (msTicks%500 == 0){
+	    	BLINK_BLUE();
+	    	switch (SevenSegFlag){
+	    		case 9:
+					led7seg_setChar(0x38, TRUE);
+					SevenSegFlag = 8;
+					break;
+				default:
+					led7seg_setChar(0xFF, TRUE);
+					return;
+					break;
+			}
+			msFlag = 1;
+		}
+	}
+		else{
+			if(msTicks%500 != 0){
+				msFlag= 0;
+			}
+		}
 	}
 }
 
@@ -421,7 +456,6 @@ void countdown(void){
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
 	//display "Initialization mode. Press TOGGLE to climb"
-	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 8, (uint8_t *) "mode. Press", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 16, (uint8_t *) "TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -429,8 +463,18 @@ void do_Initialization(){
 
 }
 void do_toclimb(){
+	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
+//	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+//	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+//	oled_putString(0, 16, (uint8_t *) "ENTERING CLIMB MODE", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms), blue LED to behave as in BLINK_BLUE
+	//>RGB LED should blink as described in BLINK_BLUE
 	countdown();
+	//After, enter CLIMB mode
 	state = Climb;
+
+	oled_clearScreen(OLED_COLOR_BLACK);
+	printf("State changed from ItoC to Climb\n");
 }
 
 char temp_string[32];
@@ -438,7 +482,6 @@ void do_Climb(){
 	rgb_setLeds(0x04);
 	printf("Entered Climb Mode\n");
 	//OLED display "CLIMB"
-	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	sprintf(temp_string,"Temp: %d.%d deg",tempvalue/10,tempvalue%10);
 	oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -531,25 +574,23 @@ void Trimpot_RGB(){}
 //Interrupt Handler
 void EINT3_IRQHandler(void){ //for interrupts
 	// SW3
-	printf("SW3 is pressed\n");
-
-	//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms), blue LED to behave as in BLINK_BLUE
-//	countdown();
-	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
-	oled_clearScreen(OLED_COLOR_BLACK);
-	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	oled_putString(0, 16, (uint8_t *) "ENTERING CLIMB MODE", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	//>RGB LED should blink as described in BLINK_BLUE
-	//After, enter CLIMB mode
-	state = Climb;
-//	if (state == Initialization){
-//		state = ItoC;
-//		oled_clearScreen(OLED_COLOR_BLACK);
-//		printf("mode changed to ItoC\n");
-//	}
-//	do_toclimb();
-	LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
+	if ((LPC_GPIOINT ->IO0IntStatR>>4) & 0x1){ //sw3
+		printf("SW3 is pressed\n");
+		if (state == Initialization){
+			state = ItoC;
+			oled_clearScreen(OLED_COLOR_BLACK);
+			printf("State changed from Initialization to ItoC\n");
+		}else{
+			state = Initialization;
+			printf("State changed to Initialization\n");
+		}
+	//	do_toclimb();
+		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
+	}
+	if ((LPC_GPIOINT ->IO0IntStatR>>5) & 0x1){ //light sensor
+		LPC_GPIOINT ->IO0IntClr = 1<<5; //clear the interrupt
+		light_clearIrqStatus();
+	}
 }
 
 int main (void) {
@@ -593,15 +634,19 @@ int main (void) {
     while (1){
     	if (state == Initialization){
     		do_Initialization();
+    		printf("i\n");
     	}
-//    	if (state == ItoC){
-//    		do_toclimb();
-//    	}
+    	if (state == ItoC){
+    		do_toclimb();
+    		printf("itoc\n");
+    	}
     	if (state == Climb){
     		do_Climb();
+    		printf("Climb");
 		}
     	if (state == Emergency){
 			do_Emergency();
+			printf("E");
 		}
 
         /* #Testing functions */
