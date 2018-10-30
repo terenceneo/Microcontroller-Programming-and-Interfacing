@@ -1,4 +1,4 @@
-19:44:57 **** Incremental Build of configuration Debug for project demo ****
+16:34:48 **** Incremental Build of configuration Debug for project demo ****
 make all 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
@@ -14,8 +14,8 @@ make --no-print-directory post-build
 Performing post-build steps
 arm-none-eabi-size demo.axf; # arm-none-eabi-objdump -h -S demo.axf >demo.lss
    text	   data	    bss	    dec	    hex	filename
-  48592	   2392	   1084	  52068	   cb64	demo.axf
+  48640	   2392	   1088	  52120	   cb98	demo.axf
  
 
-19:44:59 Build Finished (took 2s.48ms)
+16:34:50 Build Finished (took 2s.112ms)
 

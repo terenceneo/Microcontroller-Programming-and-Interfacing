@@ -366,7 +366,7 @@ static void init_everything(){
     rgb_init();
     lightSenIntInit();
 
-    LPC_GPIOINT ->IO0IntEnR |= 1<<4; //sw3
+    LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3
 //    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
     LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     NVIC_EnableIRQ(EINT3_IRQn);
@@ -374,8 +374,7 @@ static void init_everything(){
 
 //RGB LEDs
 //Function to deconflict PIO1_10, Port 2 Pin one used by RGB_GREEN and OLED
-void setRGBLeds (uint8_t ledMask)
-{
+void setRGBLeds (uint8_t ledMask){
     if ((ledMask & RGB_RED) != 0) {
         GPIO_SetValue( 2, (1<<0) );
     } else {
@@ -396,10 +395,12 @@ void ALTERNATE_LED(){
 			setRGBLeds (RGB_BLUE);
 			RGB_FLAG = 1;
 			prev_alternateled_ticks = Get_Time();
+//			printf("Blue: %d\n", prev_alternateled_ticks);
 		}else{
 			setRGBLeds (RGB_RED); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_alternateled_ticks = Get_Time();
+//			printf("Red: %d\n", prev_alternateled_ticks);
 		}
 	}
 }
@@ -414,8 +415,7 @@ void BLINK_BLUE (void){
 			RGB_FLAG = 1;
 			prev_blink_blue_ticks = Get_Time();
 		}else{
-	//		setRGBLeds(0x04);
-			GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
+			setRGBLeds (0); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_blink_blue_ticks = Get_Time();
 		}
@@ -581,7 +581,7 @@ void do_Climb(){
 		x = x+xoff;
 		y = y+yoff;
 		z = z+zoff;
-		net_acc = (sqrt(x*x + y*y + z*z))/9.81;
+		net_acc = (sqrt(x*x + y*y + z*z))/ 64;
 		sprintf(temp_string,"Acc: %.2f g", net_acc);
 		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
@@ -637,6 +637,7 @@ void do_Climb(){
 
 uint32_t emer_start_ticks;
 uint32_t emer_dur;
+uint32_t temp_print_ticks;
 void do_Emergency(){
 	printf("Entered Emergency Mode\n");
 	//OLED screen should display "EMERGENCY Mode!"
@@ -647,19 +648,23 @@ void do_Emergency(){
 	prev_alternateled_ticks = Get_Time();
 	emer_start_ticks = Get_Time();
 
+
 	while(state == Emergency){
 		//as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
 		acc_read(&x, &y, &z);
 		x = x+xoff;
 		y = y+yoff;
 		z = z+zoff;
-		net_acc = (sqrt(x*x + y*y + z*z))/9.81;
+		net_acc = (sqrt(x*x + y*y + z*z)) / 64;
 		sprintf(temp_string,"Acc: %.2f g", net_acc);
 		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-		tempvalue = temp_read(); //gives 10* temperature in degree C
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		if ((Get_Time() - temp_print_ticks) >= 500){
+			tempvalue = temp_read(); //gives 10* temperature in degree C
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			temp_print_ticks = Get_Time();
+		}
 
 		emer_dur = (Get_Time() - emer_start_ticks)/1000;
 		sprintf(temp_string,"Dur: %lu s", emer_dur);
@@ -745,14 +750,16 @@ void Trimpot_RGB(){}
 //Interrupt Handler
 void EINT3_IRQHandler(void){ //for interrupts
 	// SW3
-	if ((LPC_GPIOINT ->IO0IntStatR>>4) & 0x1){ //sw3
+	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
 		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
 		printf("SW3 is pressed\n");
 		if (state == Initialization){
 			state = ItoC;
-			oled_clearScreen(OLED_COLOR_BLACK);
 			printf("State changed from Initialization to ItoC\n");
-		}else{
+		}else if (state == Climb){
+			state = Initialization;
+			printf("State changed to Initialization\n");
+		}else if (state == Emergency && ((GPIO_ReadValue(1) >> 31) & 0x01)){
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
 			state = Emergency_over;
@@ -777,6 +784,11 @@ void EINT3_IRQHandler(void){ //for interrupts
 //Handler occurs every 1ms
 void SysTick_Handler (void){
 	msTicks++;
+//	if (state == Emergency && (msTicks % 1000 == 0)){
+//		emer_dur = (Get_Time() - emer_start_ticks)/1000;
+//		sprintf(temp_string,"Dur: %lu s", emer_dur);
+//		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+//	}
 }
 
 int main (void) {

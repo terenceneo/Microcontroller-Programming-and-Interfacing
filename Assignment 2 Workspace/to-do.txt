@@ -1,5 +1,5 @@
 Initialization
-11. Change interrupt change to ItoC only work when in Initiailzation mode
+(fixed) 11. Change interrupt change to ItoC only work when in Initiailzation mode
 
 ItoC
 (fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
@@ -10,20 +10,27 @@ Climb
 	- use i=light/18.75, led mask = 1<<i - 1 (check max i = 16)
 3. check/ask calculation of net_acc, so much larger than acc treshold (update emergency as well)
 4. maybe change temperature display to float round of? (update everywhere)
-10. net acc / 64 instead, check that net acc = 1 when direction changed (90degree rotation)
-
-Others
-5. interrupt for light sensor???
+(fixed, need to verify) 10. net acc / 64 instead, check that net acc = 1 when direction changed (90degree rotation)
 
 Emergency
-6. emergency mode duration does not update consistently per time interval
+(somewhat fixed) 6. emergency mode duration does not update consistently per time interval
 (fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
 
 Emergency over
 7. change saued to array of inverted letters (in sauved function)
-8. Configure Emergency over trigger buttons (currently emergency over triggered by sw3)
-	- interrupt if sw4 && emergency mode, change state
+8. Configure Emergency over trigger buttons
+	- interrupt if sw4 && emergency mode, change state (interrupt not really working)
+	- to to set flag with interrupt, trigger if flag and sw4 pressed
 
 UART Stuffzzzzz
 
 ENHANCEMENT
+- rotary tool to adjust sensor refresh rate
+- music playlist selector with joystick
+
+Summary of Questions to ask:
+1. what is the units of acceleration read by the sensor? Why /64? or /9.81? How to convert read data to g?
+2. What is the consequence of entering systickhandler at a longer interval? Maybe enter every 0.5s?
+3. what is interrupt for light sensor for???
+4. how do interrupt save processor time since checking of state is still done in while loop?
+5. How to change name of project and file and import demo proj after that?
