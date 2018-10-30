@@ -619,11 +619,14 @@ void do_Climb(){
 		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
 		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
 		int i = 0;
-		while(i<16){
-			if(LIGHT_THRESHOLD - luminI > 19*(i)) pca9532_setLeds((1<<i), 0);
-			else pca9532_setLeds(0, (1<<i));
-			i++;
-		}
+//		while(i<16){
+//			if(LIGHT_THRESHOLD - luminI > 19*(i)) pca9532_setLeds((1<<i), 0);
+//			else pca9532_setLeds(0, (1<<i));
+//			i++;
+//		}
+		i = (1 << (int *)(luminI / 18.75)) - 1;
+		pca9532_setLeds(0, (1<<i));
+		
 		//A message should also be displayed on the OLED screen saying "DIM"
 		if(luminI < LIGHT_THRESHOLD) oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		else oled_fillRect(0, dim_OLED_line, OLED_DISPLAY_WIDTH, dim_OLED_line+8, OLED_COLOR_BLACK); //clear dim_OLED_line
