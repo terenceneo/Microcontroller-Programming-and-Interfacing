@@ -32,7 +32,7 @@ MachineState state = Initialization;
 //uint32_t Get_Time(void);
 //Variables
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
-volatile uint32_t getTicks = 0;
+volatile uint32_t getTicks = 0; //what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
 uint32_t sensor_refresh_ticks = 100;
 uint32_t sensor_ticks;
 uint8_t msFlag = 0;
@@ -543,8 +543,8 @@ void do_toclimb(){
 	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 16, (uint8_t *) "ENTERING CLIMB MODE", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-	prev_countdown_ticks = Get_Time();
-	prev_blink_blue_ticks = Get_Time();
+	prev_countdown_ticks
+	= prev_blink_blue_ticks = Get_Time();
 
 	while(state == ItoC){
 		//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms)
@@ -654,10 +654,10 @@ void do_Emergency(){
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "EMERGENCY Mode!", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-	prev_blink_blue_ticks = Get_Time();
-	prev_alternateled_ticks = Get_Time();
-	emer_start_ticks = Get_Time();
-	sensor_ticks = Get_Time();
+	prev_blink_blue_ticks
+	= prev_alternateled_ticks
+	= emer_start_ticks
+	= sensor_ticks = Get_Time();
 
 	while(state == Emergency){
 		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
@@ -693,8 +693,8 @@ void do_Emergency_over(){
 	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//duration has been saved in emer_dur
 
-	prev_saved_ticks = Get_Time();
-	prev_blink_blue_ticks = Get_Time();
+	prev_saved_ticks
+	= prev_blink_blue_ticks = Get_Time();
 
 	while (state == Emergency_over){
 		//5-second duration should elapse before the device enters CLIMB Mode automatically.
