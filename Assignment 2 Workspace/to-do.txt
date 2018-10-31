@@ -26,6 +26,7 @@ UART Stuffzzzzz
 
 ENHANCEMENT
 - rotary tool to adjust sensor refresh rate
+- rotary tool to adjust led brightness with PWM
 - music playlist selector with joystick
 
 Summary of Questions to ask:
