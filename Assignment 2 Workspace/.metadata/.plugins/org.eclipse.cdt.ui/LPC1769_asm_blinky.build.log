@@ -1,0 +1,21 @@
+14:27:27 **** Build of configuration Debug for project LPC1769_asm_blinky ****
+make all 
+Building file: ../src/asm.s
+Invoking: MCU Assembler
+arm-none-eabi-gcc -c -x assembler-with-cpp -D__REDLIB__  -DDEBUG -D__CODE_RED -g3 -mcpu=cortex-m3 -mthumb -o "src/asm.o" "../src/asm.s"
+Finished building: ../src/asm.s
+ 
+Building target: LPC1769_asm_blinky.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -Xlinker -Map=LPC1769_asm_blinky.map -Xlinker --gc-sections -mcpu=cortex-m3 -mthumb -T "LPC1769_asm_blinky_Debug.ld" -o "LPC1769_asm_blinky.axf"  ./src/asm.o   
+Finished building target: LPC1769_asm_blinky.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size LPC1769_asm_blinky.axf; # arm-none-eabi-objcopy -O binary LPC1769_asm_blinky.axf LPC1769_asm_blinky.bin ; checksum -p LPC1768 -d LPC1769_asm_blinky.bin;
+   text	   data	    bss	    dec	    hex	filename
+    100	      0	      0	    100	     64	LPC1769_asm_blinky.axf
+ 
+
+14:27:29 Build Finished (took 1s.876ms)
+

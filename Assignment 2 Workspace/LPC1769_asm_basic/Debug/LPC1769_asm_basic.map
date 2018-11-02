@@ -1,0 +1,55 @@
+
+Discarded input sections
+
+ .data          0x00000000        0x0 ./src/asm.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+MFlash512        0x00000000         0x00080000         xr
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD ./src/asm.o
+Address of section .bss set to 0x10004000
+
+.text           0x00000000       0x4c
+ FILL mask 0xff
+ *(.text*)
+ .text          0x00000000       0x4c ./src/asm.o
+                0x00000020                _start
+OUTPUT(LPC1769_asm_basic.axf elf32-littlearm)
+
+.glue_7         0x0000004c        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x0000004c        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x0000004c        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x0000004c        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.bss            0x10004000        0x4
+ .bss           0x10004000        0x4 ./src/asm.o
+
+.ARM.attributes
+                0x00000000       0x21
+ .ARM.attributes
+                0x00000000       0x21 ./src/asm.o
+
+.debug_line     0x00000000       0x47
+ .debug_line    0x00000000       0x47 ./src/asm.o
+
+.debug_info     0x00000000       0x8a
+ .debug_info    0x00000000       0x8a ./src/asm.o
+
+.debug_abbrev   0x00000000       0x14
+ .debug_abbrev  0x00000000       0x14 ./src/asm.o
+
+.debug_aranges  0x00000000       0x20
+ .debug_aranges
+                0x00000000       0x20 ./src/asm.o

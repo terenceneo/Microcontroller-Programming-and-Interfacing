@@ -21,6 +21,7 @@ Emergency over
 8. Configure Emergency over trigger buttons
 	- interrupt if sw4 && emergency mode, change state (interrupt not really working)
 	- to to set flag with interrupt, trigger if flag and sw4 pressed
+	- delay in timing (22nd second)
 
 UART Stuffzzzzz
 
