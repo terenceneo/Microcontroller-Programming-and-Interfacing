@@ -749,8 +749,8 @@ void do_Emergency_over(){
 	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed
 	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//duration has been saved in emer_dur
-//			sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec", emer_dur); //to be edited
-//			uart_Send(uart_msg);
+	sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec", emer_dur); //to be edited
+	uart_Send(uart_msg);
 
 	prev_saved_ticks
 	= prev_blink_blue_ticks = Get_Time();
