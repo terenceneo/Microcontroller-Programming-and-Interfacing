@@ -1,5 +1,10 @@
-16:14:38 **** Incremental Build of configuration Debug for project demo ****
+00:30:35 **** Build of configuration Debug for project demo ****
 make all 
+Building file: ../src/cr_startup_lpc17.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/cr_startup_lpc17.d" -MT"src/cr_startup_lpc17.d" -o "src/cr_startup_lpc17.o" "../src/cr_startup_lpc17.c"
+Finished building: ../src/cr_startup_lpc17.c
+ 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
 arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
@@ -14,8 +19,8 @@ make --no-print-directory post-build
 Performing post-build steps
 arm-none-eabi-size demo.axf; # arm-none-eabi-objdump -h -S demo.axf >demo.lss
    text	   data	    bss	    dec	    hex	filename
-  52480	   2392	   1220	  56092	   db1c	demo.axf
+  52488	   2400	   1216	  56104	   db28	demo.axf
  
 
-16:14:40 Build Finished (took 2s.68ms)
+00:30:37 Build Finished (took 2s.703ms)
 
