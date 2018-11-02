@@ -402,7 +402,14 @@ static void init_everything(){
     LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3
 //    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
     LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
-    NVIC_EnableIRQ(EINT3_IRQn);
+
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 17; //JOYSTICK_CENTER
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 15; //JOYSTICK_DOWN
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 16; //JOYSTICK_RIGHT
+	LPC_GPIOINT ->IO2IntEnF |= 1 << 3; //JOYSTICK_UP
+	LPC_GPIOINT ->IO2IntEnF |= 1 << 4; //JOYSTICK_LEFT
+
+	NVIC_EnableIRQ(EINT3_IRQn);
 }
 
 //RGB LEDs
@@ -454,68 +461,6 @@ void BLINK_BLUE (void){
 		}
 	}
 }
-
-//void countdown(void){
-//	while(1){
-//		if (msFlag == 0){
-//			if (msTicks%500 == 0){
-//				BLINK_BLUE();
-//				switch (SevenSegFlag){
-//					case 9:
-//						led7seg_setChar(0x38, TRUE);
-//						SevenSegFlag = 8;
-//						break;
-//					case 8:
-//						led7seg_setChar(0x20, TRUE);
-//						SevenSegFlag = 7;
-//						break;
-//					case 7:
-//						led7seg_setChar(0x7C, TRUE);
-//						SevenSegFlag = 6;
-//						break;
-//					case 6:
-//						led7seg_setChar(0x23, TRUE);
-//						SevenSegFlag = 5;
-//						break;
-//					case 5:
-//						led7seg_setChar(0x32, TRUE);
-//						SevenSegFlag = 4;
-//						break;
-//					case 4:
-//						led7seg_setChar(0x39, TRUE);
-//						SevenSegFlag = 3;
-//						break;
-//					case 3:
-//						led7seg_setChar(0x70, TRUE);
-//						SevenSegFlag = 2;
-//						break;
-//					case 2:
-//						led7seg_setChar(0xE0, TRUE);
-//						SevenSegFlag = 1;
-//						break;
-//					case 1:
-//						led7seg_setChar(0x7D, TRUE);
-//						SevenSegFlag = 0;
-//						break;
-//					case 0:
-//						led7seg_setChar(0x24, TRUE);
-//						SevenSegFlag = 10;
-//						break;
-//					default:
-//						led7seg_setChar(0xFF, TRUE);
-//						SevenSegFlag = 9;
-//						return;
-//				}
-//				msFlag = 1;
-//			}
-//		}
-//		else{
-//			if(msTicks%500 != 0){
-//				msFlag= 0;
-//			}
-//		}
-//	}
-//}
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x23, 0x7C, 0x20, 0x38, 0xFF};
 uint32_t prev_countdown_ticks;
@@ -841,6 +786,27 @@ void EINT3_IRQHandler(void){ //for interrupts
 		printf("Light interrupt triggered\n");
 		light_clearIrqStatus();
 	}
+
+    if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
+    	LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
+    	printf("JOYSTICK_CENTER\n");
+    }
+    if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
+    	LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
+    	printf("JOYSTICK_DOWN\n");
+    }
+    if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
+    	LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
+    	printf("JOYSTICK_RIGHT\n");
+    }
+    if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
+    	LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
+    	printf("JOYSTICK_UP\n");
+    }
+    if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
+    	LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
+    	printf("JOYSTICK_LEFT\n");
+    }
 }
 
 //UART3 interrupt handler
@@ -875,8 +841,8 @@ int main (void) {
     led7seg_setChar(0xFF, TRUE);
     uint8_t sw4 = 1;
     while (1){
-    	sw4 = (GPIO_ReadValue(1) >> 31) & 0x1;
-    	printf("%d\n", sw4);
+//    	sw4 = (GPIO_ReadValue(1) >> 31) & 0x1;
+//    	printf("%d\n", sw4);
 
 
         /* #Testing functions */

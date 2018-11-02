@@ -561,10 +561,6 @@ void uart_Send(char* msg){
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
 }
 
-//void UARTMessages(void){
-//
-//}
-
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
@@ -607,7 +603,7 @@ uint32_t ledOn = 0x0;
 int shift = 0;
 void do_Climb(){
 	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
-q
+
 	printf("Entered Climb Mode\n");
 	led7seg_setChar(0xFF, TRUE);
 	GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE

@@ -561,9 +561,9 @@ void uart_Send(char* msg){
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
 }
 
-//void UARTMessages(void){
-//
-//}
+void UARTMessages(void){
+
+}
 
 //Modes
 void do_Initialization(){
