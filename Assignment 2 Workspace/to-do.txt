@@ -35,4 +35,4 @@ Summary of Questions to ask:
 2. What is the consequence of entering systickhandler at a longer interval? Maybe enter every 0.5s?
 3. what is interrupt for light sensor for???
 4. how do interrupt save processor time since checking of state is still done in while loop?
-5. How to change name of project and file and import demo proj after that?
+5. How to change name of project and file and import demo proj after that? cannot

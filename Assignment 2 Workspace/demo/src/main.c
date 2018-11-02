@@ -35,7 +35,7 @@ MachineState state = Initialization;
 //Variables
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
 volatile uint32_t getTicks = 0; //what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-uint32_t sensor_refresh_ticks = 500;
+uint32_t sensor_refresh_ticks = 200;
 uint32_t sensor_ticks;
 uint8_t msFlag = 0;
 uint8_t SevenSegFlag = 9;
@@ -555,7 +555,7 @@ void saved(void){
 	}
 }
 
-char uart_msg[20];
+char uart_msg[50];
 void uart_Send(char* msg){
 	int len = strlen(msg);
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
@@ -600,6 +600,7 @@ uint8_t restnow_printed = 0;
 uint8_t restnow_OLED_line = 32;
 uint8_t dim_OLED_line = 40;
 uint32_t ledOn = 0x0;
+int shift = 0;
 void do_Climb(){
 	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
 
@@ -640,6 +641,8 @@ void do_Climb(){
 
 			sprintf(temp_string,"Acc: %5.2f g", net_acc);
 			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
+			sensor_ticks = Get_Time();
 		}
 
 		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
@@ -662,14 +665,7 @@ void do_Climb(){
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
 		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
-//		int i = 0;
-//		while(i<16){
-//			if(LIGHT_THRESHOLD - luminI > 19*(i)) pca9532_setLeds((1<<i), 0);
-//			else pca9532_setLeds(0, (1<<i));
-//			i++;
-//		}
-		int shift = round(luminI / 18.75);
-
+		shift = luminI / 18.75;
 		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
 		else ledOn = 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
 		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
@@ -696,7 +692,7 @@ void do_Climb(){
 }
 
 uint32_t emer_start_ticks;
-uint32_t emer_dur;
+uint32_t emer_dur = 0;
 void do_Emergency(){
 	printf("Entered Emergency Mode\n");
 	//OLED screen should display "EMERGENCY Mode!"
@@ -726,12 +722,16 @@ void do_Emergency(){
 			tempvalue = temp_read(); //gives 10* temperature in degree C
 			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
 			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
 			sensor_ticks = Get_Time();
 		}
 
-		emer_dur = (Get_Time() - emer_start_ticks)/1000;
-		sprintf(temp_string,"Dur: %lu s", emer_dur);
-		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		if (Get_Time() - emer_start_ticks >= 1000){
+			emer_dur ++;
+			emer_start_ticks = Get_Time();
+			sprintf(temp_string,"Dur: %lu s", emer_dur);
+			oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		}
 
 		//RGB LED should behave as described in ALTERNATE_LED
 		ALTERNATE_LED();
@@ -828,9 +828,10 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}else if (state == Climb){
 			state = Initialization;
 			printf("State changed to Initialization\n");
-		}else if (state == Emergency & !((GPIO_ReadValue(1) >> 31) & 0x01)){ //sw4 ==0 when pressed
+		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
+			printf("%d\n", ((GPIO_ReadValue(1) >> 31) & 0x1) == 0);
 			state = Emergency_over;
 			printf("State changed to Emergency_over\n");
 		}
@@ -844,19 +845,13 @@ void EINT3_IRQHandler(void){ //for interrupts
 }
 
 //UART3 interrupt handler
-void UART3_IRQHandler(void)
-{
+void UART3_IRQHandler(void){
     UART3_StdIntHandler();
 }
 
 //Handler occurs every 1ms
 void SysTick_Handler (void){
 	msTicks++;
-//	if (state == Emergency && (msTicks % 1000 == 0)){
-//		emer_dur = (Get_Time() - emer_start_ticks)/1000;
-//		sprintf(temp_string,"Dur: %lu s", emer_dur);
-//		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-//	}
 }
 
 int main (void) {
