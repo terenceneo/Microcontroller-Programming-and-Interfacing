@@ -4180,3 +4180,113 @@ java.lang.Exception: Remote communication error.  Target disconnected.: No error
 
 !ENTRY com.crt.log 1 0 2018-11-02 14:31:23.641
 !MESSAGE Drivers loaded in 2716 milliseconds
+
+!ENTRY com.crt.dsfdebug 4 0 2018-11-02 14:36:49.756
+!MESSAGE 16: Target error from status-poll
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-11-02 14:36:49.756
+!MESSAGE 16: Target error from status-poll
+!SUBENTRY 1 com.crt.dsfdebug 4 0 2018-11-02 14:36:49.756
+!MESSAGE System rejected access at location 0xE000EDF0 - verify Population of memory and peripherals
+
+!ENTRY org.eclipse.core.resources 4 568 2018-11-02 14:47:41.069
+!MESSAGE Could not write metadata for 'D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\.metadata\.plugins\org.eclipse.core.resources\.root\.indexes\properties.index'.
+!STACK 0
+java.io.FileNotFoundException: D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\.metadata\.plugins\org.eclipse.core.resources\.root\.indexes\properties.index (The requested operation cannot be performed on a file with a user-mapped section open)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.localstore.Bucket.save(Bucket.java:346)
+	at org.eclipse.core.internal.properties.PropertyBucket.save(PropertyBucket.java:291)
+	at org.eclipse.core.internal.properties.PropertyManager2.setProperty(PropertyManager2.java:168)
+	at org.eclipse.core.internal.resources.Resource.setPersistentProperty(Resource.java:1859)
+	at org.eclipse.core.internal.resources.ContentDescriptionManager.setCacheState(ContentDescriptionManager.java:483)
+	at org.eclipse.core.internal.resources.ContentDescriptionManager.invalidateCache(ContentDescriptionManager.java:425)
+	at org.eclipse.core.internal.resources.ContentDescriptionManager.handleEvent(ContentDescriptionManager.java:476)
+	at org.eclipse.core.internal.resources.Workspace.broadcastEvent(Workspace.java:390)
+	at org.eclipse.core.internal.resources.Resource.broadcastPreDeleteEvent(Resource.java:2030)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:788)
+	at org.eclipse.core.internal.resources.Project.delete(Project.java:344)
+	at org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange.perform(DeleteResourceChange.java:160)
+	at org.eclipse.ltk.core.refactoring.CompositeChange.perform(CompositeChange.java:278)
+	at org.eclipse.ltk.core.refactoring.CompositeChange.perform(CompositeChange.java:278)
+	at org.eclipse.ltk.core.refactoring.PerformChangeOperation$1.run(PerformChangeOperation.java:258)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ltk.core.refactoring.PerformChangeOperation.executeChange(PerformChangeOperation.java:306)
+	at org.eclipse.ltk.internal.ui.refactoring.UIPerformChangeOperation.executeChange(UIPerformChangeOperation.java:92)
+	at org.eclipse.ltk.core.refactoring.PerformChangeOperation.run(PerformChangeOperation.java:218)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ltk.internal.ui.refactoring.WorkbenchRunnableAdapter.run(WorkbenchRunnableAdapter.java:87)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+!SESSION 2018-11-02 14:51:11.590 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2018-11-02 14:51:19.205
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY org.eclipse.equinox.preferences 4 4 2018-11-02 14:51:33.148
+!MESSAGE Exception saving preferences to: D:/Dropbox/Dropbox/NUS Modules/EE2028_EE2024/Assignments/Assignment 2/Assignment 2 Workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.cdt.managedbuilder.core.prefs.
+!STACK 0
+java.io.FileNotFoundException: D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\.metadata\.plugins\org.eclipse.core.runtime\.settings\org.eclipse.cdt.managedbuilder.core.prefs (Access is denied)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.preferences.SafeFileOutputStream.copy(SafeFileOutputStream.java:84)
+	at org.eclipse.core.internal.preferences.SafeFileOutputStream.<init>(SafeFileOutputStream.java:49)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.write(EclipsePreferences.java:317)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.save(EclipsePreferences.java:1128)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.save(EclipsePreferences.java:1104)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.internalFlush(EclipsePreferences.java:465)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.flush(EclipsePreferences.java:428)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.internalFlush(EclipsePreferences.java:453)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.flush(EclipsePreferences.java:428)
+	at org.eclipse.cdt.managedbuilder.internal.core.PropertyManager.storeString(PropertyManager.java:305)
+	at org.eclipse.cdt.managedbuilder.internal.core.PropertyManager.storeData(PropertyManager.java:294)
+	at org.eclipse.cdt.managedbuilder.internal.core.PropertyManager.storeData(PropertyManager.java:216)
+	at org.eclipse.cdt.managedbuilder.internal.core.PropertyManager.serialize(PropertyManager.java:513)
+	at org.eclipse.cdt.managedbuilder.internal.core.Configuration.serialize(Configuration.java:961)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.writeConfiguration(ConfigurationDataProvider.java:130)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.applyConfiguration(ConfigurationDataProvider.java:168)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.applyData(CProjectDescriptionManager.java:1162)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.applyData(CConfigurationDescriptionCache.java:168)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.applyDatas(CProjectDescription.java:214)
+	at org.eclipse.cdt.internal.core.settings.model.SetCProjectDescriptionOperation.executeOperation(SetCProjectDescriptionOperation.java:98)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.execute(CModelOperation.java:341)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.run(CModelOperation.java:607)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.runOperation(CModelOperation.java:638)
+	at org.eclipse.cdt.internal.core.settings.model.AbstractCProjectDescriptionStorage.setProjectDescription(AbstractCProjectDescriptionStorage.java:203)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionStorageManager.setProjectDescription(CProjectDescriptionStorageManager.java:149)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.setProjectDescription(CProjectDescriptionManager.java:866)
+	at org.eclipse.cdt.managedbuilder.internal.core.BuildSettingsUtil.checkApplyDescription(BuildSettingsUtil.java:211)
+	at org.eclipse.cdt.managedbuilder.core.ManagedBuildManager.updateCoreSettings(ManagedBuildManager.java:1572)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager$1.run(CfgDiscoveredPathManager.java:154)
+	at org.eclipse.cdt.internal.core.model.BatchOperation.executeOperation(BatchOperation.java:36)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.execute(CModelOperation.java:341)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.run(CModelOperation.java:607)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.cdt.core.model.CoreModel.run(CoreModel.java:1237)
+	at org.eclipse.cdt.core.model.CoreModel.run(CoreModel.java:1194)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.updateCoreSettings(CfgDiscoveredPathManager.java:157)
+	at org.eclipse.cdt.build.core.scannerconfig.ScannerConfigBuilder.build(ScannerConfigBuilder.java:125)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:726)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:199)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:239)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:292)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:295)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:256)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:394)
+	at org.eclipse.core.internal.resources.Project$1.run(Project.java:618)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.core.internal.resources.Project.internalBuild(Project.java:597)
+	at org.eclipse.core.internal.resources.Project.build(Project.java:114)
+	at com.crt.ctrlcenter.launch.BuildUtils.buildProjects(Unknown Source)
+	at com.crt.ctrlcenter.launch.BuildUtils.buildProject(Unknown Source)
+	at com.crt.ctrlcenter.launch.BuildLaunchUtils.buildProject(Unknown Source)
+	at com.crt.quickstart.views.links.QSBuildProject$1.run(Unknown Source)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)

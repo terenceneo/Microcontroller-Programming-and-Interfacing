@@ -35,7 +35,7 @@ MachineState state = Initialization;
 //Variables
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
 volatile uint32_t getTicks = 0; //what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-uint32_t sensor_refresh_ticks = 300;
+uint32_t sensor_refresh_ticks = 500;
 uint32_t sensor_ticks;
 uint8_t msFlag = 0;
 uint8_t SevenSegFlag = 9;
@@ -62,7 +62,7 @@ uint8_t btn1 = 1;
 
 //Setting Specifications
 static const int LIGHT_THRESHOLD = 300; 	//in lux
-static const uint32_t TEMP_THRESHOLD = 280;		//28 degree C
+static const uint32_t TEMP_THRESHOLD = 260;		//28 degree C
 static const double ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 
 static uint8_t barPos = 2;
@@ -356,9 +356,9 @@ void lightSenIntInit(){
 void init_uart(void){
 	UART_CFG_Type uartCfg;
 	uartCfg.Baud_rate = 115200; //baud rate to match terminal programme
-	uartCfg.Databits = UART_DATABIT_8;
-	uartCfg.Parity = UART_PARITY_NONE;
-	uartCfg.Stopbits = UART_STOPBIT_1;
+	uartCfg.Databits = UART_DATABIT_8; //number of bits in each data packet
+	uartCfg.Parity = UART_PARITY_NONE; //for error checking
+	uartCfg.Stopbits = UART_STOPBIT_1; //number of bits to use for stop
 
 	//pin select for uart3
 	PINSEL_CFG_Type PinCfg;
@@ -555,6 +555,7 @@ void saved(void){
 	}
 }
 
+char uart_msg[20];
 void uart_Send(char* msg){
 	int len = strlen(msg);
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
@@ -598,6 +599,7 @@ uint8_t temp_flag = 0;
 uint8_t restnow_printed = 0;
 uint8_t restnow_OLED_line = 32;
 uint8_t dim_OLED_line = 40;
+uint32_t ledOn = 0x0;
 void do_Climb(){
 	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
 
@@ -618,37 +620,39 @@ void do_Climb(){
 	= uart_ticks = Get_Time();
 
 	while(state == Climb){
+		//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
+		acc_read(&x, &y, &z);
+		x = x+xoff;
+		y = y+yoff;
+		z = z+zoff;
+		net_acc = (sqrt(x*x + y*y + z*z))/ 64;
+		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
+		if(net_acc > ACC_THRESHOLD){
+			printf("State changed from Climb to Emergency\n");
+			state = Emergency;
+		}
+
 		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
-			//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
-			acc_read(&x, &y, &z);
-			x = x+xoff;
-			y = y+yoff;
-			z = z+zoff;
-			net_acc = (sqrt(x*x + y*y + z*z))/ 64;
-			sprintf(temp_string,"Acc: %5.2f g", net_acc);
-			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-			//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
-			if(net_acc > ACC_THRESHOLD){
-				printf("State changed from Climb to Emergency\n");
-				state = Emergency;
-			}
 			//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
 			tempvalue = temp_read(); //gives 10* temperature in degree C
 			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
 			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-			//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-			if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){
-				prev_temp_ticks = Get_Time();
-				oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-				//If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again
-				temp_flag = 1;
-				restnow_printed = 1;
-			}
-			//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-			if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
-				temp_flag = 0;
-			}	
+			sprintf(temp_string,"Acc: %5.2f g", net_acc);
+			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		}
+
+		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
+		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){
+			prev_temp_ticks = Get_Time();
+			oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			//If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again
+			temp_flag = 1;
+			restnow_printed = 1;
+		}
+		//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
+		if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
+			temp_flag = 0;
 		}
 		
 		//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
@@ -665,8 +669,8 @@ void do_Climb(){
 //			i++;
 //		}
 		int shift = round(luminI / 18.75);
-		uint32_t ledOn;
-		if (shift <= 16) ledOn = (1 << 16-shift) - 1;
+
+		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
 		else ledOn = 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
 		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
 		
@@ -682,8 +686,8 @@ void do_Climb(){
 
 		//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
 //		if ((Get_Time() - uart_ticks) >= 5000){
-//			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
-//			uart_Send(temp_string);
+//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+//			uart_Send(uart_msg);
 //		}
 	//	tempvalue = temp_read() /10.0; //T(C)
 	//	printf(0, 8, (uint32_t *) "Temp: &.1f deg", tempvalue);
@@ -733,19 +737,20 @@ void do_Emergency(){
 		ALTERNATE_LED();
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
 //		if ((Get_Time() - uart_ticks) >= 5000){
-//			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
-//			uart_Send(temp_string);
+//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+//			uart_Send(uart_msg);
 //		}
 	}
 }
 
 void do_Emergency_over(){
 	printf("Entered Emergency_over Mode\n");
+	oled_clearScreen(OLED_COLOR_BLACK);
 	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed
 	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//duration has been saved in emer_dur
-//			sprintf(temp_string,"Emergency is cleared! Time consumed for recovery: %lu sec", emer_dur); //to be edited
-//			uart_Send(temp_string);
+//			sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec", emer_dur); //to be edited
+//			uart_Send(uart_msg);
 
 	prev_saved_ticks
 	= prev_blink_blue_ticks = Get_Time();
