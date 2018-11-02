@@ -6,12 +6,14 @@
  *
  ******************************************************************************/
 #include "stdio.h"
+#include "math.h"
 
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_gpio.h"
 #include "lpc17xx_i2c.h"
 #include "lpc17xx_ssp.h"
 #include "lpc17xx_timer.h" // for delay
+#include "lpc17xx_uart.h"
 
 #include "joystick.h"
 #include "pca9532.h"
@@ -31,7 +33,9 @@ MachineState state = Initialization;
 //uint32_t Get_Time(void);
 //Variables
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
-volatile uint32_t getTicks = 0;
+volatile uint32_t getTicks = 0; //what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t sensor_refresh_ticks = 100;
+uint32_t sensor_ticks;
 uint8_t msFlag = 0;
 uint8_t SevenSegFlag = 9;
 uint8_t RGB_FLAG = 0;
@@ -46,7 +50,7 @@ int32_t zoff = 0;
 int8_t x = 0;
 int8_t y = 0;
 int8_t z = 0;
-int32_t net_acc = 0;
+float net_acc = 0;
 
 uint8_t dir = 1;
 uint8_t wait = 0;
@@ -58,7 +62,7 @@ uint8_t btn1 = 1;
 //Setting Specifications
 static const int LIGHT_THRESHOLD = 300; 	//in lux
 static const uint32_t TEMP_THRESHOLD = 280;		//28 degree C
-static const double ACC_THRESHOLD = 0.1;	//in g
+static const double ACC_THRESHOLD = 1;	//in g ///original threshold at 0.1
 
 static uint8_t barPos = 2;
 
@@ -365,25 +369,41 @@ static void init_everything(){
     rgb_init();
     lightSenIntInit();
 
-    LPC_GPIOINT ->IO0IntEnR |= 1<<4; //sw3
+    LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3
 //    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
     LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
 //RGB LEDs
+//Function to deconflict PIO1_10, Port 2 Pin one used by RGB_GREEN and OLED
+void setRGBLeds (uint8_t ledMask){
+    if ((ledMask & RGB_RED) != 0) {
+        GPIO_SetValue( 2, (1<<0) );
+    } else {
+        GPIO_ClearValue( 2, (1<<0) );
+    }
+
+    if ((ledMask & RGB_BLUE) != 0) {
+        GPIO_SetValue( 0, (1<<26) );
+    } else {
+        GPIO_ClearValue( 0, (1<<26) );
+    }
+}
 uint32_t prev_alternateled_ticks;
 void ALTERNATE_LED(){
 	//The blue and red LEDs alternate every 500 milliseconds. The Green LED should be off throughout.
 	if(Get_Time() - prev_alternateled_ticks >= 500){
 		if(RGB_FLAG == 0){
-			rgb_setLeds (RGB_BLUE);
+			setRGBLeds (RGB_BLUE);
 			RGB_FLAG = 1;
 			prev_alternateled_ticks = Get_Time();
+//			printf("Blue: %d\n", prev_alternateled_ticks);
 		}else{
-			rgb_setLeds (RGB_RED); // Clear value for RGB_BLUE
+			setRGBLeds (RGB_RED); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_alternateled_ticks = Get_Time();
+//			printf("Red: %d\n", prev_alternateled_ticks);
 		}
 	}
 }
@@ -394,12 +414,11 @@ void BLINK_BLUE (void){
 	if(Get_Time() - prev_blink_blue_ticks >= 1000){
 //		printf("blinked blue\n");
 		if(RGB_FLAG == 0){
-			rgb_setLeds (RGB_BLUE);
+			setRGBLeds (RGB_BLUE);
 			RGB_FLAG = 1;
 			prev_blink_blue_ticks = Get_Time();
 		}else{
-	//		rgb_setLeds(0x04);
-			GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
+			setRGBLeds (0); // Clear value for RGB_BLUE
 			RGB_FLAG = 0;
 			prev_blink_blue_ticks = Get_Time();
 		}
@@ -487,6 +506,25 @@ void countdown_new(void){
 	}
 }
 
+uint32_t prev_saved_ticks;
+int saved_count = 0;
+char saued[] = "SAUED"; // change to array of inverted letters
+void saved(void){
+	//5-second duration should elapse before the device enters CLIMB Mode automatically.
+	//During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second (V cannot be displayed on the 7-segment, so it is replaced with U').
+	if(Get_Time() - prev_saved_ticks >= 1000){
+		led7seg_setChar(saued[saved_count], FALSE); //change to true after changing saued to array
+		prev_saved_ticks = Get_Time();
+		if (saved_count == 4){
+			saved_count = 0;
+			state = Climb;
+			printf("State changed from Emergency_over to Climb\n");
+			return;
+		}
+		saved_count ++ ;
+	}
+}
+
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
@@ -499,14 +537,15 @@ void do_Initialization(){
 	//MODE_TOGGLE with SW3 to ItoC via interrupt
 }
 void do_toclimb(){
+	printf("Entered ItoC Mode\n");
 	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 16, (uint8_t *) "ENTERING CLIMB MODE", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-	prev_countdown_ticks = Get_Time();
-	prev_blink_blue_ticks = Get_Time();
+	prev_countdown_ticks
+	= prev_blink_blue_ticks = Get_Time();
 
 	while(state == ItoC){
 		//MODE_TOGGLE is pressed in Initialization mode > 7seg countdown from 9 to 0 inclusive (decrease every 500ms)
@@ -524,8 +563,11 @@ uint8_t restnow_printed = 0;
 uint8_t restnow_OLED_line = 32;
 uint8_t dim_OLED_line = 40;
 void do_Climb(){
-	rgb_setLeds(RGB_GREEN);
+	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
+
 	printf("Entered Climb Mode\n");
+	led7seg_setChar(0xFF, TRUE);
+	GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
 	//OLED display "CLIMB"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -535,40 +577,43 @@ void do_Climb(){
 	xoff = -x;
 	yoff = -y;
 	zoff = -z;
+	
+	sensor_ticks = Get_Time();
 
 	while(state == Climb){
-		//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
-		acc_read(&x, &y, &z);
-		x = x+xoff;
-		y = y+yoff;
-		z = z+zoff;
-		net_acc = x**2 + y**2 + z**2;
-		sprintf(temp_string,"Acc: %lu g", net_acc);
-		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
-		//if net acceleration> ACC_THRESHOLD{ state = Emergency;}
-		//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
-		tempvalue = temp_read(); //gives 10* temperature in degree C
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
+			//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
+			acc_read(&x, &y, &z);
+			x = x+xoff;
+			y = y+yoff;
+			z = z+zoff;
+			net_acc = (sqrt(x*x + y*y + z*z))/ 64;
+			sprintf(temp_string,"Acc: %.2f g", net_acc);
+			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
+			if(net_acc > ACC_THRESHOLD){
+				printf("State changed from Climb to Emergency\n");
+				state = Emergency;
+			}
+			//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
+			tempvalue = temp_read(); //gives 10* temperature in degree C
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){
-			prev_temp_ticks = Get_Time();
-			oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-			//If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again
-			temp_flag = 1;
-			restnow_printed = 1;
+			//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
+			if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){
+				prev_temp_ticks = Get_Time();
+				oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+				//If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again
+				temp_flag = 1;
+				restnow_printed = 1;
+			}
+			//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
+			if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
+				temp_flag = 0;
+			}	
 		}
-		if (restnow_printed && Get_Time() - prev_temp_ticks >= 3000){
-			oled_fillRect(0, restnow_OLED_line, OLED_DISPLAY_WIDTH, restnow_OLED_line+8, OLED_COLOR_BLACK); //clear restnow_OLED_line
-			restnow_printed = 0;
-		}
-		//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-		if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
-			temp_flag = 0;
-		}
-
+		
 		//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
 		light_enable();
 		luminI = light_read();
@@ -576,15 +621,24 @@ void do_Climb(){
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
 		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
-		int i = 0;
-		while(i<16){
-			if(LIGHT_THRESHOLD - luminI > 19*(i)) pca9532_setLeds((1<<i), 0);
-			else pca9532_setLeds(0, (1<<i));
-			i++;
-		}
+//		int i = 0;
+//		while(i<16){
+//			if(LIGHT_THRESHOLD - luminI > 19*(i)) pca9532_setLeds((1<<i), 0);
+//			else pca9532_setLeds(0, (1<<i));
+//			i++;
+//		}
+		uint16_t ledOn = (1 << (int *)(luminI / 18.75)) - 1; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
+		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
+		
 		//A message should also be displayed on the OLED screen saying "DIM"
 		if(luminI < LIGHT_THRESHOLD) oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		else oled_fillRect(0, dim_OLED_line, OLED_DISPLAY_WIDTH, dim_OLED_line+8, OLED_COLOR_BLACK); //clear dim_OLED_line
+		
+		// the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
+		if (restnow_printed && Get_Time() - prev_temp_ticks >= 3000){
+			oled_fillRect(0, restnow_OLED_line, OLED_DISPLAY_WIDTH, restnow_OLED_line+8, OLED_COLOR_BLACK); //clear restnow_OLED_line
+			restnow_printed = 0;
+		}	
 
 		//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
 	//	tempvalue = temp_read() /10.0; //T(C)
@@ -594,26 +648,37 @@ void do_Climb(){
 }
 
 uint32_t emer_start_ticks;
+uint32_t emer_dur;
 void do_Emergency(){
 	printf("Entered Emergency Mode\n");
 	//OLED screen should display "EMERGENCY Mode!"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "EMERGENCY Mode!", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-	prev_blink_blue_ticks = Get_Time();
-	prev_alternateled_ticks = Get_Time();
-	emer_start_ticks = Get_Time();
+	prev_blink_blue_ticks
+	= prev_alternateled_ticks
+	= emer_start_ticks
+	= sensor_ticks = Get_Time();
 
 	while(state == Emergency){
-		//as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
-		sprintf(temp_string,"Acc: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
+			//as well as the net acceleration, the temperature as well as the duration for which FitNUS has been in EMERGENCY Mode.
+			acc_read(&x, &y, &z);
+			x = x+xoff;
+			y = y+yoff;
+			z = z+zoff;
+			net_acc = (sqrt(x*x + y*y + z*z)) / 64;
+			sprintf(temp_string,"Acc: %.2f g", net_acc);
+			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-		tempvalue = temp_read(); //gives 10* temperature in degree C
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			tempvalue = temp_read(); //gives 10* temperature in degree C
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			sensor_ticks = Get_Time();
+		}
 
-		sprintf(temp_string,"Dur: %lu s", (Get_Time() - emer_start_ticks)/1000);
+		emer_dur = (Get_Time() - emer_start_ticks)/1000;
+		sprintf(temp_string,"Dur: %lu s", emer_dur);
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
 		//RGB LED should behave as described in ALTERNATE_LED
@@ -624,10 +689,21 @@ void do_Emergency(){
 }
 
 void do_Emergency_over(){
-	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed >  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
-	//5-second duration should elapse before the device enters CLIMB Mode automatically. During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second
-	//and RGB_LED should behave as described in BLINK_BLUE. (V cannot be displayed on the 7-segment, so it is replaced with U').
-	BLINK_BLUE();
+	printf("Entered Emergency_over Mode\n");
+	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed
+	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
+	//duration has been saved in emer_dur
+
+	prev_saved_ticks
+	= prev_blink_blue_ticks = Get_Time();
+
+	while (state == Emergency_over){
+		//5-second duration should elapse before the device enters CLIMB Mode automatically.
+		//During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second (V cannot be displayed on the 7-segment, so it is replaced with U').
+		saved();
+		//and RGB_LED should behave as described in BLINK_BLUE.
+		BLINK_BLUE();
+	}
 }
 
 //Functions for testing devices
@@ -685,18 +761,20 @@ void Trimpot_RGB(){}
 //Interrupt Handler
 void EINT3_IRQHandler(void){ //for interrupts
 	// SW3
-	if ((LPC_GPIOINT ->IO0IntStatR>>4) & 0x1){ //sw3
+	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
 		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
 		printf("SW3 is pressed\n");
 		if (state == Initialization){
 			state = ItoC;
-			oled_clearScreen(OLED_COLOR_BLACK);
 			printf("State changed from Initialization to ItoC\n");
-		}else{
+		}else if (state == Climb){
+			state = Initialization;
+			printf("State changed to Initialization\n");
+		}else if (state == Emergency && ((GPIO_ReadValue(1) >> 31) & 0x01)){
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
-			state = Emergency;
-			printf("State changed to Emergency\n");
+			state = Emergency_over;
+			printf("State changed to Emergency_over\n");
 		}
 	//	do_toclimb();
 	}
@@ -717,14 +795,40 @@ void EINT3_IRQHandler(void){ //for interrupts
 //Handler occurs every 1ms
 void SysTick_Handler (void){
 	msTicks++;
+//	if (state == Emergency && (msTicks % 1000 == 0)){
+//		emer_dur = (Get_Time() - emer_start_ticks)/1000;
+//		sprintf(temp_string,"Dur: %lu s", emer_dur);
+//		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+//	}
+}
+
+void pinsel_uart3(void){
+	PINSEL_CFG_Type Pincfg;
+	PinCfg.Funcnum = 2;
+	PinCfg.Pinnum = 0;
+	PinCfg.Portnum = 0;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 1;
+	PINSEL_ConfigPin(&PinCfg);
+}
+
+void init_uart(void){
+	UART_CFG_Type uartCfg;
+	uartCfg.Baud_rate = 115200;
+	uartCfg.Databits = UART_DATABIT_8;
+	uartCfg.Parity = UART_STOPBIT_1;
+	//pin select for uart3
+	pinsel_uart3();
+	//supply power and setup working parts for uart3
+	UART_Init(LPC_UART3, &uartCfg);
+	//enable transmit for uart3
+	UART_TxCmd(LPC_UART3, ENABLE);
 }
 
 int main (void) {
-
 //	if (SysTick_Config(SystemCoreClock/1000)){
 //		while (1);
 //	}
-
 	init_everything();
 
     /*

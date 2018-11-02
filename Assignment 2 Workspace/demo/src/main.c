@@ -13,6 +13,7 @@
 #include "lpc17xx_i2c.h"
 #include "lpc17xx_ssp.h"
 #include "lpc17xx_timer.h" // for delay
+#include "lpc17xx_uart.h"
 
 #include "joystick.h"
 #include "pca9532.h"
@@ -351,10 +352,38 @@ void lightSenIntInit(){
 	light_setLoThreshold(LIGHT_THRESHOLD); //lower threshold for
 }
 
+void init_uart(void){
+	UART_CFG_Type uartCfg;
+	uartCfg.Baud_rate = 115200; //baud rate to match terminal programme
+	uartCfg.Databits = UART_DATABIT_8;
+	uartCfg.Parity = UART_STOPBIT_1;
+
+	//pin select for uart3
+	PINSEL_CFG_Type Pincfg;
+	PinCfg.Funcnum = 2;
+	PinCfg.OpenDrain = 0; //need these?
+	PinCfg.Pinmode = 0; //need these?
+	PinCfg.Pinnum = 0;
+	PinCfg.Portnum = 0;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 1;
+	PINSEL_ConfigPin(&PinCfg);
+
+	//supply power and setup working parts for uart3
+	UART_Init(LPC_UART3, &uartCfg);
+	//enable transmit for uart3
+	UART_TxCmd(LPC_UART3, ENABLE);
+	//enable UART Rx interrupt
+	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE);
+	//enable Interrupt for UART3
+	NVIC_EnableIRQ(UART3_IRQn);
+}
+
 static void init_everything(){
 	init_i2c();
 	init_ssp();
 	init_GPIO();
+	init_uart();
 
 	SysTick_Config(SystemCoreClock/1000);
 	temp_init(&Get_Time);
@@ -524,6 +553,11 @@ void saved(void){
 	}
 }
 
+void uart_Send(char* msg){
+	int len = strlen(msg);
+	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
+}
+
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
@@ -557,6 +591,7 @@ void do_toclimb(){
 
 char temp_string[32];
 uint32_t prev_temp_ticks;
+uint32_t uart_ticks;
 uint8_t temp_flag = 0;
 uint8_t restnow_printed = 0;
 uint8_t restnow_OLED_line = 32;
@@ -577,7 +612,8 @@ void do_Climb(){
 	yoff = -y;
 	zoff = -z;
 	
-	sensor_ticks = Get_Time();
+	sensor_ticks
+	= uart_ticks = Get_Time();
 
 	while(state == Climb){
 		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
@@ -640,6 +676,10 @@ void do_Climb(){
 		}	
 
 		//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
+		if ((Get_Time() - uart_ticks) >= 5000){
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+			uart_Send(temp_string);
+		}
 	//	tempvalue = temp_read() /10.0; //T(C)
 	//	printf(0, 8, (uint32_t *) "Temp: &.1f deg", tempvalue);
 	//	oled_putString(0, 8, tempvalue, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -657,7 +697,11 @@ void do_Emergency(){
 	prev_blink_blue_ticks
 	= prev_alternateled_ticks
 	= emer_start_ticks
-	= sensor_ticks = Get_Time();
+	= sensor_ticks
+	= uart_ticks = Get_Time();
+
+	//send a message to FiTrackX that reads “EMERGENCY!"
+	uart_Send("EMERGENCY!");
 
 	while(state == Emergency){
 		if ((Get_Time() - sensor_ticks) >= sensor_refresh_ticks){
@@ -682,8 +726,11 @@ void do_Emergency(){
 
 		//RGB LED should behave as described in ALTERNATE_LED
 		ALTERNATE_LED();
-		//send a message to FiTrackX that reads “EMERGENCY!"
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
+		if ((Get_Time() - uart_ticks) >= 5000){
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+			uart_Send(temp_string);
+		}
 	}
 }
 
@@ -769,7 +816,7 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}else if (state == Climb){
 			state = Initialization;
 			printf("State changed to Initialization\n");
-		}else if (state == Emergency && ((GPIO_ReadValue(1) >> 31) & 0x01)){
+		}else if (state == Emergency & !((GPIO_ReadValue(1) >> 31) & 0x01)){ //sw4 ==0 when pressed
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
 			state = Emergency_over;
@@ -777,18 +824,17 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}
 	//	do_toclimb();
 	}
-//	if ((LPC_GPIOINT ->IO1IntStatR>>31) & 0x1){ //sw4
-//		LPC_GPIOINT ->IO1IntClr = 1<<31; //clear the interrupt
-//		printf("SW4 is pressed\n");
-//		state = Emergency;
-//		printf("State changed to Emergency\n");
-//	}
 	if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
 		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
 		printf("Light interrupt triggered\n");
 		light_clearIrqStatus();
 	}
+}
 
+//UART3 interrupt handler
+void UART3_IRQHandler(void)
+{
+    UART3_StdIntHandler();
 }
 
 //Handler occurs every 1ms
