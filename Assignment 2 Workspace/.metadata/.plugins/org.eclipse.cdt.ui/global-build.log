@@ -9395,3 +9395,353 @@ rm -rf  ./src/acc.o ./src/eeprom.o ./src/flash.o ./src/font5x7.o ./src/joystick.
 make clean 
 rm -rf  ./src/cr_startup_lpc17.o ./src/main.o  ./src/cr_startup_lpc17.d ./src/main.d  EE2028Asmt2S1AY201819.axf
  
+17:21:18 **** Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/cr_startup_lpc17.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/cr_startup_lpc17.d" -MT"src/cr_startup_lpc17.d" -o "src/cr_startup_lpc17.o" "../src/cr_startup_lpc17.c"
+Finished building: ../src/cr_startup_lpc17.c
+ 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lCMSISv1p30_LPC17xx
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lLib_EaBaseBoard
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lLib_MCU
+collect2: ld returned 1 exit status
+make: *** [EE2028Asmt2S1AY201819.axf] Error 1
+17:22:16 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lCMSISv1p30_LPC17xx
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lLib_EaBaseBoard
+c:/nxp/lpcxpresso_6.1.4_194/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/bin/ld.exe: cannot find -lLib_MCU
+collect2: ld returned 1 exit status
+make: *** [EE2028Asmt2S1AY201819.axf] Error 1
+17:23:37 **** Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+Building file: ../src/core_cm3.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/core_cm3.d" -MT"src/core_cm3.d" -o "src/core_cm3.o" "../src/core_cm3.c"
+Finished building: ../src/core_cm3.c
+ 
+Building file: ../src/system_LPC17xx.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/system_LPC17xx.d" -MT"src/system_LPC17xx.d" -o "src/system_LPC17xx.o" "../src/system_LPC17xx.c"
+Finished building: ../src/system_LPC17xx.c
+ 
+Building target: libCMSISv1p30_LPC17xx.a
+Invoking: MCU Archiver
+arm-none-eabi-ar -r  "libCMSISv1p30_LPC17xx.a"  ./src/core_cm3.o ./src/system_LPC17xx.o   
+c:\nxp\LPCXpresso_6.1.4_194\lpcxpresso\tools\bin\arm-none-eabi-ar.exe: creating libCMSISv1p30_LPC17xx.a
+Finished building target: libCMSISv1p30_LPC17xx.a
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size libCMSISv1p30_LPC17xx.a ; # arm-none-eabi-objdump -h -S libCMSISv1p30_LPC17xx.a >libCMSISv1p30_LPC17xx.lss
+   text	   data	    bss	    dec	    hex	filename
+    652	      0	      0	    652	    28c	core_cm3.o (ex libCMSISv1p30_LPC17xx.a)
+   1276	      4	      0	   1280	    500	system_LPC17xx.o (ex libCMSISv1p30_LPC17xx.a)
+ 
+17:23:40 **** Build of configuration Debug for project Lib_MCU ****
+make all 
+Building file: ../src/lpc17xx_adc.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_adc.d" -MT"src/lpc17xx_adc.d" -o "src/lpc17xx_adc.o" "../src/lpc17xx_adc.c"
+Finished building: ../src/lpc17xx_adc.c
+ 
+Building file: ../src/lpc17xx_can.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_can.d" -MT"src/lpc17xx_can.d" -o "src/lpc17xx_can.o" "../src/lpc17xx_can.c"
+../src/lpc17xx_can.c: In function 'CAN_Init':
+../src/lpc17xx_can.c:177:11: warning: variable 'temp' set but not used [-Wunused-but-set-variable]
+Finished building: ../src/lpc17xx_can.c
+ 
+Building file: ../src/lpc17xx_clkpwr.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_clkpwr.d" -MT"src/lpc17xx_clkpwr.d" -o "src/lpc17xx_clkpwr.o" "../src/lpc17xx_clkpwr.c"
+Finished building: ../src/lpc17xx_clkpwr.c
+ 
+Building file: ../src/lpc17xx_dac.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_dac.d" -MT"src/lpc17xx_dac.d" -o "src/lpc17xx_dac.o" "../src/lpc17xx_dac.c"
+Finished building: ../src/lpc17xx_dac.c
+ 
+Building file: ../src/lpc17xx_emac.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_emac.d" -MT"src/lpc17xx_emac.d" -o "src/lpc17xx_emac.o" "../src/lpc17xx_emac.c"
+Finished building: ../src/lpc17xx_emac.c
+ 
+Building file: ../src/lpc17xx_gpio.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_gpio.d" -MT"src/lpc17xx_gpio.d" -o "src/lpc17xx_gpio.o" "../src/lpc17xx_gpio.c"
+Finished building: ../src/lpc17xx_gpio.c
+ 
+Building file: ../src/lpc17xx_i2c.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_i2c.d" -MT"src/lpc17xx_i2c.d" -o "src/lpc17xx_i2c.o" "../src/lpc17xx_i2c.c"
+Finished building: ../src/lpc17xx_i2c.c
+ 
+Building file: ../src/lpc17xx_i2s.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_i2s.d" -MT"src/lpc17xx_i2s.d" -o "src/lpc17xx_i2s.o" "../src/lpc17xx_i2s.c"
+Finished building: ../src/lpc17xx_i2s.c
+ 
+Building file: ../src/lpc17xx_libcfg_default.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_libcfg_default.d" -MT"src/lpc17xx_libcfg_default.d" -o "src/lpc17xx_libcfg_default.o" "../src/lpc17xx_libcfg_default.c"
+Finished building: ../src/lpc17xx_libcfg_default.c
+ 
+Building file: ../src/lpc17xx_mcpwm.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_mcpwm.d" -MT"src/lpc17xx_mcpwm.d" -o "src/lpc17xx_mcpwm.o" "../src/lpc17xx_mcpwm.c"
+Finished building: ../src/lpc17xx_mcpwm.c
+ 
+Building file: ../src/lpc17xx_nvic.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_nvic.d" -MT"src/lpc17xx_nvic.d" -o "src/lpc17xx_nvic.o" "../src/lpc17xx_nvic.c"
+Finished building: ../src/lpc17xx_nvic.c
+ 
+Building file: ../src/lpc17xx_pinsel.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_pinsel.d" -MT"src/lpc17xx_pinsel.d" -o "src/lpc17xx_pinsel.o" "../src/lpc17xx_pinsel.c"
+Finished building: ../src/lpc17xx_pinsel.c
+ 
+Building file: ../src/lpc17xx_pwm.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_pwm.d" -MT"src/lpc17xx_pwm.d" -o "src/lpc17xx_pwm.o" "../src/lpc17xx_pwm.c"
+Finished building: ../src/lpc17xx_pwm.c
+ 
+Building file: ../src/lpc17xx_qei.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_qei.d" -MT"src/lpc17xx_qei.d" -o "src/lpc17xx_qei.o" "../src/lpc17xx_qei.c"
+Finished building: ../src/lpc17xx_qei.c
+ 
+Building file: ../src/lpc17xx_rit.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_rit.d" -MT"src/lpc17xx_rit.d" -o "src/lpc17xx_rit.o" "../src/lpc17xx_rit.c"
+Finished building: ../src/lpc17xx_rit.c
+ 
+Building file: ../src/lpc17xx_rtc.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_rtc.d" -MT"src/lpc17xx_rtc.d" -o "src/lpc17xx_rtc.o" "../src/lpc17xx_rtc.c"
+Finished building: ../src/lpc17xx_rtc.c
+ 
+Building file: ../src/lpc17xx_spi.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_spi.d" -MT"src/lpc17xx_spi.d" -o "src/lpc17xx_spi.o" "../src/lpc17xx_spi.c"
+Finished building: ../src/lpc17xx_spi.c
+ 
+Building file: ../src/lpc17xx_ssp.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_ssp.d" -MT"src/lpc17xx_ssp.d" -o "src/lpc17xx_ssp.o" "../src/lpc17xx_ssp.c"
+Finished building: ../src/lpc17xx_ssp.c
+ 
+Building file: ../src/lpc17xx_timer.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_timer.d" -MT"src/lpc17xx_timer.d" -o "src/lpc17xx_timer.o" "../src/lpc17xx_timer.c"
+../src/lpc17xx_timer.c: In function 'TIM_Init':
+../src/lpc17xx_timer.c:244:11: warning: variable 'timer' set but not used [-Wunused-but-set-variable]
+../src/lpc17xx_timer.c: In function 'TIM_ConfigMatch':
+../src/lpc17xx_timer.c:389:11: warning: variable 'timer' set but not used [-Wunused-but-set-variable]
+../src/lpc17xx_timer.c: In function 'TIM_ConfigCapture':
+../src/lpc17xx_timer.c:436:11: warning: variable 'timer' set but not used [-Wunused-but-set-variable]
+Finished building: ../src/lpc17xx_timer.c
+ 
+Building file: ../src/lpc17xx_uart.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_uart.d" -MT"src/lpc17xx_uart.d" -o "src/lpc17xx_uart.o" "../src/lpc17xx_uart.c"
+../src/lpc17xx_uart.c: In function 'UART_SendString':
+../src/lpc17xx_uart.c:1394:2: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+Finished building: ../src/lpc17xx_uart.c
+ 
+Building file: ../src/lpc17xx_wdt.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/lpc17xx_wdt.d" -MT"src/lpc17xx_wdt.d" -o "src/lpc17xx_wdt.o" "../src/lpc17xx_wdt.c"
+Finished building: ../src/lpc17xx_wdt.c
+ 
+Building target: libLib_MCU.a
+Invoking: MCU Archiver
+arm-none-eabi-ar -r  "libLib_MCU.a"  ./src/lpc17xx_adc.o ./src/lpc17xx_can.o ./src/lpc17xx_clkpwr.o ./src/lpc17xx_dac.o ./src/lpc17xx_emac.o ./src/lpc17xx_gpio.o ./src/lpc17xx_i2c.o ./src/lpc17xx_i2s.o ./src/lpc17xx_libcfg_default.o ./src/lpc17xx_mcpwm.o ./src/lpc17xx_nvic.o ./src/lpc17xx_pinsel.o ./src/lpc17xx_pwm.o ./src/lpc17xx_qei.o ./src/lpc17xx_rit.o ./src/lpc17xx_rtc.o ./src/lpc17xx_spi.o ./src/lpc17xx_ssp.o ./src/lpc17xx_timer.o ./src/lpc17xx_uart.o ./src/lpc17xx_wdt.o   
+c:\nxp\LPCXpresso_6.1.4_194\lpcxpresso\tools\bin\arm-none-eabi-ar.exe: creating libLib_MCU.a
+Finished building target: libLib_MCU.a
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size libLib_MCU.a ; # arm-none-eabi-objdump -h -S libLib_MCU.a >libLib_MCU.lss
+   text	   data	    bss	    dec	    hex	filename
+   1428	      0	      0	   1428	    594	lpc17xx_adc.o (ex libLib_MCU.a)
+  14060	     16	     60	  14136	   3738	lpc17xx_can.o (ex libLib_MCU.a)
+    684	      0	      0	    684	    2ac	lpc17xx_clkpwr.o (ex libLib_MCU.a)
+    428	      0	      0	    428	    1ac	lpc17xx_dac.o (ex libLib_MCU.a)
+   3460	      0	  10896	  14356	   3814	lpc17xx_emac.o (ex libLib_MCU.a)
+   1720	      0	      0	   1720	    6b8	lpc17xx_gpio.o (ex libLib_MCU.a)
+   5240	      0	     36	   5276	   149c	lpc17xx_i2c.o (ex libLib_MCU.a)
+   3372	      0	      8	   3380	    d34	lpc17xx_i2s.o (ex libLib_MCU.a)
+     12	      0	      0	     12	      c	lpc17xx_libcfg_default.o (ex libLib_MCU.a)
+   2016	      0	      0	   2016	    7e0	lpc17xx_mcpwm.o (ex libLib_MCU.a)
+    352	      0	      0	    352	    160	lpc17xx_nvic.o (ex libLib_MCU.a)
+    664	      0	      0	    664	    298	lpc17xx_pinsel.o (ex libLib_MCU.a)
+   2996	      0	      0	   2996	    bb4	lpc17xx_pwm.o (ex libLib_MCU.a)
+   2388	      0	      0	   2388	    954	lpc17xx_qei.o (ex libLib_MCU.a)
+    736	      0	      0	    736	    2e0	lpc17xx_rit.o (ex libLib_MCU.a)
+   4308	      0	      0	   4308	   10d4	lpc17xx_rtc.o (ex libLib_MCU.a)
+   2012	      0	     12	   2024	    7e8	lpc17xx_spi.o (ex libLib_MCU.a)
+   4068	      0	     24	   4092	    ffc	lpc17xx_ssp.o (ex libLib_MCU.a)
+   3044	      0	      0	   3044	    be4	lpc17xx_timer.o (ex libLib_MCU.a)
+   6748	      0	     68	   6816	   1aa0	lpc17xx_uart.o (ex libLib_MCU.a)
+    852	      0	      0	    852	    354	lpc17xx_wdt.o (ex libLib_MCU.a)
+ 
+17:23:49 **** Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+Building file: ../src/acc.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/acc.d" -MT"src/acc.d" -o "src/acc.o" "../src/acc.c"
+Finished building: ../src/acc.c
+ 
+Building file: ../src/eeprom.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/eeprom.d" -MT"src/eeprom.d" -o "src/eeprom.o" "../src/eeprom.c"
+Finished building: ../src/eeprom.c
+ 
+Building file: ../src/flash.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/flash.d" -MT"src/flash.d" -o "src/flash.o" "../src/flash.c"
+Finished building: ../src/flash.c
+ 
+Building file: ../src/font5x7.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/font5x7.d" -MT"src/font5x7.d" -o "src/font5x7.o" "../src/font5x7.c"
+Finished building: ../src/font5x7.c
+ 
+Building file: ../src/joystick.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/joystick.d" -MT"src/joystick.d" -o "src/joystick.o" "../src/joystick.c"
+Finished building: ../src/joystick.c
+ 
+Building file: ../src/led7seg.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/led7seg.d" -MT"src/led7seg.d" -o "src/led7seg.o" "../src/led7seg.c"
+Finished building: ../src/led7seg.c
+ 
+Building file: ../src/light.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/light.d" -MT"src/light.d" -o "src/light.o" "../src/light.c"
+Finished building: ../src/light.c
+ 
+Building file: ../src/oled.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/oled.d" -MT"src/oled.d" -o "src/oled.o" "../src/oled.c"
+Finished building: ../src/oled.c
+ 
+Building file: ../src/pca9532.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/pca9532.d" -MT"src/pca9532.d" -o "src/pca9532.o" "../src/pca9532.c"
+Finished building: ../src/pca9532.c
+ 
+Building file: ../src/rgb.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/rgb.d" -MT"src/rgb.d" -o "src/rgb.o" "../src/rgb.c"
+Finished building: ../src/rgb.c
+ 
+Building file: ../src/rotary.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/rotary.d" -MT"src/rotary.d" -o "src/rotary.o" "../src/rotary.c"
+Finished building: ../src/rotary.c
+ 
+Building file: ../src/temp.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/temp.d" -MT"src/temp.d" -o "src/temp.o" "../src/temp.c"
+Finished building: ../src/temp.c
+ 
+Building file: ../src/uart2.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__CODE_RED -D__REDLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/uart2.d" -MT"src/uart2.d" -o "src/uart2.o" "../src/uart2.c"
+Finished building: ../src/uart2.c
+ 
+Building target: libLib_EaBaseBoard.a
+Invoking: MCU Archiver
+arm-none-eabi-ar -r  "libLib_EaBaseBoard.a"  ./src/acc.o ./src/eeprom.o ./src/flash.o ./src/font5x7.o ./src/joystick.o ./src/led7seg.o ./src/light.o ./src/oled.o ./src/pca9532.o ./src/rgb.o ./src/rotary.o ./src/temp.o ./src/uart2.o   
+c:\nxp\LPCXpresso_6.1.4_194\lpcxpresso\tools\bin\arm-none-eabi-ar.exe: creating libLib_EaBaseBoard.a
+Finished building target: libLib_EaBaseBoard.a
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size libLib_EaBaseBoard.a ; # arm-none-eabi-objdump -h -S libLib_EaBaseBoard.a >libLib_EaBaseBoard.lss
+   text	   data	    bss	    dec	    hex	filename
+    676	      0	      0	    676	    2a4	acc.o (ex libLib_EaBaseBoard.a)
+    680	      0	      0	    680	    2a8	eeprom.o (ex libLib_EaBaseBoard.a)
+   1772	     80	     12	   1864	    748	flash.o (ex libLib_EaBaseBoard.a)
+    768	      0	      0	    768	    300	font5x7.o (ex libLib_EaBaseBoard.a)
+    192	      0	      0	    192	     c0	joystick.o (ex libLib_EaBaseBoard.a)
+    172	     80	      0	    252	     fc	led7seg.o (ex libLib_EaBaseBoard.a)
+   1392	      8	      0	   1400	    578	light.o (ex libLib_EaBaseBoard.a)
+   3256	      0	    768	   4024	    fb8	oled.o (ex libLib_EaBaseBoard.a)
+   1264	      0	      6	   1270	    4f6	pca9532.o (ex libLib_EaBaseBoard.a)
+    184	      0	      0	    184	     b8	rgb.o (ex libLib_EaBaseBoard.a)
+    268	      0	      0	    268	    10c	rotary.o (ex libLib_EaBaseBoard.a)
+    312	      0	      4	    316	    13c	temp.o (ex libLib_EaBaseBoard.a)
+    980	      0	      1	    981	    3d5	uart2.o (ex libLib_EaBaseBoard.a)
+ 
+17:23:56 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  52480	   2400	   1216	  56096	   db20	EE2028Asmt2S1AY201819.axf
+ 
+17:32:54 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  52480	   2400	   1216	  56096	   db20	EE2028Asmt2S1AY201819.axf
+ 
+17:33:06 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+17:33:08 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+17:33:09 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+17:33:12 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
+17:34:01 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+17:34:02 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+17:34:03 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+17:34:06 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.

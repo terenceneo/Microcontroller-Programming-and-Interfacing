@@ -1,7 +1,6 @@
-17:04:14 **** Clean-only build of configuration Debug for project Lib_EaBaseBoard ****
-make clean 
-rm -rf  ./src/acc.o ./src/eeprom.o ./src/flash.o ./src/font5x7.o ./src/joystick.o ./src/led7seg.o ./src/light.o ./src/oled.o ./src/pca9532.o ./src/rgb.o ./src/rotary.o ./src/temp.o ./src/uart2.o  ./src/acc.d ./src/eeprom.d ./src/flash.d ./src/font5x7.d ./src/joystick.d ./src/led7seg.d ./src/light.d ./src/oled.d ./src/pca9532.d ./src/rgb.d ./src/rotary.d ./src/temp.d ./src/uart2.d  libLib_EaBaseBoard.a
- 
+17:34:03 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
 
-17:04:14 Build Finished (took 209ms)
+17:34:04 Build Finished (took 278ms)
 
