@@ -43,7 +43,7 @@ static const uint32_t 	TEMP_THRESHOLD = 260;	//28 degree C
 static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
-char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x51};
+char saued[] = {0x62, 0x28, 0x25, 0xA2, 0x31}; 
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
 static uint8_t * song = (uint8_t*)"D4,";//"C2.C2,D4,C4,F4,E8,";
@@ -568,7 +568,7 @@ void saved(void){
 	//5-second duration should elapse before the device enters CLIMB Mode automatically.
 	//During these 5 seconds, the 7-segment display should show the letters S-A-U-E-D, with each letter changing every 1 second (V cannot be displayed on the 7-segment, so it is replaced with U').
 	if(Get_Time() - prev_saved_ticks >= 1000){
-		led7seg_setChar(saued[saved_count], TRUE);
+		led7seg_setChar(saued[saved_count], FALSE); //change to true after changing saued to array
 		prev_saved_ticks = Get_Time();
 		if (saved_count == 4){
 			saved_count = 0;

@@ -1,6 +1,7 @@
-15:11:31 **** Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
-make all 
-make: Nothing to be done for `all'.
+17:04:15 **** Clean-only build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make clean 
+rm -rf  ./src/cr_startup_lpc17.o ./src/main.o  ./src/cr_startup_lpc17.d ./src/main.d  EE2028Asmt2S1AY201819.axf
+ 
 
-15:11:31 Build Finished (took 99ms)
+17:04:15 Build Finished (took 160ms)
 

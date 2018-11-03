@@ -6041,3 +6041,12 @@ Binding(CTRL+SHIFT+H,
 !MESSAGE IO Error - cable disconnected?
 !SUBENTRY 1 com.crt.dsfdebug 4 0 2018-11-03 15:31:19.162
 !MESSAGE Not connected to emulator.
+!SESSION 2018-11-03 16:04:03.446 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY com.crt.log 1 0 2018-11-03 16:52:14.728
+!MESSAGE Drivers loaded in 2186 milliseconds
