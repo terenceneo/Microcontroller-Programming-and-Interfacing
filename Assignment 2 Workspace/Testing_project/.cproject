@@ -65,13 +65,13 @@
 								<option id="com.crt.advproject.gas.thumb.2071670300" name="Thumb mode" superClass="com.crt.advproject.gas.thumb" value="true" valueType="boolean"/>
 								<option id="gnu.both.asm.option.flags.crt.66515704" name="Assembler flags" superClass="gnu.both.asm.option.flags.crt" value="-c -x assembler-with-cpp -DDEBUG -D__CODE_RED -D__REDLIB__ " valueType="string"/>
 								<inputType id="com.crt.advproject.assembler.input.948383504" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1236983313" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.925270387" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 							<tool id="com.crt.advproject.link.cpp.exe.debug.1795643272" name="MCU C++ Linker" superClass="com.crt.advproject.link.cpp.exe.debug"/>
 							<tool id="com.crt.advproject.link.exe.debug.227323828" name="MCU Linker" superClass="com.crt.advproject.link.exe.debug">
 								<option id="com.crt.advproject.link.arch.862833548" name="Architecture" superClass="com.crt.advproject.link.arch" value="com.crt.advproject.link.target.cm3" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.thumb.306993037" name="Thumb mode" superClass="com.crt.advproject.link.thumb" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.1723049260" name="Linker script" superClass="com.crt.advproject.link.script" value="&quot;Copy_of_demo_Debug.ld&quot;" valueType="string"/>
+								<option id="com.crt.advproject.link.script.1723049260" name="Linker script" superClass="com.crt.advproject.link.script" value="&quot;Testing_project_Debug.ld&quot;" valueType="string"/>
 								<option id="com.crt.advproject.link.manage.1953614193" name="Manage linker script" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
 								<option id="gnu.c.link.option.nostdlibs.983262334" name="No startup or default libs (-nostdlib)" superClass="gnu.c.link.option.nostdlibs" value="true" valueType="boolean"/>
 								<option id="gnu.c.link.option.other.357435293" name="Other options (-Xlinker [option])" superClass="gnu.c.link.option.other" valueType="stringList">
@@ -101,7 +101,7 @@
 								<option id="gnu.c.link.option.defname.2139907478" name="DEF file name (-Wl,--output-def=)" superClass="gnu.c.link.option.defname"/>
 								<option id="com.crt.advproject.link.config.1836730478" name="%crt.mcu.configname" superClass="com.crt.advproject.link.config"/>
 								<option id="com.crt.advproject.link.store.885486934" name="%crt.mcu.storename" superClass="com.crt.advproject.link.store"/>
-								<option id="com.crt.advproject.link.gcc.multicore.slave.788630221" name="Multicore slave" superClass="com.crt.advproject.link.gcc.multicore.slave"/>
+								<option id="com.crt.advproject.link.gcc.multicore.slave.774970760" superClass="com.crt.advproject.link.gcc.multicore.slave"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.582511591" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -183,13 +183,13 @@
 								<option id="com.crt.advproject.gas.thumb.1816353536" name="Thumb mode" superClass="com.crt.advproject.gas.thumb" value="true" valueType="boolean"/>
 								<option id="gnu.both.asm.option.flags.crt.641590740" name="Assembler flags" superClass="gnu.both.asm.option.flags.crt" value="-c -x assembler-with-cpp -DNDEBUG -D__CODE_RED -D__REDLIB__" valueType="string"/>
 								<inputType id="com.crt.advproject.assembler.input.84703301" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.45483897" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.79039559" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 							<tool id="com.crt.advproject.link.cpp.exe.release.1869553605" name="MCU C++ Linker" superClass="com.crt.advproject.link.cpp.exe.release"/>
 							<tool id="com.crt.advproject.link.exe.release.545487888" name="MCU Linker" superClass="com.crt.advproject.link.exe.release">
 								<option id="com.crt.advproject.link.arch.1581454557" name="Architecture" superClass="com.crt.advproject.link.arch" value="com.crt.advproject.link.target.cm3" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.thumb.57423953" name="Thumb mode" superClass="com.crt.advproject.link.thumb" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.2014836965" name="Linker script" superClass="com.crt.advproject.link.script" value="&quot;Copy_of_demo_Release.ld&quot;" valueType="string"/>
+								<option id="com.crt.advproject.link.script.2014836965" name="Linker script" superClass="com.crt.advproject.link.script" value="&quot;Testing_project_Release.ld&quot;" valueType="string"/>
 								<option id="com.crt.advproject.link.manage.611670770" name="Manage linker script" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
 								<option id="gnu.c.link.option.nostdlibs.1437435498" name="No startup or default libs (-nostdlib)" superClass="gnu.c.link.option.nostdlibs" value="true" valueType="boolean"/>
 								<option id="gnu.c.link.option.other.34507037" name="Other options (-Xlinker [option])" superClass="gnu.c.link.option.other" valueType="stringList">

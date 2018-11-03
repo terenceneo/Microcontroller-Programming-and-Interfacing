@@ -9214,3 +9214,87 @@ arm-none-eabi-size Testing_project.axf; # arm-none-eabi-objdump -h -S Testing_pr
    text	   data	    bss	    dec	    hex	filename
   40632	   2388	   1100	  44120	   ac58	Testing_project.axf
  
+11:27:18 **** Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+11:27:20 **** Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+11:27:24 **** Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+11:27:26 **** Clean-only build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make clean 
+rm -rf  ./src/cr_startup_lpc17.o ./src/main.o  ./src/cr_startup_lpc17.d ./src/main.d  demo.axf
+ 
+11:27:31 **** Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/cr_startup_lpc17.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/cr_startup_lpc17.d" -MT"src/cr_startup_lpc17.d" -o "src/cr_startup_lpc17.o" "../src/cr_startup_lpc17.c"
+Finished building: ../src/cr_startup_lpc17.c
+ 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  52480	   2400	   1216	  56096	   db20	EE2028Asmt2S1AY201819.axf
+ 
+11:29:55 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+11:29:57 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+11:29:59 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+11:30:00 **** Clean-only build of configuration Debug for project Testing_project ****
+make clean 
+rm -rf  ./src/cr_startup_lpc17.o ./src/main.o  ./src/cr_startup_lpc17.d ./src/main.d  demo.axf
+ 
+11:30:04 **** Build of configuration Debug for project Testing_project ****
+make all 
+Building file: ../src/cr_startup_lpc17.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/cr_startup_lpc17.d" -MT"src/cr_startup_lpc17.d" -o "src/cr_startup_lpc17.o" "../src/cr_startup_lpc17.c"
+Finished building: ../src/cr_startup_lpc17.c
+ 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
+ 
+Building target: Testing_project.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=Testing_project.map -mcpu=cortex-m3 -mthumb -T "Testing_project_Debug.ld" -o "Testing_project.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: Testing_project.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size Testing_project.axf; # arm-none-eabi-objdump -h -S Testing_project.axf >Testing_project.lss
+   text	   data	    bss	    dec	    hex	filename
+  40632	   2388	   1100	  44120	   ac58	Testing_project.axf
+ 
+15:11:27 **** Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+15:11:28 **** Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+15:11:29 **** Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+15:11:31 **** Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
