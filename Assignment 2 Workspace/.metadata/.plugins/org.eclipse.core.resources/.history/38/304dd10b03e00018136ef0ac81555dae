@@ -724,10 +724,7 @@ void do_Emergency(){
 	= prev_uart_ticks = Get_Time();
 
 	//send a message to FiTrackX that reads “EMERGENCY!"
-	static char* msg = NULL;
-	msg = "EMERGENCY!\r\n";
-	UART_Send(LPC_UART3, (uint8_t *) msg, strlen(msg), BLOCKING);
-	//uart_Send("EMERGENCY!");
+	uart_Send("EMERGENCY!");
 
 	while(state == Emergency){
 		//Refresh
@@ -772,10 +769,8 @@ void do_Emergency_over(){
 	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed
 	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//duration has been saved in emer_dur
-	char uart_msg[64];
-	sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec\r\n", emer_dur);
-	UART_Send(LPC_UART3, (uint8_t *)uart_msg, strlen(uart_msg), BLOCKING);
-	//uart_Send(uart_msg);
+	sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec", emer_dur); //to be edited
+	uart_Send(uart_msg);
 
 	prev_saved_ticks
 	= prev_blink_blue_ticks = Get_Time();
