@@ -26,11 +26,11 @@
 #include "temp.h"
 #include "light.h"
 
-volatile typedef enum {
+typedef enum {
 	Initialization, Climb, Emergency, ItoC, Emergency_over
 }MachineState; //MachineState is a type
 
-volatile typedef enum {
+typedef enum {
 	None, Dim, Rest, Music
 }ClimbState; //ClimbState is a type
 
@@ -76,16 +76,16 @@ static uint8_t barPos = 2;
 //Timing variables
 volatile uint32_t 	msTicks = 0; 	// counter for 1ms SysTicks
 volatile uint32_t 	getTicks = 0; 	//what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-volatile uint32_t 	sensor_refresh_ticks = 200;
-volatile uint32_t 	prev_sensor_ticks;
-volatile uint32_t 	prev_alternateled_ticks;
-volatile uint32_t 	prev_blink_blue_ticks;
-volatile uint32_t 	prev_countdown_ticks;
-volatile uint32_t 	prev_saved_ticks;
-volatile uint32_t 	prev_temp_ticks;
-volatile uint32_t 	prev_uart_ticks;
+uint32_t 			sensor_refresh_ticks = 200;
+uint32_t 			prev_sensor_ticks;
+uint32_t 			prev_alternateled_ticks;
+uint32_t 			prev_blink_blue_ticks;
+uint32_t 			prev_countdown_ticks;
+uint32_t 			prev_saved_ticks;
+uint32_t 			prev_temp_ticks;
+uint32_t 			prev_uart_ticks;
 
-volatile uint32_t 			emer_start_ticks;
+uint32_t 			emer_start_ticks;
 uint32_t 			emer_dur = 0;
 
 //Flags
@@ -585,6 +585,10 @@ void uart_Send(char* msg){
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
 }
 
+//void UARTMessages(void){
+//
+//}
+
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
@@ -615,10 +619,6 @@ void do_toclimb(){
 		BLINK_BLUE();
 		//After, enter CLIMB mode //Called in countdown_new()
 	}
-}
-
-void check_Climb(){
-	return;
 }
 
 void do_Climb(){
@@ -682,7 +682,7 @@ void do_Climb(){
 		//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
 		light_enable();
 		luminI = light_read();
-		sprintf(temp_string,"Light: %3lu lux\n",luminI);
+		sprintf(temp_string,"Light: %4lu lux\n",luminI);
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
 		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.

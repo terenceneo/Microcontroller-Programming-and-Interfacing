@@ -23,12 +23,17 @@ Emergency over
 	- to to set flag with interrupt, trigger if flag and sw4 pressed
 	- delay in timing (22nd second)
 
+- check that everything in interrupt is volatile
+- change debug mode to release mode for compilation
+
 UART Stuffzzzzz
 
 ENHANCEMENT
 - rotary tool to adjust sensor refresh rate
 - rotary tool to adjust led brightness with PWM
 - music playlist selector with joystick
+- clear interrupt pending before enabling interrupt
+- EINT0 interrupt for SW3
 
 Summary of Questions to ask:
 1. what is the units of acceleration read by the sensor? Why /64? or /9.81? How to convert read data to g?

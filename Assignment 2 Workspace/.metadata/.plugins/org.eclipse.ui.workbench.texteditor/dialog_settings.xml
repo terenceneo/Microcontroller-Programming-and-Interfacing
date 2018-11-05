@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="353" key="DIALOG_WIDTH"/>
-		<item value="497" key="DIALOG_Y_ORIGIN"/>
-		<item value="748" key="DIALOG_X_ORIGIN"/>
-		<item value="615" key="DIALOG_HEIGHT"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="257" key="DIALOG_WIDTH"/>
+		<item value="431" key="DIALOG_Y_ORIGIN"/>
+		<item value="1312" key="DIALOG_X_ORIGIN"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Emergency" key="selection"/>
+		<item value="lux" key="selection"/>
 		<list key="findhistory">
+			<item value="lux"/>
+			<item value="oled_clearScreen"/>
+			<item value="uart"/>
+			<item value="interrupt"/>
+			<item value="interuppt"/>
 			<item value="emergency"/>
 			<item value="0x62"/>
 			<item value="saued"/>
-			<item value="countdown"/>
-			<item value="0xff"/>
-			<item value="countown"/>
-			<item value="uart"/>
-			<item value="msg"/>
 		</list>
 		<list key="replacehistory">
 			<item value="setRGBLeds"/>
