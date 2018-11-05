@@ -34,7 +34,7 @@ volatile typedef enum {
 	None, Rest, Music
 }ClimbState; //ClimbState is a type
 
-MachineState 		state = Initialization;
+MachineState 		state = Climb;
 ClimbState			Climb_State = None;
 ClimbState			Saved_State = None;
 
@@ -434,8 +434,14 @@ static void init_everything(){
     lightSenIntInit();
 
     LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3
-//    LPC_GPIOINT ->IO1IntEnR |= 1<<31; //sw4
     LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
+
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 17; //JOYSTICK_CENTER
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 15; //JOYSTICK_DOWN
+    LPC_GPIOINT ->IO0IntEnF |= 1 << 16; //JOYSTICK_RIGHT
+	LPC_GPIOINT ->IO2IntEnF |= 1 << 3; //JOYSTICK_UP
+	LPC_GPIOINT ->IO2IntEnF |= 1 << 4; //JOYSTICK_LEFT
+
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
@@ -730,6 +736,7 @@ void do_Climb(){
 		if(Climb_State == Music && state == Climb){
 			printf("Entered Climb_State Music\n");
 			oled_clearScreen(OLED_COLOR_BLACK);
+			oled_putString(0, 0, (uint8_t *) "MUSIC Player", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 			while(Climb_State == Music  && state == Climb){
 				check_ClimbSensors();
 			}
@@ -893,6 +900,38 @@ void EINT3_IRQHandler(void){ //for interrupts
 		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
 		printf("Light interrupt triggered\n");
 		light_clearIrqStatus();
+	}
+
+	//JOYSTICK_CENTER
+	if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
+		LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
+		printf("JOYSTICK_CENTER\n");
+	}
+	//JOYSTICK_DOWN
+	if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
+		LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
+		printf("JOYSTICK_DOWN\n");
+	}
+	//JOYSTICK_RIGHT
+	if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
+		LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
+		printf("JOYSTICK_RIGHT\n");
+		if (state == Climb){
+			Climb_State = (Climb_State == Music)? None: Music;
+		}
+	}
+	//JOYSTICK_UP
+	if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
+		LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
+		printf("JOYSTICK_UP\n");
+	}
+	//JOYSTICK_LEFT
+	if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
+		LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
+		printf("JOYSTICK_LEFT\n");
+		if (state == Climb){
+			Climb_State = (Climb_State == Music)? None: Music;
+		}
 	}
 }
 
