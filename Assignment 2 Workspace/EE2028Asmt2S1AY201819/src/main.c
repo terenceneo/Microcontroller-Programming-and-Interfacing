@@ -46,11 +46,21 @@ static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
-// each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
-static uint8_t * song = (uint8_t*)"D4,";//"C2.C2,D4,C4,F4,E8,";
-        //(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,";
-        //"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,";
+static char *song_titles[] = {"Happy Birthday 1",
+		"Happy Birthday 2",
+		"Random song",
+		"Song 4",
+		"Song 5",
+//		"Song 6"
+};
 
+// each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
+static uint8_t * songs[] = {(uint8_t*)"D4,C2.C2,D4,C4,F4,E8,",
+        (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
+		(uint8_t*)"D4,B4,B4,A4,A4,"
+		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
+		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
+};
 static uint32_t notes[] = {
         2272, // A - 440 Hz
         2024, // B - 494 Hz
@@ -70,14 +80,14 @@ static uint32_t notes[] = {
 
 uint8_t 	restnow_OLED_line = 32;
 uint8_t 	dim_OLED_line = 40; //OLED line to print DIM in climb mode
-
+int 		number_of_songs = sizeof(song_titles) / sizeof(song_titles[0]);
 static uint8_t barPos = 2;
 
 //Variables
 //Timing variables
 volatile uint32_t 	msTicks = 0; 	// counter for 1ms SysTicks
 volatile uint32_t 	getTicks = 0; 	//what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-volatile uint32_t 	sensor_refresh_ticks = 200;
+volatile uint32_t 	sensor_refresh_ticks = 400;
 volatile uint32_t 	prev_sensor_ticks;
 volatile uint32_t 	prev_alternateled_ticks;
 volatile uint32_t 	prev_blink_blue_ticks;
@@ -86,7 +96,7 @@ volatile uint32_t 	prev_saved_ticks;
 volatile uint32_t 	prev_temp_ticks;
 volatile uint32_t 	prev_uart_ticks;
 
-volatile uint32_t 			emer_start_ticks;
+volatile uint32_t 	emer_start_ticks;
 uint32_t 			emer_dur = 0;
 
 //Flags
@@ -98,8 +108,15 @@ uint8_t 			countdown_flag = 0;
 uint8_t 			temp_flag = 0;
 uint8_t 			restnow_printed = 0;
 
+uint8_t 			scroll_updated = 1;
+uint8_t 			play_flag = 0;
+uint8_t 			song_changed = 0;
+
 //Counters
 int 				saved_count = 0;
+int 				song_index = 0;
+int 				prev_song_index = 0;
+int 				song_pointer_count = 0;
 
 //Sensor input storage variables
 volatile uint32_t 	tempvalue = 0;
@@ -238,25 +255,49 @@ static void playSong(uint8_t *song) {
     uint32_t note = 0;
     uint32_t dur  = 0;
     uint32_t pause = 0;
-
     /*
      * A song is a collection of tones where each tone is
      * a note, duration and pause, e.g.
+     *
      * "E2,F4,"
      */
-    while(*song != '\0') {
-        note = getNote(*song++); //eg. E
-        if (*song == '\0')
-            break;
-        dur  = getDuration(*song++); //eg. 2
-        if (*song == '\0')
-            break;
-        pause = getPause(*song++); //eg. ,
+    int i = 0;
+    if(song_changed){
+    	song_pointer_count = 0;
+    	song_changed = 0;
+    }
+    else{
+    	while(i<song_pointer_count){
+		*song ++;
+		i++;
+    	}
+	}
+//    printf("%d\n",song_pointer_count);
+//    *song = *song + song_pointer_count; // why can't you do this?
+    if(*song != '\0' && play_flag) {
+        note = getNote(*song++);
+        if (*song == '\0'){
+        	song_pointer_count = 0;
+        	play_flag = 0;
+        	return;
+        }
+        dur  = getDuration(*song++);
+        if (*song == '\0'){
+        	song_pointer_count = 0;
+        	play_flag = 0;
+            return;
+        }
+        pause = getPause(*song++);
 
         playNote(note, dur);
         //delay32Ms(0, pause);
         Timer0_Wait(pause);
+        song_pointer_count += 3;
     }
+    if (*song == '\0'){
+		song_pointer_count = 0;
+		play_flag = 0;
+	}
 }
 
 static void init_ssp(void){
@@ -737,8 +778,24 @@ void do_Climb(){
 			printf("Entered Climb_State Music\n");
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, 0, (uint8_t *) "MUSIC Player", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+			oled_line(0, 9, OLED_DISPLAY_WIDTH, 9, OLED_COLOR_WHITE);
+			int i=0;
+			while (i< number_of_songs){
+				oled_putString(0, i*10 + 10, (uint8_t *) song_titles[i], OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+				i++;
+			}
 			while(Climb_State == Music  && state == Climb){
-				check_ClimbSensors();
+				if ((Get_Time() - prev_sensor_ticks) >= sensor_refresh_ticks){
+					check_ClimbSensors();
+					prev_sensor_ticks = Get_Time();
+				}
+				if(scroll_updated == 0){
+					oled_putString(0, prev_song_index*10 + 10, (uint8_t *) song_titles[prev_song_index], OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+					oled_putString(0, song_index*10 + 10, (uint8_t *) song_titles[song_index], OLED_COLOR_BLACK, OLED_COLOR_WHITE);
+				}
+				if(play_flag == 1){
+					playSong(songs[song_index]);
+				}
 			}
 		}
 	}
@@ -784,7 +841,7 @@ void do_Emergency(){
 		if (Get_Time() - emer_start_ticks >= 1000){
 			emer_dur ++;
 			emer_start_ticks = Get_Time();
-			sprintf(temp_string,"Dur: %lu s", emer_dur);
+			sprintf(temp_string,"Dur: %5lu s", emer_dur);
 			oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		}
 
@@ -868,7 +925,7 @@ void Accelerometer_LED(int8_t x, int8_t y, int8_t z, int8_t xoff, int8_t yoff, i
 void SW_Speaker(uint8_t btn1){
 	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
 	if (btn1 == 0){
-		playSong(song);
+		playSong(songs[0]);
 	}
 }
 
@@ -896,40 +953,50 @@ void EINT3_IRQHandler(void){ //for interrupts
 		}
 	//	do_toclimb();
 	}
+
 	if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
 		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
 		printf("Light interrupt triggered\n");
 		light_clearIrqStatus();
 	}
 
-	//JOYSTICK_CENTER
-	if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
-		LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
-		printf("JOYSTICK_CENTER\n");
-	}
-	//JOYSTICK_DOWN
-	if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
-		LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
-		printf("JOYSTICK_DOWN\n");
-	}
-	//JOYSTICK_RIGHT
-	if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
-		LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
-		printf("JOYSTICK_RIGHT\n");
-		if (state == Climb){
+	if(state == Climb){
+		if(Climb_State == Music){
+			//JOYSTICK_CENTER
+			if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
+				LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
+				printf("JOYSTICK_CENTER\n");
+				play_flag = (play_flag)?0:1;
+			}
+			//JOYSTICK_DOWN
+			if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
+				LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
+				printf("JOYSTICK_DOWN\n");
+				prev_song_index = song_index;
+				song_index = (song_index < number_of_songs-1)? song_index+1: 0;
+				scroll_updated = 0;
+				song_changed = 1;
+			}
+			//JOYSTICK_UP
+			if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
+				LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
+				printf("JOYSTICK_UP\n");
+				prev_song_index = song_index;
+				song_index = (song_index > 0)? song_index-1: number_of_songs-1;
+				scroll_updated = 0;
+				song_changed = 1;
+			}
+		}
+		//JOYSTICK_RIGHT
+		if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
+			LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
+			printf("JOYSTICK_RIGHT\n");
 			Climb_State = (Climb_State == Music)? None: Music;
 		}
-	}
-	//JOYSTICK_UP
-	if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
-		LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
-		printf("JOYSTICK_UP\n");
-	}
-	//JOYSTICK_LEFT
-	if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
-		LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
-		printf("JOYSTICK_LEFT\n");
-		if (state == Climb){
+		//JOYSTICK_LEFT
+		if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
+			LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
+			printf("JOYSTICK_LEFT\n");
 			Climb_State = (Climb_State == Music)? None: Music;
 		}
 	}

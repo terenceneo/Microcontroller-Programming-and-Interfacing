@@ -194,7 +194,9 @@ static uint32_t getPause(uint8_t ch)
     default: 	return 5;
     }
 }
-
+uint8_t play_flag;
+int song_pointer_count;
+uint8_t song_changed;
 static void playSong(uint8_t *song) {
     uint32_t note = 0;
     uint32_t dur  = 0;
@@ -206,24 +208,61 @@ static void playSong(uint8_t *song) {
      *
      * "E2,F4,"
      */
-    while(*song != '\0') {
+    int i = 0;
+    if(song_changed){
+    	song_pointer_count = 0;
+    	song_changed = 0;
+    }
+    else{
+    	while(i<song_pointer_count){
+		*song ++;
+		i++;
+    	}
+	}
+    printf("%d\n",song_pointer_count);
+//    *song = *song + song_pointer_count; // why can't you do this?
+    if(*song != '\0' && play_flag) {
         note = getNote(*song++);
-        if (*song == '\0')
-            break;
+        if (*song == '\0'){
+        	song_pointer_count = 0;
+        	play_flag = 0;
+        	return;
+        }
         dur  = getDuration(*song++);
-        if (*song == '\0')
-            break;
+        if (*song == '\0'){
+        	song_pointer_count = 0;
+        	play_flag = 0;
+            return;
+        }
         pause = getPause(*song++);
 
         playNote(note, dur);
         //delay32Ms(0, pause);
         Timer0_Wait(pause);
+        song_pointer_count += 3;
     }
+    if (*song == '\0'){
+		song_pointer_count = 0;
+		play_flag = 0;
+	}
 }
 
-static uint8_t * song = (uint8_t*)"D4";//"C2.C2,D4,C4,F4,E8,";
-        //(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,";
-        //"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,";
+static char *song_titles[] = {"Happy Birthday 1", "Happy Birthday 2", "Random song", "Song 4", "Song 5", "Song 6"};
+int number_of_songs = sizeof(song_titles) / sizeof(song_titles[0]);
+int song_index = 0;
+int prev_song_index = 0;
+int song_pointer_count = 0;
+uint8_t scroll_updated = 1;
+uint8_t play_flag = 0;
+uint8_t song_changed = 0;
+
+
+static uint8_t * songs[] = {(uint8_t*)"D4,C2.C2,D4,C4,F4,E8,",
+        (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
+		(uint8_t*)"D4,B4,B4,A4,A4,"
+		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
+		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
+};
 
 static void init_ssp(void){
 	SSP_CFG_Type SSP_ConfigStruct;
@@ -750,12 +789,12 @@ void Accelerometer_LED(int8_t x, int8_t y, int8_t z, int8_t xoff, int8_t yoff, i
 	}
 }
 /* ####### SW3 and Speaker  ###### */
-void SW_Speaker(uint8_t btn1){
-	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
-	if (btn1 == 0){
-		playSong(song);
-	}
-}
+//void SW_Speaker(uint8_t btn1){
+//	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
+//	if (btn1 == 0){
+//		playSong(song);
+//	}
+//}
 
 /* ############ Trimpot and RGB LED  ########### */
 void Trimpot_RGB(){}
@@ -790,10 +829,15 @@ void EINT3_IRQHandler(void){ //for interrupts
     if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
     	LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
     	printf("JOYSTICK_CENTER\n");
+    	play_flag = (play_flag)?0:1;
     }
     if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
     	LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
     	printf("JOYSTICK_DOWN\n");
+    	prev_song_index = song_index;
+    	song_index = (song_index < number_of_songs-1)? song_index+1: 0;
+    	scroll_updated = 0;
+    	song_changed = 1;
     }
     if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
     	LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
@@ -802,6 +846,10 @@ void EINT3_IRQHandler(void){ //for interrupts
     if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
     	LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
     	printf("JOYSTICK_UP\n");
+    	prev_song_index = song_index;
+		song_index = (song_index > 0)? song_index-1: number_of_songs-1;
+		scroll_updated = 0;
+		song_changed = 1;
     }
     if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
     	LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
@@ -837,13 +885,26 @@ int main (void) {
 
     /* <---- OLED ------ */
     oled_clearScreen(OLED_COLOR_BLACK);
-
+    int i=0;
+    printf("%d\n", number_of_songs);
+    while (i< number_of_songs){
+    	oled_putString(0, i*10, (uint8_t *) song_titles[i], OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+    	i++;
+    	printf("i = %d\n", i);
+    }
     led7seg_setChar(0xFF, TRUE);
 //    uint8_t sw4 = 1;
     while (1){
+    	if(scroll_updated == 0){
+    		oled_putString(0, prev_song_index*10, (uint8_t *) song_titles[prev_song_index], OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+    		oled_putString(0, song_index*10, (uint8_t *) song_titles[song_index], OLED_COLOR_BLACK, OLED_COLOR_WHITE);
+    	}
+    	if(play_flag == 1){
+    		playSong(songs[song_index]);
+    	}
+//    	printf("i = %d\n", sizeof(song_titles));
 //    	sw4 = (GPIO_ReadValue(1) >> 31) & 0x1;
 //    	printf("%d\n", sw4);
-
 
         /* #Testing functions */
         /* ############################################# */
