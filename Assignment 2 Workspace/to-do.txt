@@ -34,6 +34,7 @@ ENHANCEMENT
 - music playlist selector with joystick
 - clear interrupt pending before enabling interrupt
 - EINT0 interrupt for SW3
+- interrupt for temperature rest trigger
 
 Summary of Questions to ask:
 1. what is the units of acceleration read by the sensor? Why /64? or /9.81? How to convert read data to g?

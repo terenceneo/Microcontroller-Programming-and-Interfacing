@@ -723,7 +723,7 @@ void do_Climb(){
 			while(Get_Time() - prev_temp_ticks <= 3000  && state == Climb){ //cannot quit Rest state by changing Climb_State, got to wait for 3000ms to be over before exit
 				check_ClimbSensors();
 			}
-			printf("Exit Ticks: %lu, Entered ticks: %lu\n", Get_Time(), prev_temp_ticks);
+			printf("Exit Ticks: %d, Entered ticks: %d\n", Get_Time(), prev_temp_ticks);
 			Climb_State = Saved_State; //go back to either Music or Climb
 			restnow_printed = 0;
 		}

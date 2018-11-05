@@ -706,7 +706,7 @@ void do_Climb(){
 			//OLED display "CLIMB"
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-			while (Climb_State == None && state == Climb){
+			while (Climb_State == None){
 				check_ClimbSensors();
 				refresh_ClimbOLED();
 			}
@@ -720,17 +720,17 @@ void do_Climb(){
 			temp_flag = 1;
 			restnow_printed = 1;
 			// the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
-			while(Get_Time() - prev_temp_ticks <= 3000  && state == Climb){ //cannot quit Rest state by changing Climb_State, got to wait for 3000ms to be over before exit
+			while(Get_Time() - prev_temp_ticks <= 3000){ //cannot quit Rest state by changing Climb_State, got to wait for 3000ms to be over before exit
+				printf("Time: %d, Prev_ticks: %d\n", Get_Time(), prev_temp_ticks);
 				check_ClimbSensors();
 			}
-			printf("Exit Ticks: %lu, Entered ticks: %lu\n", Get_Time(), prev_temp_ticks);
 			Climb_State = Saved_State; //go back to either Music or Climb
 			restnow_printed = 0;
 		}
 		if(Climb_State == Music && state == Climb){
 			printf("Entered Climb_State Music\n");
 			oled_clearScreen(OLED_COLOR_BLACK);
-			while(Climb_State == Music  && state == Climb){
+			while(Climb_State == Music){
 				check_ClimbSensors();
 			}
 		}

@@ -26,17 +26,16 @@
 #include "temp.h"
 #include "light.h"
 
-volatile typedef enum {
+typedef enum {
 	Initialization, Climb, Emergency, ItoC, Emergency_over
 }MachineState; //MachineState is a type
 
-volatile typedef enum {
-	None, Rest, Music
+typedef enum {
+	None, Dim, Rest, Music
 }ClimbState; //ClimbState is a type
 
 MachineState 		state = Initialization;
 ClimbState			Climb_State = None;
-ClimbState			Saved_State = None;
 
 //Setting Specifications
 static const int 		LIGHT_THRESHOLD = 300; 	//in lux
@@ -77,16 +76,16 @@ static uint8_t barPos = 2;
 //Timing variables
 volatile uint32_t 	msTicks = 0; 	// counter for 1ms SysTicks
 volatile uint32_t 	getTicks = 0; 	//what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-volatile uint32_t 	sensor_refresh_ticks = 200;
-volatile uint32_t 	prev_sensor_ticks;
-volatile uint32_t 	prev_alternateled_ticks;
-volatile uint32_t 	prev_blink_blue_ticks;
-volatile uint32_t 	prev_countdown_ticks;
-volatile uint32_t 	prev_saved_ticks;
-volatile uint32_t 	prev_temp_ticks;
-volatile uint32_t 	prev_uart_ticks;
+uint32_t 			sensor_refresh_ticks = 200;
+uint32_t 			prev_sensor_ticks;
+uint32_t 			prev_alternateled_ticks;
+uint32_t 			prev_blink_blue_ticks;
+uint32_t 			prev_countdown_ticks;
+uint32_t 			prev_saved_ticks;
+uint32_t 			prev_temp_ticks;
+uint32_t 			prev_uart_ticks;
 
-volatile uint32_t 			emer_start_ticks;
+uint32_t 			emer_start_ticks;
 uint32_t 			emer_dur = 0;
 
 //Flags
@@ -586,6 +585,10 @@ void uart_Send(char* msg){
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
 }
 
+//void UARTMessages(void){
+//
+//}
+
 //Modes
 void do_Initialization(){
 	printf("Entered Initialization Mode\n");
@@ -618,78 +621,14 @@ void do_toclimb(){
 	}
 }
 
-void check_ClimbSensors(){ //Called in all Climb_State
-	//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
-	acc_read(&x, &y, &z);
-	x = x+xoff;
-	y = y+yoff;
-	z = z+zoff;
-	net_acc = (sqrt(x*x + y*y + z*z))/ 64;
-	//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
-	if(net_acc > ACC_THRESHOLD){
-		printf("State changed from Climb to Emergency\n");
-		state = Emergency;
-	}
-
-	//light sensor should be continuously read
-	light_enable();
-	luminI = light_read();
-
-	//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
-	//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
-	shift = luminI / 18.75;
-	ledOn = (shift <= 16)?(1 << (16-shift)) - 1: 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
-//		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
-//		else ledOn = 0x0;
-	pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
-
-	//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
-	//This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-	tempvalue = temp_read(); //gives 10* temperature in degree C
-	if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){ //maybe can use interrupt?
-		Saved_State = Climb_State;
-		Climb_State = Rest;
-	}
-	//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-	if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
-		temp_flag = 0;
-	}
-
-//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
-//		if ((Get_Time() - prev_uart_ticks) >= 5000){
-//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
-//			uart_Send(uart_msg);
-//			prev_uart_ticks = Get_Time();
-//		}
-}
-
-void refresh_ClimbOLED(){ //Called in Climb_State = None
-	//Refresh OLED
-	if ((Get_Time() - prev_sensor_ticks) >= sensor_refresh_ticks){
-		//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		sprintf(temp_string,"Acc: %5.2f g", net_acc);
-		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		prev_sensor_ticks = Get_Time();
-	}
-	//light sensor reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
-	sprintf(temp_string,"Light: %3lu lux\n",luminI);
-	oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-	if(luminI < LIGHT_THRESHOLD){ //cannot enter Dim from Music or Rest states
-		//A message should also be displayed on the OLED screen saying "DIM"
-		oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-	}
-}
-
 void do_Climb(){
 	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
 	printf("Entered Climb Mode\n");
 	led7seg_setChar(0xFF, TRUE);
 	GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
+	//OLED display "CLIMB"
+	oled_clearScreen(OLED_COLOR_BLACK);
+	oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
 	//The accelerometer readings should be initialized to be close to zero when the device enters CLIMB Mode.
 	acc_read(&x, &y, &z);
@@ -701,39 +640,74 @@ void do_Climb(){
 	= prev_uart_ticks = Get_Time();
 
 	while(state == Climb){
-		if(Climb_State == None && state == Climb){
-			printf("Entered Climb_State None\n");
-			//OLED display "CLIMB"
-			oled_clearScreen(OLED_COLOR_BLACK);
-			oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-			while (Climb_State == None && state == Climb){
-				check_ClimbSensors();
-				refresh_ClimbOLED();
-			}
+		//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
+		acc_read(&x, &y, &z);
+		x = x+xoff;
+		y = y+yoff;
+		z = z+zoff;
+		net_acc = (sqrt(x*x + y*y + z*z))/ 64;
+		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
+		if(net_acc > ACC_THRESHOLD){
+			printf("State changed from Climb to Emergency\n");
+			state = Emergency;
 		}
-		if(Climb_State == Rest && state == Climb){
-			printf("Entered Climb_State Rest\n");
-			prev_temp_ticks = Get_Time(); //Time that programme entered Rest
+
+		//Refresh
+		if ((Get_Time() - prev_sensor_ticks) >= sensor_refresh_ticks){
+			//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
+			tempvalue = temp_read(); //gives 10* temperature in degree C
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
+			sprintf(temp_string,"Acc: %5.2f g", net_acc);
+			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
+			prev_sensor_ticks = Get_Time();
+		}
+
+		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode. This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
+		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){
+			prev_temp_ticks = Get_Time();
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 			//If the temperature still remains above TEMP_THRESHOLD after 3 seconds, the alert should NOT be triggered again
 			temp_flag = 1;
 			restnow_printed = 1;
-			// the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
-			while(Get_Time() - prev_temp_ticks <= 3000  && state == Climb){ //cannot quit Rest state by changing Climb_State, got to wait for 3000ms to be over before exit
-				check_ClimbSensors();
-			}
-			printf("Exit Ticks: %lu, Entered ticks: %lu\n", Get_Time(), prev_temp_ticks);
-			Climb_State = Saved_State; //go back to either Music or Climb
+		}
+		//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
+		if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
+			temp_flag = 0;
+		}
+		
+		//light sensor should be continuously read and the reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
+		light_enable();
+		luminI = light_read();
+		sprintf(temp_string,"Light: %3lu lux\n",luminI);
+		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
+		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
+		shift = luminI / 18.75;
+		ledOn = (shift <= 16)?(1 << (16-shift)) - 1: 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
+//		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
+//		else ledOn = 0x0;
+		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
+		
+		//A message should also be displayed on the OLED screen saying "DIM"
+		if(luminI < LIGHT_THRESHOLD) oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		else oled_fillRect(0, dim_OLED_line, OLED_DISPLAY_WIDTH, dim_OLED_line+8, OLED_COLOR_BLACK); //clear dim_OLED_line
+		
+		// the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
+		if (restnow_printed && Get_Time() - prev_temp_ticks >= 3000){
+			oled_fillRect(0, restnow_OLED_line, OLED_DISPLAY_WIDTH, restnow_OLED_line+8, OLED_COLOR_BLACK); //clear restnow_OLED_line
 			restnow_printed = 0;
-		}
-		if(Climb_State == Music && state == Climb){
-			printf("Entered Climb_State Music\n");
-			oled_clearScreen(OLED_COLOR_BLACK);
-			while(Climb_State == Music  && state == Climb){
-				check_ClimbSensors();
-			}
-		}
+		}	
+
+		//The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
+//		if ((Get_Time() - prev_uart_ticks) >= 5000){
+//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+//			uart_Send(uart_msg);
+//			prev_uart_ticks = Get_Time();
+//		}
 	}
 }
 
