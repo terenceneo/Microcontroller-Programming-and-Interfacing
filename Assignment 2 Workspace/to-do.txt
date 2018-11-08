@@ -3,7 +3,7 @@ Initialization
 
 ItoC
 (fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
-9. Array for countdown, add top line for '6' so it doesnt look like b
+(done) 9. Array for countdown, add top line for '6' so it doesnt look like b
 
 Climb
 (fixed, to be checked) 2. think about LIGHT_THRESHOLD pca9532_setLeds function logic
@@ -23,15 +23,29 @@ Emergency over
 	- to to set flag with interrupt, trigger if flag and sw4 pressed
 	- delay in timing (22nd second)
 
+Others
 - check that everything in interrupt is volatile
 - change debug mode to release mode for compilation
 
 UART Stuffzzzzz
+- done parts are working, but still not done
 
 ENHANCEMENT
 - rotary tool to adjust sensor refresh rate
 - rotary tool to adjust led brightness with PWM
-- music playlist selector with joystick
+- (code done, need more songs, possible extensions) music playlist selector with joystick
+	+ Current features
+		- can do static scrolling (limits to 5 songs on screen)
+		- highlights selected song/ currently playing song on oled
+		- pause/ resume song w center button (pausing saves state of current song's progress)
+		- pause and change song (changes state to start of new song)
+		- skip to previous/next song with up/down buttons
+		- Climb mode features working in music mode, tested for:
+			- led & light sensors working while in song mode (include when song is playig)
+			- can enter emergency mode when song is playing
+	+Further Extensions
+	- loop one song/ loop album/ play once/ shuffle etc modes switching
+	- dynamic scrolling for more songs
 - clear interrupt pending before enabling interrupt
 - EINT0 interrupt for SW3
 - interrupt for temperature rest trigger
