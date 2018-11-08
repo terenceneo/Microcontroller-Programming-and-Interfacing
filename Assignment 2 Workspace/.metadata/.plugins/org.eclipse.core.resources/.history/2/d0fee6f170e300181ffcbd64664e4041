@@ -50,13 +50,13 @@ static char *song_titles[] = {"Happy Birthday 1",
 		//"Happy Birthday 2",
 		"One Call Away",
 		"Let Her Go",
-		"Say something", //only song that works for now
+		"Say something",
 		"I'm yours"
 //		"Song 6"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
-static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
+static uint8_t * songs[] = {(uint8_t*)"D4,C2.C2,D4,C4,F4,E8,",
        // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
 		(uint8_t*)"B2,A2,G2,G4,A4,B2,B4,G2,c2,B2,A2,G2,c4,B4,A4,",
 		(uint8_t*)"A2,B2,A2,G2,D2,E2,G4,E2,B4.A2,B2,A2,G2,D2,E2,G4,E2,B4,",
@@ -1012,7 +1012,7 @@ void EINT3_IRQHandler(void){ //for interrupts
 }
 
 //UART3 interrupt handler
-void UART3_IRQHandler(void){
+//void UART3_IRQHandler(void){
 //	printf("Hi");
 //	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
 //	{
@@ -1025,8 +1025,8 @@ void UART3_IRQHandler(void){
 //		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
 //	}
 //	printf("Hi");
-	UART3_StdIntHandler();
-}
+//	UART3_StdIntHandler();
+//}
 
 //Handler occurs every 1ms
 void SysTick_Handler (void){

@@ -50,7 +50,7 @@ static char *song_titles[] = {"Happy Birthday 1",
 		//"Happy Birthday 2",
 		"One Call Away",
 		"Let Her Go",
-		"Say something", //only song that works for now
+		"Say something",
 		"I'm yours"
 //		"Song 6"
 };

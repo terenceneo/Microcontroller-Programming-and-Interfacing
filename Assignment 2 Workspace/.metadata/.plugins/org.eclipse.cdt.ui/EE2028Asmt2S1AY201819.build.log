@@ -1,6 +1,6 @@
-15:32:11 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+00:21:43 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 make: Nothing to be done for `all'.
 
-15:32:11 Build Finished (took 213ms)
+00:21:43 Build Finished (took 222ms)
 

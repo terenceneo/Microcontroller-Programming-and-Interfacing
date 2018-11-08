@@ -12410,3 +12410,155 @@ make: Nothing to be done for `all'.
 15:32:11 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 make: Nothing to be done for `all'.
+23:26:51 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+23:26:52 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+23:26:53 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+23:26:54 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
+23:28:02 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  56784	   2432	   1200	  60416	   ec00	EE2028Asmt2S1AY201819.axf
+ 
+23:29:54 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  56784	   2432	   1168	  60384	   ebe0	EE2028Asmt2S1AY201819.axf
+ 
+23:31:10 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  56712	   2432	   1168	  60312	   eb98	EE2028Asmt2S1AY201819.axf
+ 
+23:31:12 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
+00:10:09 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  56832	   2440	   1168	  60440	   ec18	EE2028Asmt2S1AY201819.axf
+ 
+00:11:28 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: At top level:
+../src/main.c:1014:1: error: unknown type name 'UART3'
+../src/main.c:1014:17: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'handler'
+make: *** [src/main.o] Error 1
+00:12:03 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  57400	   2440	   1236	  61076	   ee94	EE2028Asmt2S1AY201819.axf
+ 
+00:12:27 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
+00:21:09 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:275:3: warning: value computed is not used [-Wunused-value]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\Debug" -L"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  57392	   2440	   1236	  61068	   ee8c	EE2028Asmt2S1AY201819.axf
+ 
+00:21:43 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+make: Nothing to be done for `all'.
