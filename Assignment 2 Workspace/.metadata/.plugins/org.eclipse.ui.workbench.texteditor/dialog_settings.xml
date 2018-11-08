@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="257" key="DIALOG_WIDTH"/>
+		<item value="353" key="DIALOG_WIDTH"/>
 		<item value="431" key="DIALOG_Y_ORIGIN"/>
 		<item value="1312" key="DIALOG_X_ORIGIN"/>
-		<item value="381" key="DIALOG_HEIGHT"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="513" key="DIALOG_HEIGHT"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="line" key="selection"/>
+		<item value="Handler" key="selection"/>
 		<list key="findhistory">
-			<item value="line"/>
-			<item value="hline"/>
-			<item value="music player"/>
-			<item value="song "/>
-			<item value="emer_dur"/>
-			<item value="Rest"/>
-			<item value="playsong"/>
-			<item value="music"/>
+			<item value="handler"/>
+			<item value="uart"/>
+			<item value="eint"/>
+			<item value="eint0"/>
+			<item value="blink"/>
+			<item value="acc"/>
+			<item value="do_in"/>
+			<item value="main"/>
 		</list>
 		<list key="replacehistory">
 			<item value="setRGBLeds"/>
