@@ -34,7 +34,7 @@ volatile typedef enum {
 	None, Rest, Music
 }ClimbState; //ClimbState is a type
 
-MachineState 		state = Climb;
+MachineState 		state = Initialization;
 ClimbState			Climb_State = None;
 ClimbState			Saved_State = None;
 
@@ -47,17 +47,21 @@ static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
 static char *song_titles[] = {"Happy Birthday 1",
-		"Happy Birthday 2",
-		"Random song",
-		"Song 4",
-		"Song 5",
+		//"Happy Birthday 2",
+		"One Call Away",
+		"Troublemaker",
+		//"I'm Not The Only One",
+		"Stressed Out"
 //		"Song 6"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
 static uint8_t * songs[] = {(uint8_t*)"D4,C2.C2,D4,C4,F4,E8,",
-        (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
-		(uint8_t*)"D4,B4,B4,A4,A4,"
+       // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
+		(uint8_t*)"b2,a2,g2,g8,a4,b2.b4,G2,c2,b2,a2,G2,c4,b4,a4,",
+		(uint8_t*)"b2,b2,b2,c2,b2,a2,G2,a4,a2,G4.G2,E2,G2,E2,G2,E2,G2,a2,a2,G2,",
+		//(uint8_t*)"G2,b2,d2,b2,G2,a2.a2,G4,",
+		(uint8_t*)"E2.E2,E2.E2,C2,C4,E2,E2.E2,B2.B2,A8,"
 		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
 		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
@@ -142,7 +146,7 @@ uint32_t ledOn = 0x0;
 int 	shift = 0;
 char 	uart_msg[50];
 char 	temp_string[32];
-
+char 	uart_string[32];
 static void moveBar(uint8_t steps, uint8_t dir){
     uint16_t ledOn = 0;
 
@@ -438,8 +442,8 @@ void init_uart(void){
 	//pin select for uart3
 	PINSEL_CFG_Type PinCfg;
 	PinCfg.Funcnum = 2;
-	PinCfg.OpenDrain = 0; //need these?
-	PinCfg.Pinmode = 0; //need these?
+//	PinCfg.OpenDrain = 0; //need these?
+//	PinCfg.Pinmode = 0; //need these?
 	PinCfg.Pinnum = 0;
 	PinCfg.Portnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
@@ -452,8 +456,12 @@ void init_uart(void){
 	UART_TxCmd(LPC_UART3, ENABLE);
 	//enable UART Rx interrupt
 	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE);
+	//clear pending for UART3
+	NVIC_ClearPendingIRQ(UART3_IRQn);
 	//enable Interrupt for UART3
 	NVIC_EnableIRQ(UART3_IRQn);
+
+
 }
 
 static void init_everything(){
@@ -634,8 +642,9 @@ void uart_Send(char* msg){
 }
 
 //Modes
+uint8_t rxbuf = 0;
 void do_Initialization(){
-	printf("Entered Initialization Mode\n");
+	printf("Entered Initialization Mode, %d\n", rxbuf);
 	//display "Initialization mode. Press TOGGLE to climb"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "Initialization", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -1004,7 +1013,19 @@ void EINT3_IRQHandler(void){ //for interrupts
 
 //UART3 interrupt handler
 void UART3_IRQHandler(void){
-    UART3_StdIntHandler();
+	printf("Hi");
+	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
+	{
+		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING);
+		sprintf(uart_string,"uart %u", rxbuf);
+		oled_putString(0, 40, (uint8_t *) uart_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	}
+	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
+	{
+		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
+	}
+	printf("Hi");
+	UART3_StdIntHandler();
 }
 
 //Handler occurs every 1ms

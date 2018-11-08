@@ -13,7 +13,7 @@ Climb
 (fixed, need to verify) 10. net acc / 64 instead, check that net acc = 1 when direction changed (90degree rotation)
 
 Emergency
-(still not updating consistently) 6. emergency mode duration does not update consistently per time interval
+(fixed) 6. emergency mode duration does not update consistently per time interval
 (fixed) 1. oled does not work with BLINK_BLUE at the same time (ItoC and Emergency)
 
 Emergency over
@@ -27,8 +27,11 @@ Others
 - check that everything in interrupt is volatile
 - change debug mode to release mode for compilation
 
-UART Stuffzzzzz
-- done parts are working, but still not done
+Music
+- music playlist goes to second song first
+
+UART Stuff
+- interrupt
 
 ENHANCEMENT
 - rotary tool to adjust sensor refresh rate
