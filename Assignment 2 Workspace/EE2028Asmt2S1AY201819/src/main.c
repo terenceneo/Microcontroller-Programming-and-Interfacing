@@ -48,20 +48,20 @@ char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
 static char *song_titles[] = {"Happy Birthday 1",
 		//"Happy Birthday 2",
-		"One Call Away",
-		"Let Her Go",
-		"Say something", //only song that works for now
-		"I'm yours"
+		"Scales 1",
+		"Scales 2",
+		"ABC",
+		"Say something"
 //		"Song 6"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
 static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
        // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
-		(uint8_t*)"B2,A2,G2,G4,A4,B2,B4,G2,c2,B2,A2,G2,c4,B4,A4,",
-		(uint8_t*)"A2,B2,A2,G2,D2,E2,G4,E2,B4.A2,B2,A2,G2,D2,E2,G4,E2,B4,",
-		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c2,",
-		(uint8_t*)"d2,e2,c2,G2,e2,d2,B2,G2,d2,c2,c2,A2,c2,F2,f2,e2,d2,c2"
+		(uint8_t*)"C2,D2,E2,F2,G2,A2,B2,c2,",
+		(uint8_t*)"C2,D2,E2,D2,C2,",
+		(uint8_t*)"G2,G2,d2,d2,e2,e2,d4,c2,c2,B2,B2,A2,A2,G4,",
+		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c2,"
 		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
 		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
