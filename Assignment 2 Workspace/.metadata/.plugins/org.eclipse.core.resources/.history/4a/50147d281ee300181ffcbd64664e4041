@@ -34,7 +34,7 @@ volatile typedef enum {
 	None, Rest, Music
 }ClimbState; //ClimbState is a type
 
-MachineState 		state = Initialization;
+MachineState 		state = Climb;
 ClimbState			Climb_State = None;
 ClimbState			Saved_State = None;
 
@@ -46,41 +46,40 @@ static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
-static char *song_titles[] = {"Happy Birthday",
+static char *song_titles[] = {"Happy Birthday 1",
 		//"Happy Birthday 2",
-		"ABC",
-		"Count On Me",
-		"Riptide",
-		"Say something",
-		"I am Titanium"
+		"One Call Away",
+		"Troublemaker",
+		//"I'm Not The Only One",
+		"Stressed Out"
+//		"Song 6"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
-static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
+static uint8_t * songs[] = {(uint8_t*)"D4,C2.C2,D4,C4,F4,E8,",
        // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
-		(uint8_t*)"G2,G2,d2,d2,e2,e2,d4,c2,c2,b2,b2,a2,a2,G4,",
-		(uint8_t*)"E2.E2,C2,E2,G2,C2,B2,E2,G2,",
-		(uint8_t*)"A2,B2,C2,D2,E2,a2,G4,E2,",
-		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c4,",
-		(uint8_t*)"C4,D2,F2,E2.C4,G2,F2,E2,E2,D2,D2,F8,"
+		(uint8_t*)"b2,a2,g2,g8,a4,b2.b4,G2,c2,b2,a2,G2,c4,b4,a4,",
+		(uint8_t*)"b2,b2,b2,c2,b2,a2,G2,a4,a2,G4.G2,E2,G2,E2,G2,E2,G2,a2,a2,G2,",
+		//(uint8_t*)"G2,b2,d2,b2,G2,a2.a2,G4,",
+		(uint8_t*)"E2.E2,E2.E2,C2,C4,E2,E2.E2,B2.B2,A8,"
 		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
 		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
 static uint32_t notes[] = {
+        2272, // A - 440 Hz
+        2024, // B - 494 Hz
         3816, // C - 262 Hz
         3401, // D - 294 Hz
         3030, // E - 330 Hz
         2865, // F - 349 Hz
         2551, // G - 392 Hz
-        2272, // A - 440 Hz
-        2024, // B - 494 Hz
+        1136, // a - 880 Hz
+        1012, // b - 988 Hz
         1912, // c - 523 Hz
         1703, // d - 587 Hz
         1517, // e - 659 Hz
         1432, // f - 698 Hz
         1275, // g - 784 Hz
-        1136, // a - 880 Hz
-        1012, // b - 988 Hz
 };
 
 uint8_t 	restnow_OLED_line = 32;
@@ -110,7 +109,7 @@ uint8_t 			SevenSegFlag = 9;
 uint8_t 			RGB_FLAG = 0;
 uint8_t 			countdown_flag = 0;
 
-uint8_t 			temp_flag = 0; //temp cant be unsigned int?
+uint8_t 			temp_flag = 0;
 uint8_t 			restnow_printed = 0;
 
 uint8_t 			scroll_updated = 1;
@@ -147,7 +146,7 @@ uint32_t ledOn = 0x0;
 int 	shift = 0;
 char 	uart_msg[50];
 char 	temp_string[32];
-char 	uart_string[32];
+
 static void moveBar(uint8_t steps, uint8_t dir){
     uint16_t ledOn = 0;
 
@@ -443,6 +442,8 @@ void init_uart(void){
 	//pin select for uart3
 	PINSEL_CFG_Type PinCfg;
 	PinCfg.Funcnum = 2;
+	PinCfg.OpenDrain = 0; //need these?
+	PinCfg.Pinmode = 0; //need these?
 	PinCfg.Pinnum = 0;
 	PinCfg.Portnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
@@ -455,12 +456,8 @@ void init_uart(void){
 	UART_TxCmd(LPC_UART3, ENABLE);
 	//enable UART Rx interrupt
 	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE);
-	//clear pending for UART3
-	NVIC_ClearPendingIRQ(UART3_IRQn);
 	//enable Interrupt for UART3
 	NVIC_EnableIRQ(UART3_IRQn);
-
-
 }
 
 static void init_everything(){
@@ -641,9 +638,8 @@ void uart_Send(char* msg){
 }
 
 //Modes
-uint8_t rxbuf = 0;
 void do_Initialization(){
-	printf("Entered Initialization Mode, %d\n", rxbuf);
+	printf("Entered Initialization Mode\n");
 	//display "Initialization mode. Press TOGGLE to climb"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "Initialization", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -711,13 +707,11 @@ void check_ClimbSensors(){ //Called in all Climb_State
 	}
 
 //The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
-		if ((Get_Time() - prev_uart_ticks) >= 5000){
-			char uart_msg[50];
-			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
-			//uart_Send(uart_msg);
-			prev_uart_ticks = Get_Time();
-		}
+//		if ((Get_Time() - prev_uart_ticks) >= 5000){
+//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+//			uart_Send(uart_msg);
+//			prev_uart_ticks = Get_Time();
+//		}
 }
 
 void refresh_ClimbOLED(){ //Called in Climb_State = None
@@ -858,13 +852,11 @@ void do_Emergency(){
 		//RGB LED should behave as described in ALTERNATE_LED
 		ALTERNATE_LED();
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
-		if ((Get_Time() - prev_uart_ticks) >= 5000){
-			char uart_msg[50];
-			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
-			//uart_Send(uart_msg);
-			prev_uart_ticks = Get_Time();
-		}
+//		if ((Get_Time() - prev_uart_ticks) >= 5000){
+//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
+//			uart_Send(uart_msg);
+//			prev_uart_ticks = Get_Time();
+//		}
 	}
 }
 
@@ -1015,20 +1007,9 @@ void EINT3_IRQHandler(void){ //for interrupts
 }
 
 //UART3 interrupt handler
-//void UART3_IRQHandler(void){
-//	printf("Hi\n");
-//	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING);
-//		sprintf(uart_string,"uart %u", rxbuf);
-//		oled_putString(0, 40, (uint8_t *) uart_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-//	}
-//	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
-//	}
-//	UART3_StdIntHandler();
-//}
+void UART3_IRQHandler(void){
+    UART3_StdIntHandler();
+}
 
 //Handler occurs every 1ms
 void SysTick_Handler (void){

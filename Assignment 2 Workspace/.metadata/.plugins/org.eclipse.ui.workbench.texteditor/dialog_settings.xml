@@ -2,8 +2,13 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="353" key="DIALOG_WIDTH"/>
+<<<<<<< HEAD
 		<item value="518" key="DIALOG_Y_ORIGIN"/>
 		<item value="1401" key="DIALOG_X_ORIGIN"/>
+=======
+		<item value="507" key="DIALOG_Y_ORIGIN"/>
+		<item value="532" key="DIALOG_X_ORIGIN"/>
+>>>>>>> parent of a110cb5... Song changed
 		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
@@ -13,6 +18,7 @@
 		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
+<<<<<<< HEAD
 		<item value="t" key="selection"/>
 		<list key="findhistory">
 			<item value="tempvalue"/>
@@ -23,6 +29,18 @@
 			<item value="sensor_refresh_ticks"/>
 			<item value="refresh"/>
 			<item value="temp_read"/>
+=======
+		<item value="main" key="selection"/>
+		<list key="findhistory">
+			<item value="init_everything"/>
+			<item value="main"/>
+			<item value="uart"/>
+			<item value="interrupt"/>
+			<item value="uart interrupt "/>
+			<item value="ini"/>
+			<item value="duration"/>
+			<item value="climb mode"/>
+>>>>>>> parent of a110cb5... Song changed
 		</list>
 		<list key="replacehistory">
 			<item value="fast_temp_read"/>

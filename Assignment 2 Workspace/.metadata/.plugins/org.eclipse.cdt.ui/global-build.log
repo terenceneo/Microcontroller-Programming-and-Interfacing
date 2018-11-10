@@ -12805,6 +12805,7 @@ arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE20
    text	   data	    bss	    dec	    hex	filename
   57136	   2448	   1200	  60784	   ed70	EE2028Asmt2S1AY201819.axf
  
+<<<<<<< HEAD
 12:12:47 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
 make all 
 make: Nothing to be done for `all'.
@@ -13354,3 +13355,5 @@ arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE20
 20:20:05 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 make: Nothing to be done for `all'.
+=======
+>>>>>>> parent of a110cb5... Song changed

@@ -8477,6 +8477,7 @@ Binding(CTRL+SHIFT+H,
 
 !ENTRY com.crt.log 1 0 2018-11-10 12:08:38.419
 !MESSAGE Drivers loaded in 1952 milliseconds
+<<<<<<< HEAD
 
 !ENTRY com.crt.dsfdebug 4 0 2018-11-10 12:18:26.291
 !MESSAGE 16: Target error from status-poll
@@ -10108,3 +10109,5 @@ org.eclipse.core.runtime.CoreException: The file does not exist.
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
 !SUBENTRY 1 org.eclipse.core.filebuffers 4 0 2018-11-10 21:12:24.027
 !MESSAGE The file does not exist.
+=======
+>>>>>>> parent of a110cb5... Song changed

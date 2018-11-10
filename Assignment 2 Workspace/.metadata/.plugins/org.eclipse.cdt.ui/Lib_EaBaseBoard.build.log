@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 19:37:23 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
 make all 
 make: Nothing to be done for `all'.
 
 19:37:24 Build Finished (took 224ms)
+=======
+12:08:29 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+
+12:08:29 Build Finished (took 159ms)
+>>>>>>> parent of a110cb5... Song changed
 
