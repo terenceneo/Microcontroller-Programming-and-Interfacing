@@ -2,8 +2,8 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="353" key="DIALOG_WIDTH"/>
-		<item value="512" key="DIALOG_Y_ORIGIN"/>
-		<item value="1565" key="DIALOG_X_ORIGIN"/>
+		<item value="507" key="DIALOG_Y_ORIGIN"/>
+		<item value="532" key="DIALOG_X_ORIGIN"/>
 		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="OLED" key="selection"/>
+		<item value="main" key="selection"/>
 		<list key="findhistory">
-			<item value="oled"/>
-			<item value="temp_string"/>
-			<item value="spri"/>
-			<item value="enter"/>
-			<item value="do_in"/>
-			<item value="do_ini"/>
-			<item value="uart_send"/>
+			<item value="init_everything"/>
+			<item value="main"/>
 			<item value="uart"/>
+			<item value="interrupt"/>
+			<item value="uart interrupt "/>
+			<item value="ini"/>
+			<item value="duration"/>
+			<item value="climb mode"/>
 		</list>
 		<list key="replacehistory">
 			<item value="setRGBLeds"/>

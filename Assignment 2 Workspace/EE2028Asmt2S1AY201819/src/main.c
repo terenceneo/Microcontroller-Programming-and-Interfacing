@@ -46,22 +46,23 @@ static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
-static char *song_titles[] = {"Happy Birthday 1",
+static char *song_titles[] = {"Happy Birthday",
 		//"Happy Birthday 2",
-		"Scales 1",
-		"Scales 2",
 		"ABC",
-		"Say something"
-//		"Song 6"
+		"Count On Me",
+		"Riptide",
+		"Say something",
+		"I am Titanium"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
 static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
        // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
-		(uint8_t*)"C2,D2,E2,F2,G2,A2,B2,c2,",
-		(uint8_t*)"C2,D2,E2,D2,C2,",
-		(uint8_t*)"G2,G2,d2,d2,e2,e2,d4,c2,c2,B2,B2,A2,A2,G4,",
-		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c2,"
+		(uint8_t*)"G2,G2,d2,d2,e2,e2,d4,c2,c2,b2,b2,a2,a2,G4,",
+		(uint8_t*)"E2.E2,C2,E2,G2,C2,B2,E2,G2,",
+		(uint8_t*)"A2,B2,C2,D2,E2,a2,G4,E2,",
+		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c4,",
+		(uint8_t*)"C4,D2,F2,E2.C4,G2,F2,E2,E2,D2,D2,F8,"
 		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
 		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
@@ -109,7 +110,7 @@ uint8_t 			SevenSegFlag = 9;
 uint8_t 			RGB_FLAG = 0;
 uint8_t 			countdown_flag = 0;
 
-uint8_t 			temp_flag = 0; //temp cant be unsigned int
+uint8_t 			temp_flag = 0; //temp cant be unsigned int?
 uint8_t 			restnow_printed = 0;
 
 uint8_t 			scroll_updated = 1;
@@ -146,7 +147,7 @@ uint32_t ledOn = 0x0;
 int 	shift = 0;
 char 	uart_msg[50];
 char 	temp_string[32];
-//char 	uart_string[32];
+char 	uart_string[32];
 static void moveBar(uint8_t steps, uint8_t dir){
     uint16_t ledOn = 0;
 
@@ -442,8 +443,6 @@ void init_uart(void){
 	//pin select for uart3
 	PINSEL_CFG_Type PinCfg;
 	PinCfg.Funcnum = 2;
-//	PinCfg.OpenDrain = 0; //need these?
-//	PinCfg.Pinmode = 0; //need these?
 	PinCfg.Pinnum = 0;
 	PinCfg.Portnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
@@ -712,11 +711,13 @@ void check_ClimbSensors(){ //Called in all Climb_State
 	}
 
 //The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
-//		if ((Get_Time() - prev_uart_ticks) >= 5000){
-//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
-//			uart_Send(uart_msg);
-//			prev_uart_ticks = Get_Time();
-//		}
+		if ((Get_Time() - prev_uart_ticks) >= 5000){
+			char uart_msg[50];
+			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+			//uart_Send(uart_msg);
+			prev_uart_ticks = Get_Time();
+		}
 }
 
 void refresh_ClimbOLED(){ //Called in Climb_State = None
@@ -857,11 +858,13 @@ void do_Emergency(){
 		//RGB LED should behave as described in ALTERNATE_LED
 		ALTERNATE_LED();
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
-//		if ((Get_Time() - prev_uart_ticks) >= 5000){
-//			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10); //to be edited
-//			uart_Send(uart_msg);
-//			prev_uart_ticks = Get_Time();
-//		}
+		if ((Get_Time() - prev_uart_ticks) >= 5000){
+			char uart_msg[50];
+			sprintf(uart_msg,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+			//uart_Send(uart_msg);
+			prev_uart_ticks = Get_Time();
+		}
 	}
 }
 
@@ -1012,8 +1015,8 @@ void EINT3_IRQHandler(void){ //for interrupts
 }
 
 //UART3 interrupt handler
-void UART3_IRQHandler(void){
-//	printf("Hi");
+//void UART3_IRQHandler(void){
+//	printf("Hi\n");
 //	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
 //	{
 //		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING);
@@ -1024,9 +1027,8 @@ void UART3_IRQHandler(void){
 //	{
 //		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
 //	}
-//	printf("Hi");
-	UART3_StdIntHandler();
-}
+//	UART3_StdIntHandler();
+//}
 
 //Handler occurs every 1ms
 void SysTick_Handler (void){
