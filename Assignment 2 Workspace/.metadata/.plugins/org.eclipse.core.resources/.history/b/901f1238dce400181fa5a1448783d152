@@ -9,7 +9,6 @@
 #include "stdio.h"
 #include "math.h"
 #include "string.h"
-#include "stdlib.h"
 
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_gpio.h"
@@ -121,7 +120,6 @@ int 				saved_count = 0;
 int 				song_index = 0;
 int 				prev_song_index = 0;
 int 				song_pointer_count = 0;
-int					temp_periods = 0;
 
 //Sensor input storage variables
 volatile uint32_t 	tempvalue = 0;
@@ -143,26 +141,12 @@ uint8_t 			joyState = 0;
 uint8_t 			btn1 = 1;
 uint8_t 			rxbuf = 0;
 
-volatile uint32_t 	t1 = 0;
-volatile uint32_t 	t2 = 0;
-
 //Peripheral output storage variables
 uint32_t ledOn = 0x0;
 int 	shift = 0;
 char 	uart_msg[50];
 char 	temp_string[32];
 char 	uart_string[32];
-
-//TEMP_SCALAR_DIV10 definition for temperature pins configurations
-#if TEMP_TS1 == 0 && TEMP_TS0 == 0
-#define TEMP_SCALAR_DIV10 1
-#elif TEMP_TS1 == 0 && TEMP_TS0 == 1
-#define TEMP_SCALAR_DIV10 4
-#elif TEMP_TS1 == 1 && TEMP_TS0 == 0
-#define TEMP_SCALAR_DIV10 16
-#elif TEMP_TS1 == 1 && TEMP_TS0 == 1
-#define TEMP_SCALAR_DIV10 64
-#endif
 
 static void moveBar(uint8_t steps, uint8_t dir){
     uint16_t ledOn = 0;
@@ -510,13 +494,6 @@ static void init_everything(){
     NVIC_EnableIRQ(EINT3_IRQn);
 }
 
-// Replacement for slow temp_read() driver function
-int32_t fast_temp_read (void){
-	int32_t time_diff = abs(t2-t1);
-	//10T(C) = (period (us) / scalar_div10) - 2731 K
-	return (time_diff*1000 / (10*TEMP_SCALAR_DIV10)) - 2731; //*1000 to convert ms to microsecond
-}
-
 //RGB LEDs
 //Function to deconflict PIO1_10, Port 2 Pin one used by RGB_GREEN and OLED
 void setRGBLeds (uint8_t ledMask){
@@ -530,6 +507,41 @@ void setRGBLeds (uint8_t ledMask){
     } else {
         GPIO_ClearValue( 0, (1<<26) );
     }
+}
+
+int32_t fast_temp_read (void)
+{
+    uint8_t state = 0;
+    uint32_t t1 = 0;
+    uint32_t t2 = 0;
+    int i = 0;
+    /*
+     * T(C) = ( period (us) / scalar ) - 273.15 K
+     *
+     * 10T(C) = (period (us) / scalar_div10) - 2731 K
+     */
+    state = GET_TEMP_STATE; //read state of P0_2, temperature
+
+    /* get next state change before measuring time */
+    while(GET_TEMP_STATE == state); //wait for GET_TEMP_STATE (temperature reading state) to change
+    state = !state; //change state to match
+
+    t1 = getTicks(); //start time just as state is changed
+
+    for (i = 0; i < NUM_HALF_PERIODS; i++) {
+        while(GET_TEMP_STATE == state); //wait for GET_TEMP_STATE to change NUM_HALF_PERIODS times
+        state = !state;
+    }
+
+    t2 = getTicks(); //end time just as state changes for the NUM_HALF_PERIODSth time
+    t2 = abs(t2-t1);
+//    if (t2 > t1) {
+//        t2 = t2-t1;
+//    }
+//    else {
+//        t2 = (0xFFFFFFFF - t1 + 1) + t2;
+//    }
+    return ( (2*1000*t2) / (NUM_HALF_PERIODS*TEMP_SCALAR_DIV10) - 2731 );
 }
 
 void ALTERNATE_LED(){
@@ -969,16 +981,6 @@ void Trimpot_RGB(){}
 
 //Interrupt Handler
 void EINT3_IRQHandler(void){ //for interrupts
-	// Temperature sensor
-	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){ //temperature sensor
-		LPC_GPIOINT ->IO0IntClr = 1<<2; //clear the interrupt
-		temp_periods++;
-		if (temp_periods == 1) 			t1 = Get_Time(); 	//time at the start of 10 periods
-		else if (temp_periods == 11)	t2 = Get_Time();	//time at the end of 10 periods
-		//wait for awhile before resetting temp_periods for next reading
-		else if (temp_periods == 20) 	temp_periods = 0;
-	}
-
 	// SW3
 	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
 		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt

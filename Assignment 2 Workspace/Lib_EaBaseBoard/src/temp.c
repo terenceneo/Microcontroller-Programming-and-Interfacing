@@ -121,20 +121,20 @@ int32_t temp_read (void)
      * 10T(C) = (period (us) / scalar_div10) - 2731 K
      */
 
-    state = GET_TEMP_STATE;
+    state = GET_TEMP_STATE; //read state of P0_2, temperature
 
     /* get next state change before measuring time */
-    while(GET_TEMP_STATE == state);
-    state = !state;
+    while(GET_TEMP_STATE == state); //wait for GET_TEMP_STATE (temperature reading state) to change
+    state = !state; //change state to match
 
-    t1 = getTicks();
+    t1 = getTicks(); //start time just as state is changed
 
     for (i = 0; i < NUM_HALF_PERIODS; i++) {
-        while(GET_TEMP_STATE == state);
+        while(GET_TEMP_STATE == state); //wait for GET_TEMP_STATE to change NUM_HALF_PERIODS times
         state = !state;
     }
 
-    t2 = getTicks();
+    t2 = getTicks(); //end time just as state changes for the NUM_HALF_PERIODSth time
     if (t2 > t1) {
         t2 = t2-t1;
     }
