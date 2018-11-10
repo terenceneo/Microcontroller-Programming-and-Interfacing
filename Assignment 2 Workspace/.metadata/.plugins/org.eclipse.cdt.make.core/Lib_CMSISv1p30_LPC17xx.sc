@@ -318,7 +318,6 @@
 <definedSymbol symbol="__GXX_TYPEINFO_EQUALITY_INLINE=0"/>
 <definedSymbol symbol="__ELF__=1"/>
 <definedSymbol symbol="__USES_INITFINI__=1"/>
-<definedSymbol symbol="__UACCUM_F="/>
 </collector>
 </instance>
 <instance id="com.crt.advproject.config.lib.debug.476180645;com.crt.advproject.config.lib.debug.476180645.;com.crt.advproject.gas.lib.debug.1221856873;com.crt.advproject.assembler.input.1433807015">

@@ -4,11 +4,7 @@
  * (c) NXP Semiconductors 2013-2018
  * Linker script memory definitions
  * Created from LinkMemoryTemplate
-<<<<<<< HEAD
- * By LPCXpresso v6.1.4 [Build 194] [2014-01-15]  on Sat Nov 10 20:20:04 SGT 2018)
-=======
- * By LPCXpresso v6.1.4 [Build 194] [2014-01-15]  on Sat Nov 10 12:08:30 SGT 2018)
->>>>>>> parent of a110cb5... Song changed
+ * By LPCXpresso v6.1.4 [Build 194] [2014-01-15]  on Sat Nov 10 21:38:44 SGT 2018)
 */
 
 MEMORY

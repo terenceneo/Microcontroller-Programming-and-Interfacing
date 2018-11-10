@@ -1,14 +1,6 @@
-<<<<<<< HEAD
-19:37:22 **** Incremental Build of configuration Debug for project Lib_MCU ****
+21:39:01 **** Incremental Build of configuration Debug for project Lib_MCU ****
 make all 
 make: Nothing to be done for `all'.
 
-19:37:22 Build Finished (took 276ms)
-=======
-12:08:28 **** Incremental Build of configuration Debug for project Lib_MCU ****
-make all 
-make: Nothing to be done for `all'.
-
-12:08:28 Build Finished (took 219ms)
->>>>>>> parent of a110cb5... Song changed
+21:39:01 Build Finished (took 213ms)
 
