@@ -48,21 +48,19 @@ char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
 static char *song_titles[] = {"Happy Birthday",
 		//"Happy Birthday 2",
-		"ABC",
+		"I am Titanium",
 		"Count On Me",
 		"Riptide",
-		"Say something",
-		"I am Titanium"
+		"Say something"
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
 static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
        // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
-		(uint8_t*)"G2,G2,d2,d2,e2,e2,d4,c2,c2,b2,b2,a2,a2,G4,",
+		(uint8_t*)"C4,D2,F2,E2.C4,G2,F2,E2,E2,D2,D2,F8,",
 		(uint8_t*)"E2.E2,C2,E2,G2,C2,B2,E2,G2,",
 		(uint8_t*)"A2,B2,C2,D2,E2,a2,G4,E2,",
-		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c4,",
-		(uint8_t*)"C4,D2,F2,E2.C4,G2,F2,E2,E2,D2,D2,F8,"
+		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c4,"
 		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
 		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
@@ -141,6 +139,7 @@ uint8_t 			wait = 0;
 uint8_t 			joyState = 0;
 
 uint8_t 			btn1 = 1;
+uint8_t 			rxbuf = 0;
 
 //Peripheral output storage variables
 uint32_t ledOn = 0x0;
@@ -148,6 +147,7 @@ int 	shift = 0;
 char 	uart_msg[50];
 char 	temp_string[32];
 char 	uart_string[32];
+
 static void moveBar(uint8_t steps, uint8_t dir){
     uint16_t ledOn = 0;
 
@@ -456,7 +456,7 @@ void init_uart(void){
 	//enable UART Rx interrupt
 	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE);
 	//clear pending for UART3
-	NVIC_ClearPendingIRQ(UART3_IRQn);
+	//NVIC_ClearPendingIRQ(UART3_IRQn);
 	//enable Interrupt for UART3
 	NVIC_EnableIRQ(UART3_IRQn);
 
@@ -641,9 +641,8 @@ void uart_Send(char* msg){
 }
 
 //Modes
-uint8_t rxbuf = 0;
 void do_Initialization(){
-	printf("Entered Initialization Mode, %d\n", rxbuf);
+	printf("Entered Initialization Mode, %d\n");
 	//display "Initialization mode. Press TOGGLE to climb"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "Initialization", OLED_COLOR_WHITE, OLED_COLOR_BLACK);

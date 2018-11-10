@@ -1,10 +1,10 @@
-12:08:32 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+12:12:52 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
 arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_CMSISv1p30_LPC17xx\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_EaBaseBoard\inc" -I"C:\Users\Rachel\Dropbox\Assignment 2\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
 ../src/main.c: In function 'playSong':
-../src/main.c:276:3: warning: value computed is not used [-Wunused-value]
+../src/main.c:274:3: warning: value computed is not used [-Wunused-value]
 Finished building: ../src/main.c
  
 Building target: EE2028Asmt2S1AY201819.axf
@@ -16,8 +16,8 @@ make --no-print-directory post-build
 Performing post-build steps
 arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
    text	   data	    bss	    dec	    hex	filename
-  57136	   2448	   1200	  60784	   ed70	EE2028Asmt2S1AY201819.axf
+  57088	   2440	   1200	  60728	   ed38	EE2028Asmt2S1AY201819.axf
  
 
-12:08:33 Build Finished (took 1s.423ms)
+12:12:53 Build Finished (took 1s.248ms)
 
