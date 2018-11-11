@@ -484,3 +484,516 @@ arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE20
    text	   data	    bss	    dec	    hex	filename
   58056	   2448	   1208	  61712	   f110	EE2028Asmt2S1AY201819.axf
  
+14:02:26 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:02:28 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:02:31 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:02:35 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1063:35: error: subscripted value is neither array nor pointer nor vector
+../src/main.c:1064:11: error: subscripted value is neither array nor pointer nor vector
+../src/main.c:1065:16: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1065:16: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1066:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1066:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1067:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1067:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1068:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1068:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1069:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1069:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1070:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1070:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1072:22: warning: initialization makes integer from pointer without a cast [enabled by default]
+../src/main.c:1073:5: error: expected ',' or ';' before 'UART_Send'
+../src/main.c:1072:10: warning: unused variable 'temp_msg' [-Wunused-variable]
+make: *** [src/main.o] Error 1
+14:04:23 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:04:25 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:04:26 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:04:31 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c:148:1: error: invalid initializer
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1064:22: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1064:22: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1065:16: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1065:16: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1066:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1066:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1067:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1067:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1068:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1068:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1069:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1069:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1070:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1070:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1072:22: warning: initialization makes integer from pointer without a cast [enabled by default]
+../src/main.c:1073:26: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+../src/main.c:1073:5: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:34:9: note: expected 'const char *' but argument is of type 'char'
+../src/main.c:1075:21: error: incompatible types when assigning to type 'uint8_t[255]' from type 'int'
+make: *** [src/main.o] Error 1
+14:05:38 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:05:39 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:05:41 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:05:45 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c:148:1: error: invalid initializer
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1064:22: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1065:16: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1065:16: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1066:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1066:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1067:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1067:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1068:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1068:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1069:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1069:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1070:19: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+../src/main.c:1070:19: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../src/main.c:1072:22: warning: initialization makes integer from pointer without a cast [enabled by default]
+../src/main.c:1073:26: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+../src/main.c:1073:5: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:34:9: note: expected 'const char *' but argument is of type 'char'
+../src/main.c:1076:10: error: incompatible types when assigning to type 'uint8_t[255]' from type 'int'
+make: *** [src/main.o] Error 1
+14:09:04 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:09:06 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:09:08 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:09:11 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c:148:1: error: invalid initializer
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:19: warning: character constant too long for its type [enabled by default]
+../src/main.c:1066:16: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1067:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1067:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1068:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1068:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1069:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1069:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1070:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1070:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1071:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1071:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1073:22: warning: initialization makes integer from pointer without a cast [enabled by default]
+../src/main.c:1074:26: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+../src/main.c:1074:5: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:34:9: note: expected 'const char *' but argument is of type 'char'
+make: *** [src/main.o] Error 1
+14:11:13 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:11:15 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:11:16 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:11:19 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:19: warning: character constant too long for its type [enabled by default]
+../src/main.c:1066:16: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1067:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1067:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1068:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1068:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1069:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1069:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1070:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1070:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1071:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1071:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1073:22: warning: initialization makes integer from pointer without a cast [enabled by default]
+../src/main.c:1074:26: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+../src/main.c:1074:5: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:34:9: note: expected 'const char *' but argument is of type 'char'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59376	   2448	   1468	  63292	   f73c	EE2028Asmt2S1AY201819.axf
+ 
+14:18:30 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:18:31 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:18:33 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:18:36 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:19: warning: character constant too long for its type [enabled by default]
+../src/main.c:1066:16: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1067:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1067:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1068:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1068:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1069:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1069:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1070:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1070:19: warning: comparison between pointer and integer [enabled by default]
+../src/main.c:1071:22: warning: character constant too long for its type [enabled by default]
+../src/main.c:1071:19: warning: comparison between pointer and integer [enabled by default]
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59384	   2448	   1468	  63300	   f744	EE2028Asmt2S1AY201819.axf
+ 
+14:33:34 **** Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:33:44 **** Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:33:48 **** Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:34:59 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:35:01 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:35:02 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:35:07 **** Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:24: warning: character constant too long for its type [enabled by default]
+../src/main.c:1066:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1066:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1067:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1067:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1067:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1068:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1068:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1068:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1069:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1069:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1069:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1070:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1070:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1070:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1071:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1071:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1071:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59896	   2448	   1468	  63812	   f944	EE2028Asmt2S1AY201819.axf
+ 
+14:36:52 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:36:53 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:36:55 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:37:00 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1067:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1067:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1067:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1068:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1068:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1068:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1069:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1069:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1069:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1070:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1070:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1070:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+../src/main.c:1071:27: warning: character constant too long for its type [enabled by default]
+../src/main.c:1071:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1071:4: warning: passing argument 2 of 'strcmp' makes pointer from integer without a cast [enabled by default]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'int'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59904	   2448	   1468	  63820	   f94c	EE2028Asmt2S1AY201819.axf
+ 
+14:37:46 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:37:47 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:37:49 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:37:53 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint8_t *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'uint8_t (*)[255]'
+../src/main.c:1066:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1067:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1068:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1069:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1070:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+../src/main.c:1071:4: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+c:\nxp\lpcxpresso_6.1.4_194\lpcxpresso\tools\bin\../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/include/newlib_inc/string.h:29:6: note: expected 'const char *' but argument is of type 'uint8_t *'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59968	   2448	   1468	  63884	   f98c	EE2028Asmt2S1AY201819.axf
+ 
+14:39:11 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:39:13 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:39:15 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:39:21 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'char *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
+../src/main.c:1063:2: warning: pointer targets in passing argument 2 of 'UART_Receive' differ in signedness [-Wpointer-sign]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char *'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59968	   2448	   1468	  63884	   f98c	EE2028Asmt2S1AY201819.axf
+ 
+14:39:56 **** Incremental Build of configuration Debug for project Lib_CMSISv1p30_LPC17xx ****
+make all 
+make: Nothing to be done for `all'.
+14:39:58 **** Incremental Build of configuration Debug for project Lib_MCU ****
+make all 
+make: Nothing to be done for `all'.
+14:40:02 **** Incremental Build of configuration Debug for project Lib_EaBaseBoard ****
+make all 
+make: Nothing to be done for `all'.
+14:40:09 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU C Compiler
+arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'playSong':
+../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c: In function 'UART3_IRQHandler':
+../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
+../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'char *' [-Wformat]
+../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
+Finished building: ../src/main.c
+ 
+Building target: EE2028Asmt2S1AY201819.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\Debug" -L"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\Debug" -Xlinker --gc-sections -Xlinker -Map=EE2028Asmt2S1AY201819.map -mcpu=cortex-m3 -mthumb -T "EE2028Asmt2S1AY201819_Debug.ld" -o "EE2028Asmt2S1AY201819.axf"  ./src/cr_startup_lpc17.o ./src/main.o   -lCMSISv1p30_LPC17xx -lLib_EaBaseBoard -lLib_MCU
+Finished building target: EE2028Asmt2S1AY201819.axf
+ 
+make --no-print-directory post-build
+Performing post-build steps
+arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
+   text	   data	    bss	    dec	    hex	filename
+  59968	   2448	   1468	  63884	   f98c	EE2028Asmt2S1AY201819.axf
+ 

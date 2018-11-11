@@ -13,8 +13,12 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Song" key="selection"/>
+		<item value="EINT0" key="selection"/>
 		<list key="findhistory">
+			<item value="eint0"/>
+			<item value="rgb"/>
+			<item value="on acc"/>
+			<item value="acc on"/>
 			<item value="song"/>
 			<item value="none"/>
 			<item value="&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD"/>

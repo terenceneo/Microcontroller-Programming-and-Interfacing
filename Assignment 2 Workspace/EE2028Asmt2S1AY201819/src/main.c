@@ -116,6 +116,10 @@ uint8_t 			scroll_updated = 1;
 uint8_t 			play_flag = 0;
 uint8_t 			song_changed = 0;
 
+volatile uint8_t	acc_on = 1;
+volatile uint8_t	temp_on = 1;
+volatile uint8_t	light_on = 1;
+
 //Counters
 int 				saved_count = 0;
 int 				song_index = 0;
@@ -141,7 +145,8 @@ uint8_t 			wait = 0;
 uint8_t 			joyState = 0;
 
 uint8_t 			btn1 = 1;
-uint8_t 			rxbuf = 0;
+//char 				rxbuf[255];
+uint8_t				rxbuf = 0;
 
 volatile uint32_t 	t1 = 0;
 volatile uint32_t 	t2 = 0;
@@ -509,17 +514,20 @@ static void init_everything(){
     NVIC_EnableIRQ(EINT3_IRQn);
 
     //UART Rx interrupt
-	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE);
+	UART_IntConfig(LPC_UART3, UART_INTCFG_RBR, ENABLE); //Enable RDA and CTI interrupt
 	NVIC_ClearPendingIRQ(UART3_IRQn); //clear pending
 	NVIC_EnableIRQ(UART3_IRQn); //enable Interrupt for UART3
 
     NVIC_SetPriorityGrouping(5); //[7:6] for preempt for 4 levels, [5] for sub
 	uint32_t ans = NVIC_EncodePriority(5, 0, 0); //PG, PP, SP
     NVIC_SetPriority(SysTick_IRQn,ans); //5bit priority value
+
     ans = NVIC_EncodePriority(5, 1, 0); //PG, PP, SP
 	NVIC_SetPriority(EINT3_IRQn,ans);
+
 	ans = NVIC_EncodePriority(5, 2, 0); //PG, PP, SP
 	NVIC_SetPriority(EINT0_IRQn,ans);
+
 	ans = NVIC_EncodePriority(5, 3, 0); //PG, PP, SP
 	NVIC_SetPriority(UART3_IRQn,ans);
 }
@@ -649,40 +657,46 @@ void do_toclimb(){
 }
 
 void check_ClimbSensors(){ //Called in all Climb_State
-	//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
-	acc_read(&x, &y, &z);
-	x = x+xoff;
-	y = y+yoff;
-	z = z+zoff;
-	net_acc = (sqrt(x*x + y*y + z*z))/ 64;
-	//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
-	if(net_acc > ACC_THRESHOLD){
-		printf("State changed from Climb to Emergency\n");
-		state = Emergency;
+	if(acc_on){
+		//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
+		acc_read(&x, &y, &z);
+		x = x+xoff;
+		y = y+yoff;
+		z = z+zoff;
+		net_acc = (sqrt(x*x + y*y + z*z))/ 64;
+		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
+		if(net_acc > ACC_THRESHOLD){
+			printf("State changed from Climb to Emergency\n");
+			state = Emergency;
+		}
 	}
 
-	//light sensor should be continuously read
-	light_enable();
-	luminI = light_read();
+	if(light_on){
+		//light sensor should be continuously read
+		light_enable();
+		luminI = light_read();
 
-	//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
-	//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
-	shift = luminI / 18.75;
-	ledOn = (shift <= 16)?(1 << (16-shift)) - 1: 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
-//		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
-//		else ledOn = 0x0;
-	pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
-
-	//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
-	//This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-	tempvalue = temp_read(); //gives 10* temperature in degree C
-	if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){ //maybe can use interrupt?
-		Saved_State = Climb_State;
-		Climb_State = Rest;
+		//If the light sensor reading falls below LIGHT_THRESHOLD, the lights on LED_ARRAY should light up proportionately to how low the ambient light is (i.e., the dimmer the ambient light, the more the number of LEDs that should be lit).
+		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
+		shift = luminI / 18.75;
+		ledOn = (shift <= 16)?(1 << (16-shift)) - 1: 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
+	//		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
+	//		else ledOn = 0x0;
+		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
 	}
-	//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-	if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
-		temp_flag = 0;
+
+	if(temp_on){
+		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
+		//This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
+		tempvalue = temp_read(); //gives 10* temperature in degree C
+		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){ //maybe can use interrupt?
+			Saved_State = Climb_State;
+			Climb_State = Rest;
+		}
+		//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
+		if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
+			temp_flag = 0;
+		}
 	}
 
 //The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
@@ -698,23 +712,31 @@ void check_ClimbSensors(){ //Called in all Climb_State
 void refresh_ClimbOLED(){ //Called in Climb_State = None
 	//Refresh OLED
 	if ((Get_Time() - prev_sensor_ticks) >= sensor_refresh_ticks){
-		//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
-		sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
-		oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
-		sprintf(temp_string,"Acc: %5.2f g", net_acc);
-		oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-
+		if(acc_on){
+			sprintf(temp_string,"Acc: %5.2f g", net_acc);
+			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		}
+		else oled_fillRect(0, 8, OLED_DISPLAY_WIDTH, 16, OLED_COLOR_BLACK);
+		if(temp_on){
+			//temperature sensor should output the temperature reading (to 1 decimal place) on the OLED screen in the following format: "Temp: xx.x deg" where xx.x is the temperature reading in oC accurate to 1 decimal place.
+			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
+			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		}
+		else oled_fillRect(0, 16, OLED_DISPLAY_WIDTH, 24, OLED_COLOR_BLACK);
 		prev_sensor_ticks = Get_Time();
 	}
-	//light sensor reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
-	sprintf(temp_string,"Light: %3lu lux\n",luminI);
-	oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-	if(luminI < LIGHT_THRESHOLD){ //cannot enter Dim from Music or Rest states
-		//A message should also be displayed on the OLED screen saying "DIM"
-		oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	if(light_on){
+		//light sensor reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
+		sprintf(temp_string,"Light: %3lu lux\n",luminI);
+		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+
+		if(luminI < LIGHT_THRESHOLD){ //cannot enter Dim from Music or Rest states
+			//A message should also be displayed on the OLED screen saying "DIM"
+			oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+		}
 	}
+	else oled_fillRect(0, 24, OLED_DISPLAY_WIDTH, 32, OLED_COLOR_BLACK);
 }
 
 void do_Climb(){
@@ -1025,21 +1047,39 @@ void EINT3_IRQHandler(void){
 	}
 }
 
+int rx_count = 0;
 //UART3 interrupt handler
-//void UART3_IRQHandler(void){
-//	printf("Hi\n");
-//	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING);
-//		sprintf(uart_string,"uart %u", rxbuf);
-//		oled_putString(0, 40, (uint8_t *) uart_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
-//	}
-//	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
+void UART3_IRQHandler(void){
+	printf("Hi\n");
+	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
+	{
+		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING);
+		sprintf(uart_string,"uart %u\n", rxbuf);
+		oled_putString(0, 40, (uint8_t *) uart_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	}
+	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
+	{
+		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
+	}
+//	if(UART_Receive(LPC_UART3, (uint8_t*)&rxbuf[rx_count], 14, BLOCKING) == 1){
+//		if(rxbuf[rx_count] == '\r'){ //command completed
+//			rxbuf[rx_count+1] = 0;
+//			if 		(strcmp(rxbuf, "On Acc\r")) 	acc_on = 1;
+//			else if (strcmp(rxbuf, "Off Acc\r")) 	acc_on = 0;
+//			else if (strcmp(rxbuf, "On Temp\r")) 	temp_on = 1;
+//			else if (strcmp(rxbuf, "Off Temp\r")) 	temp_on = 0;
+//			else if (strcmp(rxbuf, "On Light\r")) 	light_on = 1;
+//			else if (strcmp(rxbuf, "Off Light\r")) 	light_on = 0;
+//			else{
+//				char temp_msg[] =  "Error: Unrecognized Command\r\n";
+//				UART_Send(LPC_UART3, (uint8_t*)temp_msg, strlen(temp_msg), BLOCKING);
+//			}
+//			rx_count = 0;
+//		}
+//		rx_count = (rx_count == 255)? 0: rx_count+1;
 //	}
 //	UART3_StdIntHandler();
-//}
+}
 
 //Handler occurs every 1ms
 void SysTick_Handler (void){
