@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="353" key="DIALOG_WIDTH"/>
 		<item value="332" key="DIALOG_Y_ORIGIN"/>
-		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="582" key="DIALOG_X_ORIGIN"/>
+		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="isRegEx"/>
 		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="LPC_GPIO" key="selection"/>
+		<item value="do_Ini" key="selection"/>
 		<list key="findhistory">
-			<item value="lpc_gpio"/>
-			<item value="main"/>
-			<item value="on acc"/>
-			<item value="acc on"/>
-			<item value="song"/>
-			<item value="none"/>
-			<item value="&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD"/>
-			<item value="fast"/>
+			<item value="do_ini"/>
+			<item value="do_in"/>
+			<item value="temperature sensor"/>
+			<item value="temperature"/>
+			<item value="pinnum"/>
+			<item value="pinfunc"/>
+			<item value="interrupt"/>
+			<item value="eint0"/>
 		</list>
 		<list key="replacehistory">
 		</list>
