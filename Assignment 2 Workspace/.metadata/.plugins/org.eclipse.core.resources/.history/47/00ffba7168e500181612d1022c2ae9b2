@@ -41,7 +41,7 @@ ClimbState			Saved_State = None;
 
 //Setting Specifications
 static const int 		LIGHT_THRESHOLD = 300; 	//in lux
-volatile uint32_t 		TEMP_THRESHOLD = 500;	//50 degree C, can be calibrated with sw3 in climb mode
+static const uint32_t 	TEMP_THRESHOLD = 260;	//28 degree C
 static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
@@ -925,17 +925,15 @@ void Trimpot_RGB(){}
 //Interrupt Handler
 void EINT0_IRQHandler(void){
 	// SW3
-	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1){ //sw3 P2.10 with BL_EN
-		LPC_GPIOINT ->IO2IntClr = 1<<10; //clear the interrupt
-		printf("SW3 is pressed in EINT0\n");
+	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1){ //sw3
+		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
+		printf("SW3 is pressed\n");
 		if (state == Initialization){
 			state = ItoC;
 			printf("State changed from Initialization to ItoC\n");
 		}else if (state == Climb){
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
-			TEMP_THRESHOLD = temp_read() + 50; //0.5 degrees C above current temp
-			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
+			state = Initialization;
+			printf("State changed to Initialization\n");
 		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
@@ -960,7 +958,7 @@ void EINT3_IRQHandler(void){
 	// SW3
 	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
 		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
-		printf("SW3 is pressed in EINT3\n");
+		printf("SW3 is pressed\n");
 		if (state == Initialization){
 			state = ItoC;
 			printf("State changed from Initialization to ItoC\n");
