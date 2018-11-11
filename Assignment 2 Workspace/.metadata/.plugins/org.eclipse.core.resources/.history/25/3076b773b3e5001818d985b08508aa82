@@ -1079,7 +1079,6 @@ void UART3_IRQHandler(void){
 //		rx_count = (rx_count == 255)? 0: rx_count+1;
 //	}
 //	UART3_StdIntHandler();
-	//UART interrupts are automatically cleared
 }
 
 //Handler occurs every 1ms

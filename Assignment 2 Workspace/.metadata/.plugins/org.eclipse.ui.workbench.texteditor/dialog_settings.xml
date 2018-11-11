@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="353" key="DIALOG_WIDTH"/>
-		<item value="332" key="DIALOG_Y_ORIGIN"/>
-		<item value="582" key="DIALOG_X_ORIGIN"/>
-		<item value="513" key="DIALOG_HEIGHT"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="257" key="DIALOG_WIDTH"/>
+		<item value="311" key="DIALOG_Y_ORIGIN"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="545" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="do_Ini" key="selection"/>
+		<item value="song_index" key="selection"/>
 		<list key="findhistory">
+			<item value="song_index"/>
+			<item value="music"/>
+			<item value="play"/>
+			<item value="play_song"/>
+			<item value="song"/>
+			<item value="handler"/>
 			<item value="do_ini"/>
 			<item value="do_in"/>
-			<item value="temperature sensor"/>
-			<item value="temperature"/>
-			<item value="pinnum"/>
-			<item value="pinfunc"/>
-			<item value="interrupt"/>
-			<item value="eint0"/>
 		</list>
 		<list key="replacehistory">
 		</list>
