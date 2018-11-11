@@ -451,7 +451,7 @@ void lightSenIntInit(){
 	GPIO_SetDir(2, (1<<5), 0);
 
 	light_clearIrqStatus(); //Good to clear when initializing
-	light_setLoThreshold(LIGHT_THRESHOLD); //lower threshold
+	light_setLoThreshold(LIGHT_THRESHOLD); //lower threshold for
 }
 
 void init_uart(void){
