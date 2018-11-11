@@ -513,15 +513,11 @@ static void init_everything(){
 	NVIC_ClearPendingIRQ(UART3_IRQn); //clear pending
 	NVIC_EnableIRQ(UART3_IRQn); //enable Interrupt for UART3
 
-    NVIC_SetPriorityGrouping(5); //[7:6] for preempt for 4 levels, [5] for sub
-	uint32_t ans = NVIC_EncodePriority(5, 0, 0); //PG, PP, SP
-    NVIC_SetPriority(SysTick_IRQn,ans); //5bit priority value
-    ans = NVIC_EncodePriority(5, 1, 0); //PG, PP, SP
-	NVIC_SetPriority(EINT3_IRQn,ans);
-	ans = NVIC_EncodePriority(5, 2, 0); //PG, PP, SP
-	NVIC_SetPriority(EINT0_IRQn,ans);
-	ans = NVIC_EncodePriority(5, 3, 0); //PG, PP, SP
-	NVIC_SetPriority(UART3_IRQn,ans);
+    NVIC_SetPriorityGrouping(5);
+	NVIC_SetPriority(SysTick_IRQn,0x00);
+	NVIC_SetPriority(UART3_IRQn,0x40);
+	NVIC_SetPriority(EINT3_IRQn,0xC0);
+	NVIC_SetPriority(EINT0_IRQn,0x80);
 }
 
 // Replacement for slow temp_read() driver function
@@ -579,6 +575,68 @@ void BLINK_BLUE (void){
 	}
 }
 
+//void countdown(void){
+//	while(1){
+//		if (msFlag == 0){
+//			if (msTicks%500 == 0){
+//				BLINK_BLUE();
+//				switch (SevenSegFlag){
+//					case 9:
+//						led7seg_setChar(0x38, TRUE);
+//						SevenSegFlag = 8;
+//						break;
+//					case 8:
+//						led7seg_setChar(0x20, TRUE);
+//						SevenSegFlag = 7;
+//						break;
+//					case 7:
+//						led7seg_setChar(0x7C, TRUE);
+//						SevenSegFlag = 6;
+//						break;
+//					case 6:
+//						led7seg_setChar(0x23, TRUE);
+//						SevenSegFlag = 5;
+//						break;
+//					case 5:
+//						led7seg_setChar(0x32, TRUE);
+//						SevenSegFlag = 4;
+//						break;
+//					case 4:
+//						led7seg_setChar(0x39, TRUE);
+//						SevenSegFlag = 3;
+//						break;
+//					case 3:
+//						led7seg_setChar(0x70, TRUE);
+//						SevenSegFlag = 2;
+//						break;
+//					case 2:
+//						led7seg_setChar(0xE0, TRUE);
+//						SevenSegFlag = 1;
+//						break;
+//					case 1:
+//						led7seg_setChar(0x7D, TRUE);
+//						SevenSegFlag = 0;
+//						break;
+//					case 0:
+//						led7seg_setChar(0x24, TRUE);
+//						SevenSegFlag = 10;
+//						break;
+//					default:
+//						led7seg_setChar(0xFF, TRUE);
+//						SevenSegFlag = 9;
+//						return;
+//				}
+//				msFlag = 1;
+//			}
+//		}
+//		else{
+//			if(msTicks%500 != 0){
+//				msFlag= 0;
+//			}
+//		}
+//	}
+//}
+
 void countdown_new(void){
 	if(Get_Time() - prev_countdown_ticks >= 500){
 //		printf("counted down\n");
@@ -611,7 +669,7 @@ void saved(void){
 	}
 }
 
-void uart_Send(char* msg){ //delete this if not using
+void uart_Send(char* msg){
 	int len = strlen(msg);
 	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
 }
@@ -923,28 +981,7 @@ void SW_Speaker(uint8_t btn1){
 void Trimpot_RGB(){}
 
 //Interrupt Handler
-void EINT0_IRQHandler(void){
-	// SW3
-	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1){ //sw3
-		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
-		printf("SW3 is pressed\n");
-		if (state == Initialization){
-			state = ItoC;
-			printf("State changed from Initialization to ItoC\n");
-		}else if (state == Climb){
-			state = Initialization;
-			printf("State changed to Initialization\n");
-		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
-			printf("%d\n", ((GPIO_ReadValue(1) >> 31) & 0x1) == 0);
-			state = Emergency_over;
-			printf("State changed to Emergency_over\n");
-		}
-	}
-}
-
-void EINT3_IRQHandler(void){
+void EINT3_IRQHandler(void){ //for interrupts
 	// Temperature sensor
 	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){ //temperature sensor
 		LPC_GPIOINT ->IO0IntClr = 1<<2; //clear the interrupt
@@ -972,10 +1009,10 @@ void EINT3_IRQHandler(void){
 			state = Emergency_over;
 			printf("State changed to Emergency_over\n");
 		}
+	//	do_toclimb();
 	}
 
-	//light sensor
-	else if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){
+	else if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){ //light sensor
 		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
 		printf("Light interrupt triggered\n");
 		light_clearIrqStatus();

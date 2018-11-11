@@ -924,8 +924,9 @@ void Trimpot_RGB(){}
 
 //Interrupt Handler
 void EINT0_IRQHandler(void){
+	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1)
 	// SW3
-	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1){ //sw3
+	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
 		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
 		printf("SW3 is pressed\n");
 		if (state == Initialization){
@@ -941,6 +942,7 @@ void EINT0_IRQHandler(void){
 			state = Emergency_over;
 			printf("State changed to Emergency_over\n");
 		}
+	//	do_toclimb();
 	}
 }
 
@@ -972,6 +974,7 @@ void EINT3_IRQHandler(void){
 			state = Emergency_over;
 			printf("State changed to Emergency_over\n");
 		}
+	//	do_toclimb();
 	}
 
 	//light sensor
