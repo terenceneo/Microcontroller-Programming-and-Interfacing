@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="246" key="DIALOG_Y_ORIGIN"/>
-		<item value="299" key="DIALOG_X_ORIGIN"/>
 		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="299" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="t1 " key="selection"/>
+		<item value="" key="selection"/>
 		<list key="findhistory">
-			<item value="t1 "/>
-			<item value="t1"/>
-			<item value="fast_temp_read"/>
-			<item value="Temp_int"/>
+			<item value="P0.3"/>
+			<item value="26"/>
+			<item value="note_pin"/>
+			<item value="speaker"/>
 			<item value="fast"/>
-			<item value="temp_int"/>
-			<item value="temp"/>
-			<item value="sensor_ticks"/>
+			<item value="fast]"/>
+			<item value="tempvalue"/>
+			<item value="fast_temp_read"/>
 		</list>
 		<list key="replacehistory">
 			<item value="fast_temp_read"/>

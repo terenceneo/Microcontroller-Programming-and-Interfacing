@@ -35,7 +35,7 @@ volatile typedef enum {
 	None, Rest, Music
 }ClimbState; //ClimbState is a type
 
-MachineState 		state = Climb;
+MachineState 		state = Initialization;
 ClimbState			Climb_State = None;
 ClimbState			Saved_State = None;
 
@@ -43,7 +43,8 @@ ClimbState			Saved_State = None;
 static const int 		LIGHT_THRESHOLD = 300; 	//in lux
 volatile uint32_t 		TEMP_THRESHOLD = 500;	//50 degree C, can be calibrated with sw3 in climb mode
 static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
-int						temp_periods = 10;		//number of periods to read temp
+int						temp_periods = 7;		//number of periods to read temp.
+												//fast_temp_read Precision =1000/(temp_periods*10*TEMP_SCALAR_DIV10)
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
@@ -138,7 +139,7 @@ int 				song_pointer_count = 0;
 volatile int		temp_periods_cnt = 0;
 
 //Sensor input storage variables
-volatile uint32_t 	tempvalue = 0;
+uint32_t 	tempvalue = 0;
 volatile uint32_t 	luminI;
 
 int32_t 			xoff = 0;
@@ -161,8 +162,8 @@ char 				rxbuf[64];
 volatile uint32_t 	t1 = 0;
 volatile uint32_t 	t2 = 0;
 volatile uint32_t	temp_time = 0;
-int 				time_diff = 0;
-int 				temp = 0;
+uint32_t 			time_diff = 0;
+float 				temp = 0;
 
 //Peripheral output storage variables
 uint32_t ledOn = 0x0;
@@ -235,9 +236,13 @@ static void drawOled(uint8_t joyState)
     }
 }
 
-
-#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<26);
-#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<26);
+//PIO1_2, P0.26 used by BLUE_RGB
+//#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<26);
+//#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<26);
+//	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
+//new pin at PIO0_6, P0.3
+#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<3);
+#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<3);
 
 uint32_t Get_Time(void){
 	return msTicks;
@@ -428,8 +433,10 @@ static void speaker_init(){
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
 
-	PinCfg.Portnum = 0;
-	PinCfg.Pinnum = 26;
+//	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
+//	PinCfg.Pinnum = 26;
+	PinCfg.Portnum = 0; //new pin at PIO0_6, P0.3
+	PinCfg.Pinnum = 3;
 	PINSEL_ConfigPin(&PinCfg);
 
 	PinCfg.Portnum = 0;
@@ -447,7 +454,9 @@ static void speaker_init(){
     GPIO_SetDir(0, 1<<27, 1);
     GPIO_SetDir(0, 1<<28, 1);
     GPIO_SetDir(2, 1<<13, 1);
-    GPIO_SetDir(0, 1<<26, 1);
+//    GPIO_SetDir(0, 1<<26, 1); //PIO1_2, P0.26 used by BLUE_RGB
+    GPIO_SetDir(0, 1<<3, 1); //new pin at PIO0_6, P0.3
+
 
     //Clear P0.27, P0.28, P2.13, as we are not doing Volume Control or shutdown
     GPIO_ClearValue(0, 1<<27); //LM4811-clk
@@ -556,20 +565,41 @@ static void init_everything(){
 
 // Replacement for slow temp_read() driver function
 int32_t fast_temp_read (void){
+	if (~t2 && ~t1){
+		time_diff = abs(t2-t1);
+		temp =((time_diff*1000.0)/(temp_periods*10*TEMP_SCALAR_DIV10))-273.15;
+	}
+	if (temp < 16) temp = 0;
+	return temp*10;
 //	if (t2>=t1){
 //		time_diff = t2-t1;
 //		if 	((time_diff*1000 / (temp_periods*TEMP_SCALAR_DIV10)) > 2731)
 //		temp = (time_diff*1000 / (temp_periods*TEMP_SCALAR_DIV10)) - 2731; //*1000 to convert ms to microsecond
 //	}
-	//10T(C) = (period (us) / scalar_div10) - 2731 K
+//	10T(C) = (period (us) / scalar_div10) - 2731 K
 //	time_diff = abs(t2-t1);
-	t1 = time;
-	while(t1 == temp_time);
-	t2 = temp_time;
-	time_diff = t2-t1;
-	temp = abs((time_diff*1000 / (temp_periods*TEMP_SCALAR_DIV10)) - 2731); //*1000 to convert ms to microsecond
-	printf("Temp: %d\n", temp);
-	return temp; //*1000 to convert ms to microsecond
+//
+//	if(temp_periods_cnt == 1) t1 = Get_Time();
+//	else if(temp_periods_cnt == 11) t2 = Get_Time();
+//	if(temp_periods_cnt == 20) temp_periods_cnt = 0;
+//
+//	time_diff = abs(t2-t1);
+//	temp =((temp*1000.0)/(10*640.0))-273.15;
+//	return temp*10;
+
+//	t1 = temp_time;
+//	uint8_t temp_flag = 0;
+//
+//	while(temp_flag == 0){
+//		if (t1 != temp_time){
+//			t2 = temp_time;
+//			time_diff = t2-t1;
+//			temp_flag = 1;
+//		}
+//	}
+//	temp = (time_diff*1000 / (temp_periods*4)) - 2731; //*1000 to convert ms to microsecond
+////	printf("Temp: %d\n", temp);
+//	return temp;
 }
 
 //RGB LEDs
@@ -721,8 +751,9 @@ void check_ClimbSensors(){ //Called in all Climb_State
 	if(temp_on){
 		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
 		//This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-		tempvalue = fast_temp_read(); //gives 10* temperature in degree C
-		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0 && t2>=t1){ //maybe can use interrupt?
+
+		tempvalue = (fast_temp_read() != 0)? fast_temp_read():tempvalue; //gives 10* temperature in degree C
+		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){ //maybe can use interrupt?
 			if(Climb_State != Rest) Saved_State = Climb_State;
 			Climb_State = Rest;
 		}
@@ -776,7 +807,7 @@ void do_Climb(){
 	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
 	printf("Entered Climb Mode\n");
 	led7seg_setChar(0xFF, TRUE);
-	GPIO_ClearValue( 0, (1<<26) ); // Clear value for RGB_BLUE
+	setRGBLeds(0); // Clear value for RGB_BLUE
 
 	//The accelerometer readings should be initialized to be close to zero when the device enters CLIMB Mode.
 	acc_read(&x, &y, &z);
@@ -874,7 +905,7 @@ void do_Emergency(){
 			sprintf(temp_string,"Acc: %5.2f g", net_acc);
 			oled_putString(0, 8, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-			tempvalue = fast_temp_read(); //gives 10* temperature in degree C
+			tempvalue = (fast_temp_read() != 0)? fast_temp_read():tempvalue; //gives 10* temperature in degree C
 			sprintf(temp_string,"Temp: %lu.%lu deg", tempvalue/10, tempvalue%10);
 			oled_putString(0, 16, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
@@ -991,7 +1022,8 @@ void EINT0_IRQHandler(void){
 		}else if (state == Climb){
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
-			TEMP_THRESHOLD = fast_temp_read() + 50; //0.5 degrees C above current temp
+			//TEMP_THRESHOLD Calibration
+			TEMP_THRESHOLD = tempvalue + 5; //0.5 degrees C above current temp
 			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
 		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
 //			state = Initialization;
@@ -1007,7 +1039,15 @@ void EINT3_IRQHandler(void){
 	// Temperature sensor
 	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){ //temperature sensor
 		LPC_GPIOINT ->IO0IntClr = 1<<2; //clear the interrupt
-		temp_time = Get_Time();
+		temp_periods_cnt++;
+		if(temp_periods_cnt == 1) t1 = Get_Time();
+		else if(temp_periods_cnt == temp_periods+1) t2 = Get_Time();
+		else if(temp_periods_cnt == temp_periods*2) temp_periods_cnt = 0;
+
+//		temp_time = Get_Time();
+
+//		temp_periods_cnt++;
+
 //		if (temp_periods_cnt % (temp_periods*2) == 0) t1 = Get_Time();
 //		else if (temp_periods_cnt % (temp_periods*2) == temp_periods) t2 = Get_Time();
 //		temp_periods_cnt++;
@@ -1028,7 +1068,8 @@ void EINT3_IRQHandler(void){
 		}else if (state == Climb){
 //			state = Initialization;
 //			printf("State changed to Initialization\n");
-			TEMP_THRESHOLD = fast_temp_read() + 50; //0.5 degrees C above current temp
+			//TEMP_THRESHOLD Calibration
+			TEMP_THRESHOLD = tempvalue + 5; //0.5 degrees C above current temp
 			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
 		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
 //			state = Initialization;
@@ -1039,12 +1080,12 @@ void EINT3_IRQHandler(void){
 		}
 	}
 
-	//light sensor
-	else if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){
-		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
-		printf("Light interrupt triggered\n");
-		light_clearIrqStatus();
-	}
+//	//light sensor
+//	else if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){
+//		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
+//		printf("Light interrupt triggered\n");
+//		light_clearIrqStatus();
+//	}
 
 	if(state == Climb){
 		if(Climb_State == Music){

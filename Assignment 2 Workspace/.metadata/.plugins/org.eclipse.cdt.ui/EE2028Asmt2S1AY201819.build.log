@@ -1,4 +1,4 @@
-01:35:39 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+01:39:20 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
@@ -19,5 +19,5 @@ arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE20
   60968	   2552	   1288	  64808	   fd28	EE2028Asmt2S1AY201819.axf
  
 
-01:35:41 Build Finished (took 2s.91ms)
+01:39:22 Build Finished (took 1s.838ms)
 

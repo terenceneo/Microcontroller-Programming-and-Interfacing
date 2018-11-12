@@ -240,9 +240,9 @@ static void drawOled(uint8_t joyState)
 //#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<26);
 //#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<26);
 //	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
-//new pin at PIO0_6, P0.3
-#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<3);
-#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<3);
+//new pin at PIO0_6, P0.21
+#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<21);
+#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<21);
 
 uint32_t Get_Time(void){
 	return msTicks;
@@ -435,8 +435,8 @@ static void speaker_init(){
 
 //	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
 //	PinCfg.Pinnum = 26;
-	PinCfg.Portnum = 0; //new pin at PIO0_6, P0.3
-	PinCfg.Pinnum = 3;
+	PinCfg.Portnum = 0; //new pin at PIO0_6, P0.21
+	PinCfg.Pinnum = 21;
 	PINSEL_ConfigPin(&PinCfg);
 
 	PinCfg.Portnum = 0;
@@ -455,7 +455,7 @@ static void speaker_init(){
     GPIO_SetDir(0, 1<<28, 1);
     GPIO_SetDir(2, 1<<13, 1);
 //    GPIO_SetDir(0, 1<<26, 1); //PIO1_2, P0.26 used by BLUE_RGB
-    GPIO_SetDir(0, 1<<3, 1); //new pin at PIO0_6, P0.3
+    GPIO_SetDir(0, 1<<21, 1); //new pin at PIO0_6, P0.21
 
 
     //Clear P0.27, P0.28, P2.13, as we are not doing Volume Control or shutdown
