@@ -1,16 +1,13 @@
-14:40:09 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
+19:09:15 **** Incremental Build of configuration Debug for project EE2028Asmt2S1AY201819 ****
 make all 
 Building file: ../src/main.c
 Invoking: MCU C Compiler
 arm-none-eabi-gcc -DDEBUG -D__USE_CMSIS=CMSISv1p30_LPC17xx -D__CODE_RED -D__NEWLIB__ -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_CMSISv1p30_LPC17xx\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_EaBaseBoard\inc" -I"D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc" -O0 -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
 ../src/main.c: In function 'playSong':
-../src/main.c:296:3: warning: value computed is not used [-Wunused-value]
+../src/main.c:302:3: warning: value computed is not used [-Wunused-value]
 ../src/main.c: In function 'UART3_IRQHandler':
-../src/main.c:1055:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
-D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
-../src/main.c:1056:3: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'char *' [-Wformat]
-../src/main.c:1061:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
-D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[255]'
+../src/main.c:1109:3: warning: passing argument 2 of 'UART_Receive' from incompatible pointer type [enabled by default]
+D:\Dropbox\Dropbox\NUS Modules\EE2028_EE2024\Assignments\Assignment 2\Assignment 2 Workspace\Lib_MCU\inc/lpc17xx_uart.h:610:10: note: expected 'uint8_t *' but argument is of type 'char (*)[64]'
 Finished building: ../src/main.c
  
 Building target: EE2028Asmt2S1AY201819.axf
@@ -22,8 +19,8 @@ make --no-print-directory post-build
 Performing post-build steps
 arm-none-eabi-size EE2028Asmt2S1AY201819.axf; # arm-none-eabi-objdump -h -S EE2028Asmt2S1AY201819.axf >EE2028Asmt2S1AY201819.lss
    text	   data	    bss	    dec	    hex	filename
-  59968	   2448	   1468	  63884	   f98c	EE2028Asmt2S1AY201819.axf
+  60056	   2456	   1284	  63796	   f934	EE2028Asmt2S1AY201819.axf
  
 
-14:40:12 Build Finished (took 3s.477ms)
+19:09:17 Build Finished (took 2s.424ms)
 
