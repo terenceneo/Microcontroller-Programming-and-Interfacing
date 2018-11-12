@@ -83,15 +83,6 @@ static uint32_t notes[] = {
         1012, // b - 988 Hz
 };
 
-char UART_Error_msg[] =  "Error: Unrecognized Command\r"
-							"Accepted Commands:\r"
-							"On Acc\r"
-							"Off Acc\r"
-							"On Temp\r"
-							"Off Temp\r"
-							"On Light\r"
-							"Off Light\r\n";
-
 uint8_t 	restnow_OLED_line = 32;
 uint8_t 	dim_OLED_line = 40; //OLED line to print DIM in climb mode
 int 		number_of_songs = sizeof(song_titles) / sizeof(song_titles[0]);
@@ -1095,7 +1086,17 @@ void UART3_IRQHandler(void){
 				else if (strcmp(rxbuf, "Off Temp\r")==0) 	temp_on = 0;
 				else if (strcmp(rxbuf, "On Light\r")==0) 	light_on = 1;
 				else if (strcmp(rxbuf, "Off Light\r")==0) 	light_on = 0;
-				else UART_Send(LPC_UART3, (uint8_t*)UART_Error_msg, strlen(UART_Error_msg), BLOCKING);
+				else{
+					char temp_msg[] =  "Error: Unrecognized Command\r\n"
+							"Accepted Commands:\r"
+							"On Acc\r"
+							"Off Acc\r"
+							"On Temp\r"
+							"Off Temp\r"
+							"On Light\r"
+							"Off Light\r\n";
+					UART_Send(LPC_UART3, (uint8_t*)temp_msg, strlen(temp_msg), BLOCKING);
+				}
 				rx_count = 0;
 				printf("Entered: %s\n", rxbuf);
 			}
@@ -1104,11 +1105,11 @@ void UART3_IRQHandler(void){
 		//UART3_StdIntHandler();
 		//UART interrupts are automatically cleared
 	}
-//	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
-//		printf("CTI\n");
-//	}
+	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
+	{
+		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
+		printf("CTI\n");
+	}
 }
 
 //Handler occurs every 1ms
