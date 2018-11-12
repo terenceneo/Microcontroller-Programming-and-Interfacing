@@ -5,6 +5,6 @@
 		<item value="true" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 	</section>
 	<section name="com.crt.quickstart.views.wizards.examples.QSExampleSelectionPage">
-		<item value="D:\Desktop\New folder (2)\Testing_project" key="dirname"/>
+		<item value="D:\Desktop\Testing_project" key="dirname"/>
 	</section>
 </section>
