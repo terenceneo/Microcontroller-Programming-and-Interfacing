@@ -45,12 +45,16 @@ volatile uint32_t 		TEMP_THRESHOLD = 500;	//50 degree C, can be calibrated with 
 static const double 	ACC_THRESHOLD = 0.5;	//in g ///original threshold at 0.1
 int						temp_periods = 7;		//number of periods to read temp.
 												//fast_temp_read Precision =1000/(temp_periods*10*TEMP_SCALAR_DIV10)
+volatile uint32_t 		sensor_refresh_ticks = 400;
+
+#define TEMP_TS1 1
+#define TEMP_TS0 1
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
 char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
 
-static char *song_titles[] = {"Happy Birthday",
-		//"Happy Birthday 2",
+static char *song_titles[] = {
+		"Happy Birthday",
 		"I am Titanium",
 		"Count On Me",
 		"Riptide",
@@ -58,14 +62,12 @@ static char *song_titles[] = {"Happy Birthday",
 };
 
 // each tone in a song is a note, duration and pause eg. C2. > note=C, duration=2, pause=.
-static uint8_t * songs[] = {(uint8_t*)"C2.C2,D4,C4,F4,E8,",
-       // (uint8_t*)"C2.C2,D4,C4,G4,F8,C2.",
+static uint8_t * songs[] = {
+		(uint8_t*)"C2.C2,D4,C4,F4,E8,",
 		(uint8_t*)"C4,D2,F2,E2.C4,G2,F2,E2,E2,D2,D2,F8,",
 		(uint8_t*)"E2.E2,C2,E2,G2,C2,B2,E2,G2,",
 		(uint8_t*)"A2,B2,C2,D2,E2,a2,G4,E2,",
 		(uint8_t*)"e2,d2,d2,d2,d2,e2,d2,c2,c4,"
-		//(uint8_t*)"C2.C2,D4,C4,F4,E8,C2.C2,D4,C4,G4,F8,C2.C2,c4,A4,F4,E4,D4,A2.A2,H4,F4,G4,F8,",
-		//(uint8_t*)"D4,B4,B4,A4,A4,G4,E4,D4.D2,E4,E4,A4,F4,D8.D4,d4,d4,c4,c4,B4,G4,E4.E2,F4,F4,A4,A4,G8,"
 };
 static uint32_t notes[] = {
         3816, // C - 262 Hz
@@ -93,16 +95,13 @@ char UART_Error_msg[] =  "Error: Unrecognized Command\r"
 							"On Light\r"
 							"Off Light\r\n";
 
-uint8_t 	restnow_OLED_line = 32;
+uint8_t 	restnow_OLED_line = 32; //OLED line to print Rest Now in climb mode
 uint8_t 	dim_OLED_line = 40; //OLED line to print DIM in climb mode
 int 		number_of_songs = sizeof(song_titles) / sizeof(song_titles[0]);
-static uint8_t barPos = 2;
 
 //Variables
 //Timing variables
 volatile uint32_t 	msTicks = 0; 	// counter for 1ms SysTicks
-volatile uint32_t 	getTicks = 0; 	//what is this used for? //////////////////////////////////////////////////////////////////////////////////////////////////////////
-volatile uint32_t 	sensor_refresh_ticks = 400;
 volatile uint32_t 	prev_sensor_ticks;
 volatile uint32_t 	prev_alternateled_ticks;
 volatile uint32_t 	prev_blink_blue_ticks;
@@ -115,17 +114,16 @@ volatile uint32_t 	emer_start_ticks;
 uint32_t 			emer_dur = 0;
 
 //Flags
-uint8_t 			msFlag = 0; 	//used in countdown, can be removed
 uint8_t 			SevenSegFlag = 9;
 uint8_t 			RGB_FLAG = 0;
 uint8_t 			countdown_flag = 0;
 
-uint8_t 			temp_flag = 0; //temp cant be unsigned int?
+uint8_t 			temp_flag = 0;
 uint8_t 			restnow_printed = 0;
 
-uint8_t 			scroll_updated = 1;
-uint8_t 			play_flag = 0;
-uint8_t 			song_changed = 0;
+volatile uint8_t 	scroll_updated = 1;
+volatile uint8_t 	play_flag = 0;
+volatile uint8_t 	song_changed = 0;
 
 volatile uint8_t	acc_on = 1;
 volatile uint8_t	temp_on = 1;
@@ -133,13 +131,13 @@ volatile uint8_t	light_on = 1;
 
 //Counters
 int 				saved_count = 0;
-int 				song_index = 0;
-int 				prev_song_index = 0;
+volatile int 		song_index = 0;
+volatile int 		prev_song_index = 0;
 int 				song_pointer_count = 0;
 volatile int		temp_periods_cnt = 0;
+volatile int 		rx_count = 0;
 
 //Sensor input storage variables
-uint32_t 	tempvalue = 0;
 volatile uint32_t 	luminI;
 
 int32_t 			xoff = 0;
@@ -150,31 +148,22 @@ int8_t 				y = 0;
 int8_t 				z = 0;
 float 				net_acc = 0;
 
-uint8_t 			dir = 1;
-uint8_t 			wait = 0;
-
-uint8_t 			joyState = 0;
-
-uint8_t 			btn1 = 1;
-char 				rxbuf[64];
-//uint8_t				rxbuf = 0;
-
 volatile uint32_t 	t1 = 0;
 volatile uint32_t 	t2 = 0;
-volatile uint32_t	temp_time = 0;
 uint32_t 			time_diff = 0;
-float 				temp = 0;
+float 				temp = 0;		//for calculations in fast_temp_read
+uint32_t 			tempvalue = 0; 	//output from fast_temp_read = temp*10
+
+char 				rxbuf[64];
 
 //Peripheral output storage variables
-uint32_t ledOn = 0x0;
-int 	shift = 0;
-char 	uart_msg[50];
-char 	temp_string[32];
-char 	uart_string[32];
+uint32_t 	ledOn = 0x0;
+int 		shift = 0;
+char 		uart_msg[64];
+char 		temp_string[32];
+char 		uart_string[32];
 
 //TEMP_SCALAR_DIV10 definition for temperature pins configurations
-#define TEMP_TS1 1
-#define TEMP_TS0 1
 #if TEMP_TS1 == 0 && TEMP_TS0 == 0
 #define TEMP_SCALAR_DIV10 1
 #elif TEMP_TS1 == 0 && TEMP_TS0 == 1
@@ -185,61 +174,10 @@ char 	uart_string[32];
 #define TEMP_SCALAR_DIV10 64
 #endif
 
-static void moveBar(uint8_t steps, uint8_t dir){
-    uint16_t ledOn = 0;
-
-    if (barPos == 0)
-        ledOn = (1 << 0) | (3 << 14);
-    else if (barPos == 1)
-        ledOn = (3 << 0) | (1 << 15);
-    else
-        ledOn = 0x07 << (barPos-2);
-
-    barPos += (dir*steps);
-    barPos = (barPos % 16);
-
-    pca9532_setLeds(ledOn, 0xffff);
-}
-
-
-static void drawOled(uint8_t joyState)
-{
-    static int wait = 0;
-    static uint8_t currX = 48;
-    static uint8_t currY = 32;
-    static uint8_t lastX = 0;
-    static uint8_t lastY = 0;
-
-    if ((joyState & JOYSTICK_CENTER) != 0) {
-        oled_clearScreen(OLED_COLOR_BLACK);
-        return;
-    }
-    if (wait++ < 3)
-        return;
-    wait = 0;
-    if ((joyState & JOYSTICK_UP) != 0 && currY > 0) {
-        currY--;
-    }
-    if ((joyState & JOYSTICK_DOWN) != 0 && currY < OLED_DISPLAY_HEIGHT-1) {
-        currY++;
-    }
-    if ((joyState & JOYSTICK_RIGHT) != 0 && currX < OLED_DISPLAY_WIDTH-1) {
-        currX++;
-    }
-    if ((joyState & JOYSTICK_LEFT) != 0 && currX > 0) {
-        currX--;
-    }
-    if (lastX != currX || lastY != currY) {
-        oled_putPixel(currX, currY, OLED_COLOR_WHITE);
-        lastX = currX;
-        lastY = currY;
-    }
-}
-
-//PIO1_2, P0.26 used by BLUE_RGB
+//PIO1_2, P0.26 used by RGB_BLUE
 //#define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<26);
 //#define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<26);
-//	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
+
 //new pin at PIO0_6, P0.21
 #define NOTE_PIN_HIGH() GPIO_SetValue(0, 1<<21);
 #define NOTE_PIN_LOW()  GPIO_ClearValue(0, 1<<21);
@@ -272,10 +210,8 @@ static void playNote(uint32_t note, uint32_t durationMs) {
 static uint32_t getNote(uint8_t ch){
     if (ch >= 'A' && ch <= 'G')
         return notes[ch - 'A'];
-
     if (ch >= 'a' && ch <= 'g')
         return notes[ch - 'a' + 7];
-
     return 0;
 }
 
@@ -318,8 +254,6 @@ static void playSong(uint8_t *song) {
 		i++;
     	}
 	}
-//    printf("%d\n",song_pointer_count);
-//    *song = *song + song_pointer_count; // why can't you do this?
     if(*song != '\0' && play_flag) {
         note = getNote(*song++);
         if (*song == '\0'){
@@ -336,7 +270,6 @@ static void playSong(uint8_t *song) {
         pause = getPause(*song++);
 
         playNote(note, dur);
-        //delay32Ms(0, pause);
         Timer0_Wait(pause);
         song_pointer_count += 3;
     }
@@ -349,7 +282,6 @@ static void playSong(uint8_t *song) {
 static void init_ssp(void){
 	SSP_CFG_Type SSP_ConfigStruct;
 	PINSEL_CFG_Type PinCfg;
-
 	/*
 	 * Initialize SPI pin connect
 	 * P0.7 - SCK;
@@ -401,7 +333,6 @@ static void init_i2c(void){
 }
 
 static void init_GPIO(void){
-	// Initialize button ////////////////////////////// was blank
 	PINSEL_CFG_Type PinCfg;
 	PinCfg.Funcnum = 0; // For GPIO
 
@@ -414,7 +345,7 @@ static void init_GPIO(void){
 	PINSEL_ConfigPin(&PinCfg);
 	GPIO_SetDir(1, (1<<31), 0); //portNum 1, pin 31 (sw4 PiO2_9 mapped to P1.31), 0 for input
 
-	//SW3
+	//SW3 for EINT3 interrupt
 	PinCfg.Portnum = 0; //port 0
 	PinCfg.Pinnum = 4; // pin 4
 	PINSEL_ConfigPin(&PinCfg);
@@ -433,7 +364,7 @@ static void speaker_init(){
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
 
-//	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by BLUE_RGB
+//	PinCfg.Portnum = 0; //PIO1_2, P0.26 used by RGB_BLUE
 //	PinCfg.Pinnum = 26;
 	PinCfg.Portnum = 0; //new pin at PIO0_6, P0.21
 	PinCfg.Pinnum = 21;
@@ -454,7 +385,7 @@ static void speaker_init(){
     GPIO_SetDir(0, 1<<27, 1);
     GPIO_SetDir(0, 1<<28, 1);
     GPIO_SetDir(2, 1<<13, 1);
-//    GPIO_SetDir(0, 1<<26, 1); //PIO1_2, P0.26 used by BLUE_RGB
+//    GPIO_SetDir(0, 1<<26, 1); //PIO1_2, P0.26 used by RGB_BLUE
     GPIO_SetDir(0, 1<<21, 1); //new pin at PIO0_6, P0.21
 
 
@@ -526,12 +457,14 @@ static void init_everything(){
     lightSenIntInit();
 
     //EINT0 interrupt for SW3
-    LPC_GPIOINT->IO2IntEnF |= 1<<10; //sw3 connected to PIO2_9
-    //NVIC_ClearPendingIRQ(EINT0_IRQn); //clear pending
+    LPC_SC -> EXTINT |= 1<<0; //Clearing EINT0
+    LPC_SC -> EXTMODE |= 1<<0; //EINT0 edge sensitive
+    LPC_SC -> EXTPOLAR |= 0<<0; //EINT0 falling-edge sensitive
+    NVIC_ClearPendingIRQ(EINT0_IRQn); //clear pending
     NVIC_EnableIRQ(EINT0_IRQn);
 
 	//EINT3 interrupt
-    LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3
+//    LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3 (EINT3 for sw3 is no longer used)
     LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     LPC_GPIOINT ->IO0IntEnR |= 1<<2; //temperature sensor, activates at the start of each reading period
 
@@ -571,35 +504,6 @@ int32_t fast_temp_read (void){
 	}
 	if (temp < 16) temp = 0;
 	return temp*10;
-//	if (t2>=t1){
-//		time_diff = t2-t1;
-//		if 	((time_diff*1000 / (temp_periods*TEMP_SCALAR_DIV10)) > 2731)
-//		temp = (time_diff*1000 / (temp_periods*TEMP_SCALAR_DIV10)) - 2731; //*1000 to convert ms to microsecond
-//	}
-//	10T(C) = (period (us) / scalar_div10) - 2731 K
-//	time_diff = abs(t2-t1);
-//
-//	if(temp_periods_cnt == 1) t1 = Get_Time();
-//	else if(temp_periods_cnt == 11) t2 = Get_Time();
-//	if(temp_periods_cnt == 20) temp_periods_cnt = 0;
-//
-//	time_diff = abs(t2-t1);
-//	temp =((temp*1000.0)/(10*640.0))-273.15;
-//	return temp*10;
-
-//	t1 = temp_time;
-//	uint8_t temp_flag = 0;
-//
-//	while(temp_flag == 0){
-//		if (t1 != temp_time){
-//			t2 = temp_time;
-//			time_diff = t2-t1;
-//			temp_flag = 1;
-//		}
-//	}
-//	temp = (time_diff*1000 / (temp_periods*4)) - 2731; //*1000 to convert ms to microsecond
-////	printf("Temp: %d\n", temp);
-//	return temp;
 }
 
 //RGB LEDs
@@ -657,9 +561,8 @@ void countdown_new(void){
 		prev_countdown_ticks = Get_Time();
 		if (SevenSegFlag == 0){
 			SevenSegFlag = 9;
-//				led7seg_setChar(numbers_inverted[SevenSegFlag], TRUE);
 			state = Climb;
-			printf("State changed from ItoC to Climb\n");
+//			printf("State changed from ItoC to Climb\n");
 			return;
 		}
 		SevenSegFlag -- ;
@@ -675,33 +578,31 @@ void saved(void){
 		if (saved_count == 4){
 			saved_count = 0;
 			state = Climb;
-			printf("State changed from Emergency_over to Climb\n");
+//			printf("State changed from Emergency_over to Climb\n");
 			return;
 		}
 		saved_count ++ ;
 	}
 }
 
-void uart_Send(char* msg){ //delete this if not using
-	int len = strlen(msg);
-	UART_Send(LPC_UART3, (uint8_t*)msg, (uint32_t)len, BLOCKING);
-}
-
 //Modes
 void do_Initialization(){
-	printf("Entered Initialization Mode\n");
+//	printf("Entered Initialization Mode\n");
 	//display "Initialization mode. Press TOGGLE to climb"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "Initialization", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 8, (uint8_t *) "mode. Press", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 16, (uint8_t *) "TOGGLE to climb", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	//send a message to FiTrackX that reads “Start"
+	sprintf(uart_msg, "Start\r\n");
+	UART_Send(LPC_UART3, (uint8_t *) uart_msg, strlen(uart_msg), BLOCKING);
 	while(state == Initialization){}
 	//MODE_TOGGLE with SW3 to ItoC via interrupt
 }
 
 void do_toclimb(){
-	printf("Entered ItoC Mode\n");
-	//>OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
+//	printf("Entered ItoC Mode\n");
+	//OLED display “INITIALIZATION COMPLETE. ENTERING CLIMB MODE”
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "INITIALIZATION", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 	oled_putString(0, 8, (uint8_t *) "COMPLETE.", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -721,7 +622,7 @@ void do_toclimb(){
 
 void check_ClimbSensors(){ //Called in all Climb_State
 	if(acc_on){
-		//The net acceleration (to 1 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
+		//The net acceleration (to 2 decimal place) should be displayed on the OLED screen in the following format: "Acc: x.xx" where x.xx is the net acceleration accurate to 2 decimal places, in 'g's (1g = 9.8m/s2).
 		acc_read(&x, &y, &z);
 		x = x+xoff;
 		y = y+yoff;
@@ -729,7 +630,7 @@ void check_ClimbSensors(){ //Called in all Climb_State
 		net_acc = (sqrt(x*x + y*y + z*z))/ 64;
 		//EMERGENCY Mode may be triggered through Fall Detection (shaking the board gently, net acceleration> ACC_THRESHOLD) in CLIMB Mode. No other mode should be able to trigger EMERGENCY Mode.
 		if(net_acc > ACC_THRESHOLD){
-			printf("State changed from Climb to Emergency\n");
+//			printf("State changed from Climb to Emergency\n");
 			state = Emergency;
 		}
 	}
@@ -743,34 +644,41 @@ void check_ClimbSensors(){ //Called in all Climb_State
 		//If the light sensor reading is above LIGHT_THRESHOLD, LED_ARRAY should not be lit.
 		shift = luminI / 18.75;
 		ledOn = (shift <= 16)?(1 << (16-shift)) - 1: 0x0; //max 1<<16 - 1 = 0xffff (16 1's), min 1<<0 - 1 = 0
-	//		if (shift <= 16){ ledOn = (1 << (16-shift)) - 1;}
-	//		else ledOn = 0x0;
 		pca9532_setLeds(ledOn, 0xffff); // turns on ledOn and off everything else, ledOn takes priority
 	}
 
 	if(temp_on){
 		//If the temperature crosses TEMP_THRESHOLD, the OLED screen should show ‘REST NOW’ for 3 seconds before returning to CLIMB Mode.
 		//This should only be triggered once every time the temperature crosses TEMP_THRESHOLD.
-
 		tempvalue = (fast_temp_read() != 0)? fast_temp_read():tempvalue; //gives 10* temperature in degree C
 		if (tempvalue > TEMP_THRESHOLD && temp_flag == 0){ //maybe can use interrupt?
 			if(Climb_State != Rest) Saved_State = Climb_State;
 			Climb_State = Rest;
 		}
 		//unless the temperature goes below TEMP_THRESHOLD and crosses it again.
-		if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
+		else if (tempvalue <= TEMP_THRESHOLD && temp_flag == 1){
 			temp_flag = 0;
 		}
 	}
 
 //The accelerometer, temperature and light sensor readings should be sent to FiTrackX once every 5 seconds.
-		if ((Get_Time() - prev_uart_ticks) >= 5000){
-			char uart_msg[50];
-			sprintf(uart_msg,"Temp: %lu.%lu deg\r\n", tempvalue/10, tempvalue%10);
+	if ((Get_Time() - prev_uart_ticks) >= 5000){
+		if(acc_on){
+			sprintf(uart_msg,"Acc: %5.2f g ", net_acc);
 			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
-			//uart_Send(uart_msg);
-			prev_uart_ticks = Get_Time();
 		}
+		if(light_on){
+			sprintf(uart_msg,"Light: %3lu lux ",luminI);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+		}
+		if(temp_on){
+			sprintf(uart_msg,"Temp: %lu.%lu deg ", tempvalue/10, tempvalue%10);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+		}
+		sprintf(uart_msg,"\r\n");
+		UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+		prev_uart_ticks = Get_Time();
+	}
 }
 
 void refresh_ClimbOLED(){ //Called in Climb_State = None
@@ -790,22 +698,22 @@ void refresh_ClimbOLED(){ //Called in Climb_State = None
 		prev_sensor_ticks = Get_Time();
 	}
 
-	if(light_on){
+	if(light_on){ //placed outside sensor_refresh_ticks to make ledarray more responsive
 		//light sensor reading printed on the OLED display in the following format: "Light: xx lux" where xx is the reading.
-		sprintf(temp_string,"Light: %3lu lux\n",luminI);
+		sprintf(temp_string,"Light: %3lu lux",luminI);
 		oled_putString(0, 24, (uint8_t *) temp_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
 		if(luminI < LIGHT_THRESHOLD){ //cannot enter Dim from Music or Rest states
 			//A message should also be displayed on the OLED screen saying "DIM"
 			oled_putString(0, dim_OLED_line, (uint8_t *) "DIM", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 		}
+		else oled_fillRect(0, dim_OLED_line, OLED_DISPLAY_WIDTH, dim_OLED_line+8, OLED_COLOR_BLACK);
 	}
 	else oled_fillRect(0, 24, OLED_DISPLAY_WIDTH, 32, OLED_COLOR_BLACK);
 }
 
 void do_Climb(){
-	//rgb_setLeds(RGB_GREEN); /////////////////////////////////////////////////////////////////////////////////////////what is this line?
-	printf("Entered Climb Mode\n");
+//	printf("Entered Climb Mode\n");
 	led7seg_setChar(0xFF, TRUE);
 	setRGBLeds(0); // Clear value for RGB_BLUE
 
@@ -820,7 +728,7 @@ void do_Climb(){
 
 	while(state == Climb){
 		if(Climb_State == None && state == Climb){
-			printf("Entered Climb_State None\n");
+//			printf("Entered Climb_State None\n");
 			//OLED display "CLIMB"
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, 0, (uint8_t *) "CLIMB", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -830,7 +738,7 @@ void do_Climb(){
 			}
 		}
 		if(Climb_State == Rest && state == Climb){
-			printf("Entered Climb_State Rest\n");
+//			printf("Entered Climb_State Rest\n");
 			prev_temp_ticks = Get_Time(); //Time that programme entered Rest
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, restnow_OLED_line, (uint8_t *) "REST NOW", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -841,12 +749,12 @@ void do_Climb(){
 			while(Get_Time() - prev_temp_ticks <= 3000  && state == Climb){ //cannot quit Rest state by changing Climb_State, got to wait for 3000ms to be over before exit
 				check_ClimbSensors();
 			}
-			printf("Exit Ticks: %lu, Entered ticks: %lu\n", Get_Time(), prev_temp_ticks);
+//			printf("Exit Ticks: %lu, Entered ticks: %lu\n", Get_Time(), prev_temp_ticks);
 			Climb_State = Saved_State; //go back to either Music or Climb
 			restnow_printed = 0;
 		}
 		if(Climb_State == Music && state == Climb){
-			printf("Entered Climb_State Music\n");
+//			printf("Entered Climb_State Music\n");
 			oled_clearScreen(OLED_COLOR_BLACK);
 			oled_putString(0, 0, (uint8_t *) "MUSIC Player", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 			oled_line(0, 9, OLED_DISPLAY_WIDTH, 9, OLED_COLOR_WHITE);
@@ -876,7 +784,7 @@ void do_Climb(){
 }
 
 void do_Emergency(){
-	printf("Entered Emergency Mode\n");
+//	printf("Entered Emergency Mode\n");
 	//OLED screen should display "EMERGENCY Mode!"
 	oled_clearScreen(OLED_COLOR_BLACK);
 	oled_putString(0, 0, (uint8_t *) "EMERGENCY Mode!", OLED_COLOR_WHITE, OLED_COLOR_BLACK);
@@ -888,10 +796,8 @@ void do_Emergency(){
 	= prev_uart_ticks = Get_Time();
 
 	//send a message to FiTrackX that reads “EMERGENCY!"
-	static char* msg = NULL;
-	msg = "EMERGENCY!\r\n";
-	UART_Send(LPC_UART3, (uint8_t *) msg, strlen(msg), BLOCKING);
-	//uart_Send("EMERGENCY!");
+	sprintf(uart_msg, "EMERGENCY!\r\n");
+	UART_Send(LPC_UART3, (uint8_t *) uart_msg, strlen(uart_msg), BLOCKING);
 
 	while(state == Emergency){
 		//Refresh
@@ -923,25 +829,21 @@ void do_Emergency(){
 		ALTERNATE_LED();
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
 		if ((Get_Time() - prev_uart_ticks) >= 5000){
-			char uart_msg[50];
 			sprintf(uart_msg,"Temp: %lu.%lu deg\r\n", tempvalue/10, tempvalue%10);
 			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
-			//uart_Send(uart_msg);
 			prev_uart_ticks = Get_Time();
 		}
 	}
 }
 
 void do_Emergency_over(){
-	printf("Entered Emergency_over Mode\n");
+//	printf("Entered Emergency_over Mode\n");
 	oled_clearScreen(OLED_COLOR_BLACK);
 	//MODE_TOGGLE and EMERGENCY_OVER are simultaneously pressed
-	//>  send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
+	//send the message: "Emergency is cleared! Time consumed for recovery: xx sec", where xx is the time elapsed since entering EMERGENCY Mode
 	//duration has been saved in emer_dur
-	char uart_msg[64];
 	sprintf(uart_msg,"Emergency is cleared! Time consumed for recovery: %lu sec\r\n", emer_dur);
 	UART_Send(LPC_UART3, (uint8_t *)uart_msg, strlen(uart_msg), BLOCKING);
-	//uart_Send(uart_msg);
 
 	emer_dur = 0;
 	prev_saved_ticks
@@ -956,81 +858,22 @@ void do_Emergency_over(){
 	}
 }
 
-//Functions for testing devices
-/* ####### Joystick and 7seg  ###### */
-void Joystick_7seg(uint8_t joyState){
-	if (joyState >> 0 & 0x01) //JOYSTICK_CENTER
-		led7seg_setChar('C', FALSE);
-	if (joyState >> 1 & 0x01) //JOYSTICK_UP
-		led7seg_setChar('U', FALSE);
-	if (joyState >> 2 & 0x01) //JOYSTICK_DOWN
-		led7seg_setChar('D', FALSE);
-	if (joyState >> 3 & 0x01) //JOYSTICK_LEFT
-		led7seg_setChar('L', FALSE);
-	if (joyState >> 4 & 0x01) //JOYSTICK_RIGHT
-		led7seg_setChar('R', FALSE);
-}
-
-/* ####### Joystick and OLED  ###### */
-void Joystick_OLED(uint8_t joyState){
-	joyState = joystick_read();
-	if (joyState != 0)
-		drawOled(joyState);
-}
-
-/* ####### Accelerometer and LEDs  ###### */
-void Accelerometer_LED(int8_t x, int8_t y, int8_t z, int8_t xoff, int8_t yoff, int8_t zoff, uint8_t dir, uint8_t wait){
-	acc_read(&x, &y, &z);
-	x = x+xoff;
-	y = y+yoff;
-	z = z+zoff;
-
-	if (y < 0) {
-		dir = 1;
-		y = -y;
-	}
-	else {
-		dir = -1;
-	}
-	if (y > 1 && wait++ > (40 / (1 + (y/10)))) {
-		moveBar(1, dir);
-		wait = 0;
-	}
-}
-/* ####### SW3 and Speaker  ###### */
-void SW_Speaker(uint8_t btn1){
-	btn1 = (GPIO_ReadValue(1) >> 31) & 0x01; // reading from SW3
-	if (btn1 == 0){
-		playSong(songs[0]);
-	}
-}
-
-/* ############ Trimpot and RGB LED  ########### */
-void Trimpot_RGB(){}
-
-//Interrupt Handler
+//Interrupt Handlers
 void EINT0_IRQHandler(void){
 	// SW3
-	printf("outside EINT0\n");
-	if ((LPC_GPIOINT->IO2IntStatF>>10)& 0x1){ //sw3 P2.10 with PIO2_9
-		LPC_SC -> EXTINT |= 0x1;
-		LPC_GPIOINT ->IO2IntClr = 1<<10; //clear the interrupt
-		printf("SW3 is pressed in EINT0\n");
+	if ((LPC_SC -> EXTINT >> 0) & 0x1){ //sw3 P2.10 with PIO2_9
+		LPC_SC -> EXTINT |= (1<<0);
+//		printf("SW3 is pressed in EINT0\n");
 		if (state == Initialization){
 			state = ItoC;
-			printf("State changed from Initialization to ItoC\n");
+//			printf("State changed from Initialization to ItoC\n");
 		}else if (state == Climb){
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
 			//TEMP_THRESHOLD Calibration
 			TEMP_THRESHOLD = tempvalue + 5; //0.5 degrees C above current temp
-			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
+//			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
 		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
-			printf("%d\n", ((GPIO_ReadValue(1) >> 31) & 0x1) == 0);
 			state = Emergency_over;
-			printf("State changed to Emergency_over\n");
+//			printf("State changed to Emergency_over\n");
 		}
 	}
 }
@@ -1040,51 +883,26 @@ void EINT3_IRQHandler(void){
 	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){ //temperature sensor
 		LPC_GPIOINT ->IO0IntClr = 1<<2; //clear the interrupt
 		temp_periods_cnt++;
-		if(temp_periods_cnt == 1) t1 = Get_Time();
+		if(temp_periods_cnt == 1) 					t1 = Get_Time();
 		else if(temp_periods_cnt == temp_periods+1) t2 = Get_Time();
 		else if(temp_periods_cnt == temp_periods*2) temp_periods_cnt = 0;
-
-//		temp_time = Get_Time();
-
-//		temp_periods_cnt++;
-
-//		if (temp_periods_cnt % (temp_periods*2) == 0) t1 = Get_Time();
-//		else if (temp_periods_cnt % (temp_periods*2) == temp_periods) t2 = Get_Time();
-//		temp_periods_cnt++;
-//
-//		if (temp_periods_cnt == 1) 			t1 = Get_Time(); 	//time at the start of 10 periods
-//		else if (temp_periods_cnt == temp_periods+1)	t2 = Get_Time();	//time at the end of 10 periods
-//		//wait for awhile before resetting temp_periods for next reading
-//		else if (temp_periods_cnt > temp_periods+1)temp_periods_cnt = 0;
 	}
 
-	// SW3
-	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
-		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
-		printf("SW3 is pressed in EINT3\n");
-		if (state == Initialization){
-			state = ItoC;
-			printf("State changed from Initialization to ItoC\n");
-		}else if (state == Climb){
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
-			//TEMP_THRESHOLD Calibration
-			TEMP_THRESHOLD = tempvalue + 5; //0.5 degrees C above current temp
-			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
-		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
-//			state = Initialization;
-//			printf("State changed to Initialization\n");
-			printf("%d\n", ((GPIO_ReadValue(1) >> 31) & 0x1) == 0);
-			state = Emergency_over;
-			printf("State changed to Emergency_over\n");
-		}
-	}
-
-//	//light sensor
-//	else if ((LPC_GPIOINT ->IO2IntStatF>>5) & 0x1){
-//		LPC_GPIOINT ->IO2IntClr = 1<<5; //clear the interrupt
-//		printf("Light interrupt triggered\n");
-//		light_clearIrqStatus();
+//	// SW3 (used EINT0 Interrupt instead)
+//	if ((LPC_GPIOINT ->IO0IntStatF>>4) & 0x1){ //sw3
+//		LPC_GPIOINT ->IO0IntClr = 1<<4; //clear the interrupt
+////		printf("SW3 is pressed in EINT3\n");
+//		if (state == Initialization){
+//			state = ItoC;
+////			printf("State changed from Initialization to ItoC\n");
+//		}else if (state == Climb){
+//			//TEMP_THRESHOLD Calibration
+//			TEMP_THRESHOLD = tempvalue + 5; //0.5 degrees C above current temp
+//			printf("TEMP_THRESHOLD calibrated to %lu\n", TEMP_THRESHOLD);
+//		}else if (state == Emergency && (((GPIO_ReadValue(1) >> 31) & 0x1) == 0)){ //sw4 ==0 when pressed
+//			state = Emergency_over;
+////			printf("State changed to Emergency_over\n");
+//		}
 //	}
 
 	if(state == Climb){
@@ -1092,13 +910,13 @@ void EINT3_IRQHandler(void){
 			//JOYSTICK_CENTER
 			if ((LPC_GPIOINT ->IO0IntStatF >> 17) & 0x1){
 				LPC_GPIOINT ->IO0IntClr = 1<<17; //clear the interrupt
-				printf("JOYSTICK_CENTER\n");
+//				printf("JOYSTICK_CENTER\n");
 				play_flag = (play_flag)?0:1;
 			}
 			//JOYSTICK_DOWN
 			else if ((LPC_GPIOINT ->IO0IntStatF >> 15) & 0x1){
 				LPC_GPIOINT ->IO0IntClr = 1<<15; //clear the interrupt
-				printf("JOYSTICK_DOWN\n");
+//				printf("JOYSTICK_DOWN\n");
 				prev_song_index = song_index;
 				song_index = (song_index < number_of_songs-1)? song_index+1: 0;
 				scroll_updated = 0;
@@ -1107,7 +925,7 @@ void EINT3_IRQHandler(void){
 			//JOYSTICK_UP
 			else if ((LPC_GPIOINT ->IO2IntStatF >> 3) & 0x1){
 				LPC_GPIOINT ->IO2IntClr = 1<<3; //clear the interrupt
-				printf("JOYSTICK_UP\n");
+//				printf("JOYSTICK_UP\n");
 				prev_song_index = song_index;
 				song_index = (song_index > 0)? song_index-1: number_of_songs-1;
 				scroll_updated = 0;
@@ -1117,51 +935,40 @@ void EINT3_IRQHandler(void){
 		//JOYSTICK_RIGHT
 		if ((LPC_GPIOINT ->IO0IntStatF >> 16) & 0x1){
 			LPC_GPIOINT ->IO0IntClr = 1<<16; //clear the interrupt
-			printf("JOYSTICK_RIGHT\n");
+//			printf("JOYSTICK_RIGHT\n");
 			Climb_State = (Climb_State == Music)? None: Music;
 		}
 		//JOYSTICK_LEFT
 		else if ((LPC_GPIOINT ->IO2IntStatF >> 4) & 0x1){
 			LPC_GPIOINT ->IO2IntClr = 1<<4; //clear the interrupt
-			printf("JOYSTICK_LEFT\n");
+//			printf("JOYSTICK_LEFT\n");
 			Climb_State = (Climb_State == Music)? None: Music;
 		}
 	}
 }
 
-int rx_count = 0;
 //UART3 interrupt handler
 void UART3_IRQHandler(void){
-	if((LPC_UART3->IIR & 0xE) == 0b0100) //RDA
-	{
-//		printf("RDA\n");
-//		UART_Receive(LPC_UART3, &rxbuf, 14, BLOCKING); //you triggered every 14 characters input
-//		sprintf(uart_string,"uart %u\n", rxbuf);
-//		oled_putString(0, 40, (uint8_t *) uart_string, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
+	if((LPC_UART3->IIR & 0xE) == 0b0100){ //RDA
+//		printf("RDA Interrupt Trigerred\n");
 		if(UART_Receive(LPC_UART3, (uint8_t*)&rxbuf[rx_count], 1, BLOCKING) == 1){
-			if(rxbuf[rx_count] == '\r'){ //command completed
-				printf("Command Received\n");
-				rxbuf[rx_count+1] = 0;
-				if 		(strcmp(rxbuf, "On Acc\r")==0)		acc_on = 1;
-				else if (strcmp(rxbuf, "Off Acc\r")==0) 	acc_on = 0;
-				else if (strcmp(rxbuf, "On Temp\r")==0) 	temp_on = 1;
-				else if (strcmp(rxbuf, "Off Temp\r")==0) 	temp_on = 0;
-				else if (strcmp(rxbuf, "On Light\r")==0) 	light_on = 1;
+			if(rxbuf[rx_count] == '\r'){ //command completed, enter key pressed
+//				printf("Command Received\n");
+				rxbuf[rx_count+1] = 0; //end of string in rxbuf
+				if 		(strcmp(rxbuf, "On Acc\r"	)==0)	acc_on = 1;
+				else if (strcmp(rxbuf, "Off Acc\r"	)==0) 	acc_on = 0;
+				else if (strcmp(rxbuf, "On Temp\r"	)==0) 	temp_on = 1;
+				else if (strcmp(rxbuf, "Off Temp\r"	)==0) 	temp_on = 0;
+				else if (strcmp(rxbuf, "On Light\r"	)==0) 	light_on = 1;
 				else if (strcmp(rxbuf, "Off Light\r")==0) 	light_on = 0;
 				else UART_Send(LPC_UART3, (uint8_t*)UART_Error_msg, strlen(UART_Error_msg), BLOCKING);
 				rx_count = 0;
 				printf("Entered: %s\n", rxbuf);
 			}
-			else rx_count = (rx_count == 64)? 0: rx_count+1;
+			else rx_count = (rx_count == 63)? 0: rx_count+1;
 		}
-		//UART3_StdIntHandler();
 		//UART interrupts are automatically cleared
 	}
-//	if((LPC_UART3->IIR & 0xE) == 0b1100) //CTI
-//	{
-//		UART_Receive(LPC_UART3, &rxbuf+14, 1, BLOCKING);
-//		printf("CTI\n");
-//	}
 }
 
 //Handler occurs every 1ms
@@ -1170,56 +977,26 @@ void SysTick_Handler (void){
 }
 
 int main (void) {
-//	if (SysTick_Config(SystemCoreClock/1000)){
-//		while (1);
-//	}
 	init_everything();
-
-    /*
-     * Assume base board in zero-g position when reading first value.
-     */
-    acc_read(&x, &y, &z);
-    xoff = 0-x;
-    yoff = 0-y;
-    zoff = 64-z;
-    moveBar(1, dir);
-
-    /* <---- OLED ------ */
+    /* <---- Reset All Displays ------ */
     oled_clearScreen(OLED_COLOR_BLACK);
-
     led7seg_setChar(0xFF, TRUE);
     while (1){
     	if (state == Initialization){
     		do_Initialization();
-//    		printf("Main i\n");
     	}
     	if (state == ItoC){
     		do_toclimb();
-//    		printf("Main itoc\n");
     	}
     	if (state == Climb){
     		do_Climb();
-//    		printf("Main Climb\n");
 		}
     	if (state == Emergency){
 			do_Emergency();
-//			printf("Main E\n");
 		}
     	if (state == Emergency_over){
     		do_Emergency_over();
     	}
-
-        /* #Testing functions */
-        /* ############################################# */
-//        Joystick_7seg(joyState);
-//        Joystick_OLED(joyState);
-//        Accelerometer_LED(x, y, z, xoff, yoff, zoff, dir, wait);
-//        SW_Speaker(btn1);
-//        Trimpot_RGB();
-        /* ############################################# */
-
-        /* # */
-//        Timer0_Wait(1);
     }
 }
 
