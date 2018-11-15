@@ -500,6 +500,7 @@ static void init_everything(){
 int32_t fast_temp_read (void){
 	if (~t2 && ~t1){
 		time_diff = abs(t2-t1);
+		//10T(C) = (period (us) / scalar_div10) - 2731 K
 		temp =((time_diff*1000.0)/(temp_periods*10*TEMP_SCALAR_DIV10))-273.15;
 	}
 	if (temp < 16) temp = 0;
@@ -880,7 +881,7 @@ void EINT0_IRQHandler(void){
 
 void EINT3_IRQHandler(void){
 	// Temperature sensor
-	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){ //temperature sensor
+	if ((LPC_GPIOINT ->IO0IntStatR>>2) & 0x1){
 		LPC_GPIOINT ->IO0IntClr = 1<<2; //clear the interrupt
 		temp_periods_cnt++;
 		if(temp_periods_cnt == 1) 					t1 = Get_Time();

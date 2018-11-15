@@ -2,9 +2,9 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="279" key="DIALOG_Y_ORIGIN"/>
-		<item value="1219" key="DIALOG_X_ORIGIN"/>
-		<item value="405" key="DIALOG_HEIGHT"/>
+		<item value="20" key="DIALOG_Y_ORIGIN"/>
+		<item value="554" key="DIALOG_X_ORIGIN"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="do" key="selection"/>
+		<item value="fast" key="selection"/>
 		<list key="findhistory">
+			<item value="fast"/>
+			<item value="eint3"/>
+			<item value="init_uart"/>
+			<item value="acc_on"/>
+			<item value="temp_on"/>
+			<item value="static void"/>
+			<item value="main"/>
 			<item value="do"/>
-			<item value="uart"/>
-			<item value="uart_msg"/>
-			<item value="uart_send"/>
-			<item value="handler"/>
-			<item value="printf"/>
-			<item value="counter"/>
-			<item value="lux\"/>
 		</list>
 		<list key="replacehistory">
 			<item value="RGB_BLUE"/>
