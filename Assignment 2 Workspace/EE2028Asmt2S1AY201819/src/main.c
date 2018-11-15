@@ -459,7 +459,7 @@ static void init_everything(){
     //EINT0 interrupt for SW3
     LPC_SC -> EXTINT |= 1<<0; //Clearing EINT0
     LPC_SC -> EXTMODE |= 1<<0; //EINT0 edge sensitive
-    LPC_SC -> EXTPOLAR |= 0<<0; //EINT0 falling-edge sensitive
+    LPC_SC -> EXTPOLAR &= 0xFFFFFFFE; //EINT0 falling-edge sensitive, 0 at bit 0
     NVIC_ClearPendingIRQ(EINT0_IRQn); //clear pending
     NVIC_EnableIRQ(EINT0_IRQn);
 
