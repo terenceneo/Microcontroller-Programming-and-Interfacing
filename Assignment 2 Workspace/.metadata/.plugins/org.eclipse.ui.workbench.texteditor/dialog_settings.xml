@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="20" key="DIALOG_Y_ORIGIN"/>
-		<item value="554" key="DIALOG_X_ORIGIN"/>
-		<item value="381" key="DIALOG_HEIGHT"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="305" key="DIALOG_WIDTH"/>
+		<item value="125" key="DIALOG_Y_ORIGIN"/>
+		<item value="444" key="DIALOG_HEIGHT"/>
+		<item value="1553" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="fast" key="selection"/>
+		<item value="7seg" key="selection"/>
 		<list key="findhistory">
-			<item value="fast"/>
-			<item value="eint3"/>
-			<item value="init_uart"/>
-			<item value="acc_on"/>
-			<item value="temp_on"/>
-			<item value="static void"/>
-			<item value="main"/>
-			<item value="do"/>
+			<item value="7seg"/>
+			<item value="uart3 interrupt"/>
+			<item value="uart3"/>
+			<item value="interrupt"/>
+			<item value="do_emer"/>
+			<item value="i2c"/>
+			<item value="get_time"/>
+			<item value="msticks"/>
 		</list>
 		<list key="replacehistory">
 			<item value="RGB_BLUE"/>

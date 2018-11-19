@@ -51,7 +51,7 @@ volatile uint32_t 		sensor_refresh_ticks = 400;
 #define TEMP_TS0 1
 
 static uint8_t numbers_inverted[] = {0x24, 0x7D, 0xE0, 0x70, 0x39, 0x32, 0x22, 0x7C, 0x20, 0x38, 0xFF};
-char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24};
+char saued[] = {0x32, 0x28, 0x25, 0xA2, 0x24, 0xFF};
 
 static char *song_titles[] = {
 		"Happy Birthday",
@@ -465,7 +465,7 @@ static void init_everything(){
 
 	//EINT3 interrupt
 //    LPC_GPIOINT ->IO0IntEnF |= 1<<4; //sw3 (EINT3 for sw3 is no longer used)
-    LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
+//    LPC_GPIOINT ->IO2IntEnF |= 1<<5; //light sensor, activates on falling edge as light sensor is active low
     LPC_GPIOINT ->IO0IntEnR |= 1<<2; //temperature sensor, activates at the start of each reading period
 
     LPC_GPIOINT ->IO0IntEnF |= 1 << 17; //JOYSTICK_CENTER
@@ -576,7 +576,7 @@ void saved(void){
 	if(Get_Time() - prev_saved_ticks >= 1000){
 		led7seg_setChar(saued[saved_count], TRUE);
 		prev_saved_ticks = Get_Time();
-		if (saved_count == 4){
+		if (saved_count == 5){
 			saved_count = 0;
 			state = Climb;
 //			printf("State changed from Emergency_over to Climb\n");
@@ -727,6 +727,10 @@ void do_Climb(){
 	prev_sensor_ticks
 	= prev_uart_ticks = Get_Time();
 
+	//send a message to FiTrackX that reads “CLIMB mode"
+	sprintf(uart_msg, "CLIMB mode\r\n");
+	UART_Send(LPC_UART3, (uint8_t *) uart_msg, strlen(uart_msg), BLOCKING);
+
 	while(state == Climb){
 		if(Climb_State == None && state == Climb){
 //			printf("Entered Climb_State None\n");
@@ -828,10 +832,18 @@ void do_Emergency(){
 
 		//RGB LED should behave as described in ALTERNATE_LED
 		ALTERNATE_LED();
+
 		//Every 5 seconds, FitNUS should send the accelerometer and temperature sensor readings as well as the time elapsed since entering EMERGENCY Mode to FiTrackX.
 		if ((Get_Time() - prev_uart_ticks) >= 5000){
-			sprintf(uart_msg,"Temp: %lu.%lu deg\r\n", tempvalue/10, tempvalue%10);
+			sprintf(uart_msg,"Acc: %5.2f g ", net_acc);
 			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+			
+			sprintf(uart_msg,"Temp: %lu.%lu deg ", tempvalue/10, tempvalue%10);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+
+			sprintf(uart_msg,"Dur:%4lu s\r\n", emer_dur);
+			UART_Send(LPC_UART3, (uint8_t*)uart_msg, strlen(uart_msg), BLOCKING);
+
 			prev_uart_ticks = Get_Time();
 		}
 	}
@@ -964,7 +976,7 @@ void UART3_IRQHandler(void){
 				else if (strcmp(rxbuf, "Off Light\r")==0) 	light_on = 0;
 				else UART_Send(LPC_UART3, (uint8_t*)UART_Error_msg, strlen(UART_Error_msg), BLOCKING);
 				rx_count = 0;
-				printf("Entered: %s\n", rxbuf);
+				//printf("Entered: %s\n", rxbuf);
 			}
 			else rx_count = (rx_count == 63)? 0: rx_count+1;
 		}
