@@ -1,5 +1,5 @@
 # FitNUS Fitness Tracker prototype
-![](20181113_133536.jpg)
+![](20181113_142657.jpg)
 ### Basic Features
 FitNUS detects acceleration, light and temperature changes. FitNUS sends data periodically to a server known as FiTrackX. The XBee RF module acts as a low powered wireless communication device that sends collected data to FiTrackX.
 
