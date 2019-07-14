@@ -1,5 +1,5 @@
 # FitNUS Fitness Tracker prototype
-_Disclaimer: key portions of code removed to prevent plagarism. Codes avaliable upon request, [contact me](mailtmailto:terence.neo@u.nus.edu)._
+_Disclaimer: key portions of code removed to prevent plagarism. Codes avaliable upon request, [contact me](mailto:terence.neo@u.nus.edu)._
 
 ![](20181113_142657.jpg)
 ### Basic Features
