@@ -22,7 +22,7 @@ FitNUS detects acceleration, light and temperature changes. FitNUS sends data pe
 
 ### Hardware
 - LPCXpresso Base Board revB
-- LPC1769 Microcontroller (mounted on base board)
+- LPC1769 with ARM Cortex M3 Microcontroller
 - XBee RF module _(optional, for wireless transmit and receive functions)_
 
 ## Deployment
