@@ -1,4 +1,10 @@
 # Microcontroller-Programming-and-Interfacing
-EE2028
-</br>My journey learning low level programming on the LPC1769 Microcontroller </br>
-In Assembly Language and C
+## Languages and Frameworks used
+- Assembly
+- C
+- LPCXpresso V6.1.4 194
+
+## Hardware
+- LPC1769 Microcontroller
+- LPCXpresso Base Board revB
+
