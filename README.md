@@ -1,4 +1,4 @@
-# Microcontroller-Programming-and-Interfacing
+# Microcontroller Programming and Interfacing
 ## Languages and Frameworks used
 - Assembly
 - C
