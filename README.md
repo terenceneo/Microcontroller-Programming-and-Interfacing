@@ -13,14 +13,14 @@ FitNUS detects acceleration, light and temperature changes. FitNUS sends data pe
 ---
 ## Getting Started
 ### Environment Prerequisites
-### Software used
+#### Software used
 - LPCXpresso V6.1.4 194
 
-### Languages used
+#### Languages used
 - Assembly
 - C
 
-### Hardware
+#### Hardware
 - LPCXpresso Base Board revB
 - LPC1769 with ARM Cortex M3 Microcontroller
 - XBee RF module _(optional, for wireless transmit and receive functions)_
