@@ -29,7 +29,7 @@ FitNUS detects acceleration, light and temperature changes. FitNUS sends data pe
 
 
 ## Authors
-- Yours truly
+- [Terence Neo](https://github.com/terenceneo)
 - Rachel Neo
 
 ## Acknowledgements
